@@ -33,11 +33,10 @@ Module Contents
    * angles alpha, beta, gamma are given in degrees
    * a, b, c are in the same units as the wavelength
 
-   Returns:
-       B: (3,3) numpy.ndarray (float64)
+   :returns: (3,3) numpy.ndarray (float64)
+   :rtype: B
 
-   Raises:
-       ValueError: if the cell is degenerate (invalid angles/parameters).
+   :raises ValueError: if the cell is degenerate (invalid angles/parameters).
 
    Reference: standard crystallography formulas (see e.g. International Tables).
 

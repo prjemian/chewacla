@@ -36,11 +36,9 @@ Module Contents
       Name of this Solver.
 
 
-
    .. py:attribute:: version
 
       Version of this Solver.
-
 
 
    .. py:method:: addReflection(reflection: hklpy2.blocks.reflection.Reflection) -> None
@@ -55,6 +53,13 @@ Module Contents
 
       The method of Busing & Levy, Acta Cryst 22 (1967) 457.
 
+
+
+   .. py:property:: extra_axis_names
+      :type: list[str]
+
+
+      Ordered list of any extra axis names (such as x, y, z).
 
 
    .. py:method:: forward(pseudos: dict) -> list[dict[str, float]]
@@ -91,7 +96,6 @@ Module Contents
       List of the geometry operating modes.
 
 
-
    .. py:property:: pseudo_axis_names
       :type: list[str]
 
@@ -99,13 +103,11 @@ Module Contents
       Ordered list of the pseudo axis names (such as h, k, l).
 
 
-
    .. py:property:: real_axis_names
       :type: list[str]
 
 
       Ordered list of the real axis names (such as th, tth).
-
 
 
    .. py:method:: refineLattice(reflections: list[hklpy2.blocks.reflection.Reflection]) -> hklpy2.blocks.lattice.Lattice
@@ -129,7 +131,6 @@ Module Contents
       .. seealso:: https://blueskyproject.io/hklpy2/diffractometers.html#available-solver-geometry-tables
 
 
-
    .. py:attribute:: _gname
 
 
@@ -141,7 +142,6 @@ Module Contents
 
       A mode defines which axes will be modified by the
       :meth:`forward` computation.
-
 
 
    .. py:attribute:: _all_extra_axis_names
@@ -164,7 +164,6 @@ Module Contents
       Dictionary with this solver's summary metadata.
 
 
-
    .. py:property:: all_extra_axis_names
       :type: list[str]
 
@@ -172,23 +171,11 @@ Module Contents
       Unique, sorted list of extra axis names in all modes for chosen engine.
 
 
-
-   .. py:property:: extra_axis_names
-      :type: list[str]
-
-      :abstractmethod:
-
-
-      Ordered list of any extra axis names (such as x, y, z).
-
-
-
    .. py:property:: extras
       :type: dict
 
 
       Ordered dictionary of any extra parameters.
-
 
 
    .. py:property:: geometry
@@ -201,13 +188,11 @@ Module Contents
       for each geometry.
 
 
-
    .. py:property:: lattice
       :type: Lattice
 
 
       Crystal lattice parameters.  (Not used by this |solver|.)
-
 
 
    .. py:property:: sample
@@ -217,17 +202,14 @@ Module Contents
       Crystalline sample.
 
 
-
    .. py:property:: _summary_dict
 
       Return a summary of the geometry (modes, axes)
 
 
-
    .. py:property:: UB
 
       Orientation matrix (3x3).
-
 
 
    .. py:attribute:: __slots__
