@@ -1,144 +1,77 @@
 name: Unit Tests
 
 on:
-  # Triggers the workflow on push or pull request events but only for the main branch
   push:
-    branches:
-      - main
+    branches: [main]
   pull_request:
-    branches:
-      - main
-  workflow_dispatch: # allow manual triggering
+    branches: [main]
+  workflow_dispatch:
 
 defaults:
   run:
     shell: bash -l {0}
 
-# set -vxeuo pipefail
-
+# TODO: set -vxeuo pipefail
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
+permissions:
+  contents: read
+
 jobs:
-  lint:
-    name: Code style
-    runs-on: ubuntu-latest
-
-    steps:
-      - uses: actions/checkout@v5
-        with:
-          fetch-depth: 0
-
-      - uses: actions/setup-python@v6
-        with:
-          python-version: "3.13"
-
-      - name: Install build tools
-        run: |
-          python -m pip install --upgrade pip
-          python -m pip install build setuptools setuptools_scm
-
-      - name: Install package
-        run: |
-          pip install -e .[dev]
-
-      - name: Run ruff
-        uses: davidslusser/actions_python_ruff@v1.0.3
-        with:
-          python_version: "3.13"
-
-  tests:
-    name: Python ${{ matrix.python-version }}
-    # needs: lint
+  test:
+    name: Tests (py${{ matrix.python }})
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version:
+        python:
           - "3.11"
           - "3.12"
           - "3.13"
           # - "3.14"
-      max-parallel: 5
+      fail-fast: false
+      max-parallel: 3
 
     steps:
       - uses: actions/checkout@v5
         with:
           fetch-depth: 0
 
-      - name: Create Python ${{ matrix.python-version }} environment
-        uses: mamba-org/setup-micromamba@v2
+      - name: Setup Python
+        uses: actions/setup-python@v6
         with:
-          cache-environment: true
-          cache-environment-key: env-key-${{ matrix.python-version }}
-          condarc: |
-            channels:
-              - conda-forge
-              - nodefaults
-            channel-priority: flexible
-          environment-name: anaconda-test-env-py-${{ matrix.python-version }}
-          create-args: >-
-            pytest
-            python=${{ matrix.python-version }}
-            setuptools-scm
+          python-version: ${{ matrix.python }}
 
-      - name: Install our package and its requirements
-        run: |
-          set -vxeuo pipefail
-          pip install -e .[dev]
+      - name: Cache pip
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/pip
+          key: pip-cache-${{ matrix.python }}-${{ hashFiles('**/pyproject.toml') }}
+          restore-keys: |
+            pip-cache-${{ matrix.python }}-
 
-      - name: Diagnostic
+      - name: Install dependencies
         run: |
-          micromamba info
-          micromamba list
-          conda config --show-sources
-          conda config --show
-          micromamba env list
-          printenv | sort
+          python -m pip install --upgrade pip
+          pip install -e ".[dev]"
 
-      - name: Run tests with pytest & coverage
-        shell: bash -l {0}
+      - name: Lint (ruff)
         run: |
-          set -vxeuo pipefail
-          coverage run --concurrency=thread --parallel-mode -m pytest -vvv ./src
+          python -m pip install ruff==0.4.8
+          ruff check . --fix
+
+      - name: Run tests with coverage
+        run: |
+          pip install coverage
+          coverage run --concurrency=thread --parallel-mode -m pytest -q
           coverage combine
-          coverage report --precision 3
-
-      - name: Force Install coveralls by pip
-        shell: bash -l {0}
-        run: |
-          set -vxeuo pipefail
-          python -m pip install --force-reinstall coveralls
-
-      - name: Upload to coveralls
-        # https://github.com/TheKevJames/coveralls-python
-        shell: bash -l {0}
-        run: |
-          set -vxeuo pipefail
-          micromamba list cover
-          which coveralls
-          coveralls debug
-          coveralls --service=github
+          coverage xml -i
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          COVERALLS_FLAG_NAME: ${{ matrix.test-name }}
-          COVERALLS_PARALLEL: true
+          PYTHONWARNINGS: default
 
-  # https://coveralls-python.readthedocs.io/en/latest/usage/configuration.html#github-actions-support
-  coveralls:
-    name: Report unit test coverage to coveralls
-    needs: tests
-    runs-on: ubuntu-latest
-    container: python:3-slim
-
-    steps:
-      - name: Gather coverage and report to Coveralls
-        run: |
-          echo "Finally!"
-          pip3 install --upgrade coveralls
-          # debug mode: output prepared json and reported files list to stdout
-          # https://coveralls-python.readthedocs.io/en/latest/troubleshooting.html
-          coveralls debug
-          coveralls --service=github --finish
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Upload coverage to Coveralls
+        if: ${{ secrets.GITHUB_TOKEN != '' }}
+        uses: coverallsapp/github-action@v1
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
