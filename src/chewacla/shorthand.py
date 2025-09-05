@@ -33,7 +33,7 @@ class DirectionShorthand:
     """
 
     # TODO: kappa needs special handling, needs add_direction(key, vector) method
-    # {"k": (0, np.cos(50), np.sin(50))} -- kappa axis
+    # Might be as asimple as: {"k": (0, np.cos(50), np.sin(50))} -- kappa axis
     # https://github.com/dkriegner/xrayutilities/blob/4ff4dc84b9ab74b736bc296b3c39bc2e4601f255/lib/xrayutilities/math/transforms.py#L234-L264
 
     def __init__(self, vocabulary: Mapping[str, Sequence[int]] | None = None):
