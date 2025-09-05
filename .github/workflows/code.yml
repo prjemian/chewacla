@@ -66,6 +66,7 @@ jobs:
           pip install coverage
           coverage run --concurrency=thread --parallel-mode -m pytest -q
           coverage combine
+          coverage report --precision 3 -m
           coverage xml -i
         env:
           PYTHONWARNINGS: default
