@@ -1,0 +1,29 @@
+chewacla._version
+=================
+
+.. py:module:: chewacla._version
+
+
+
+
+Module Contents
+---------------
+
+.. py:data:: version
+   :type:  str
+
+.. py:data:: __version__
+   :type:  str
+
+.. py:data:: __version_tuple__
+   :type:  VERSION_TUPLE
+
+.. py:data:: version_tuple
+   :type:  VERSION_TUPLE
+
+.. py:data:: commit_id
+   :type:  COMMIT_ID
+
+.. py:data:: __commit_id__
+   :type:  COMMIT_ID
+

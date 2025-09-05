@@ -1,0 +1,117 @@
+chewacla.utils
+==============
+
+.. py:module:: chewacla.utils
+
+.. autoapi-nested-parse::
+
+   Utility functions for Chewacla.
+
+   .. autosummary::
+
+       ~is_colinear
+       ~matrix_from_2_vectors
+       ~normalize
+       ~polar_decompose_rotation
+       ~R_axis
+
+
+
+
+
+Module Contents
+---------------
+
+.. py:function:: is_colinear(v1: Iterable[float], v2: Iterable[float], *, tol: float = 1e-08) -> bool
+
+   Return True if two vectors are colinear (parallel or anti-parallel).
+
+   Two vectors are considered colinear if either is (near) zero or the norm of
+   their cross product is <= tol * (norm(v1)*norm(v2)).
+
+   Parameters
+   ----------
+   v1, v2
+       Iterable of 3 numeric components (or array-like). Will be converted to
+       1-D numpy arrays of dtype float.
+   tol
+       Absolute relative tolerance used to decide colinearity. The cross-product
+       criterion is normalized by the product of vector norms to make the test
+       scale-invariant.
+
+   Returns
+   -------
+   bool
+       True if vectors are colinear (including zero vectors), False otherwise.
+
+   Raises
+   ------
+   ValueError
+       If inputs cannot be converted to length-3 numeric arrays or contain
+       non-finite values.
+
+
+.. py:function:: matrix_from_2_vectors(v1: Sequence[float], v2: Sequence[float], eps: float = 1e-12) -> numpy.typing.NDArray[numpy.float64]
+
+   Return the 3x3 matrix M with columns [x, y, z] where
+     x = normalized(v1)
+     z = normalized(v1 × v2)
+     y = z × x
+
+
+.. py:function:: normalize(v: Iterable[float], *, tol: float = 1e-12) -> numpy.ndarray
+
+   Return the unit vector for `v`.
+
+   Parameters
+   ----------
+   v
+       Sequence or array-like of numeric values representing a vector.
+   tol
+       Tolerance below which the norm is considered zero (default 1e-12).
+
+   Returns
+   -------
+   np.ndarray
+       A float numpy array of the same shape as `v` with unit norm.
+
+   Raises
+   ------
+   ValueError
+       If the vector norm is below `tol` (treated as zero) or contains non-finite values.
+   TypeError
+       If input cannot be converted to a numeric array.
+
+
+.. py:function:: polar_decompose_rotation(M)
+
+   Return R from the polar decomposition M = R @ S where R is a proper rotation
+   (orthogonal with det +1) and S is symmetric positive-definite.
+
+
+.. py:function:: R_axis(axis: Iterable[float], angle_rad: float, *, tol: float = 1e-12) -> numpy.ndarray
+
+   Return the 3x3 rotation matrix for rotation about `axis` by `angle_rad`.
+
+   Parameters
+   ----------
+   axis
+       Iterable of 3 numeric components for the rotation axis.
+   angle_rad
+       Rotation angle in radians.
+   tol
+       Minimum allowed norm for `axis`. If the axis norm <= tol raises ValueError.
+
+   Returns
+   -------
+   np.ndarray
+       3x3 rotation matrix (dtype float).
+
+   Raises
+   ------
+   ValueError
+       If the axis has zero/near-zero length or contains non-finite values.
+   TypeError
+       If inputs cannot be converted to numeric arrays.
+
+

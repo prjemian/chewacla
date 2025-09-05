@@ -1,0 +1,60 @@
+chewacla.shorthand
+==================
+
+.. py:module:: chewacla.shorthand
+
+.. autoapi-nested-parse::
+
+   Describe diffraction vectors with a shorthand vocabulary.
+
+   .. from autosummary::
+
+       ~DirectionShorthand
+
+
+
+
+
+
+
+Module Contents
+---------------
+
+.. py:data:: x_hat
+
+.. py:data:: y_hat
+
+.. py:data:: z_hat
+
+.. py:class:: DirectionShorthand(vocabulary: Mapping[str, Sequence[int]] | None = None)
+
+   Describe vectors with shorthand from xrayutilities.
+
+   .. autosummary::
+
+       ~vector
+       ~vocabulary
+
+   Example::
+
+       >>> ds = DirectionShorthand()
+       >>> ds.vector('x+')
+       [1 0 0]
+
+
+   .. py:property:: vocabulary
+      :type: dict
+
+
+
+   .. py:method:: vector(symbol: str) -> numpy.ndarray
+
+      Convert a symbol like 'x+' or '+x' to a numpy array (copy).
+
+      Behavior:
+      - Accepts 'x+' (letter then sign) or '+x' (sign then letter).
+      - Does NOT permute characters; validates positions instead.
+      - Whitespace allowed; case-insensitive.
+
+
+
