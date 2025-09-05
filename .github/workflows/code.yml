@@ -9,9 +9,8 @@ on:
 
 defaults:
   run:
-    shell: bash -l {0}
+    shell: bash -l -vxeu -o pipefail {0}
 
-# TODO: set -vxeuo pipefail
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
@@ -71,9 +70,8 @@ jobs:
         env:
           PYTHONWARNINGS: default
 
-      # TODO: enable & fix: Unrecognized named-value: 'secrets'.
-      # - name: Upload coverage to Coveralls
-      #   if: ${{ secrets.GITHUB_TOKEN != '' }}
-      #   uses: coverallsapp/github-action@v1
-      #   with:
-      #     github-token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Upload coverage to Coveralls
+        if: ${{ github.event_name != 'pull_request' || github.event.pull_request.head.repo.fork == false }}
+        uses: coverallsapp/github-action@v2
+        with:
+          github-token: ${{ github.token }}
