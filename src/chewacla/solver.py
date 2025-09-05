@@ -12,6 +12,7 @@ Solver for hklpy2.
 from hklpy2 import SolverBase
 from hklpy2.blocks.lattice import Lattice
 from hklpy2.blocks.reflection import Reflection
+from hklpy2.misc import IDENTITY_MATRIX_3X3
 from pyRestTable import Table
 
 
@@ -37,7 +38,7 @@ class ChewaclaSolver(SolverBase):
         r1: Reflection,
         r2: Reflection,
     ) -> list[list[float]]:
-        self.UB = []  # TODO
+        # self.UB = calcUB_BusingLevy(r1, r2, sample axes dict...)  # TODO
         return self.UB
 
     @property
@@ -117,3 +118,15 @@ class ChewaclaSolver(SolverBase):
         #     ]
         #     table.addRow(row)
         return table
+
+    @property
+    def UB(self):
+        """Orientation matrix (3x3)."""
+        if "_UB" not in dir(self):
+            self._UB = IDENTITY_MATRIX_3X3
+        return self._UB
+
+    @UB.setter
+    def UB(self, matrix):
+        """Orientation matrix (3x3)."""
+        self._UB = matrix
