@@ -48,10 +48,10 @@ jobs:
         with:
           python-version: "3.13"
 
-      # - name: Install Dependencies
-      #   run: |
-      #     sudo apt-get update && sudo apt-get -y install pandoc
-      #     pip install -e .[doc] -vv
+      - name: Install Dependencies
+        run: |
+          # sudo apt-get update && sudo apt-get -y install pandoc
+          pip install -e .[doc] -vv
 
       - name: Set Timezone
         uses: szenius/set-timezone@v2.0
