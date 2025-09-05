@@ -89,7 +89,6 @@ class ChewaclaSolver(SolverBase):
         """Remove all reflections."""
         ...  # TODO
 
-
     @property
     def summary(self) -> Table:
         """
