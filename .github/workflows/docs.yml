@@ -51,6 +51,7 @@ jobs:
       - name: Install Dependencies
         run: |
           # sudo apt-get update && sudo apt-get -y install pandoc
+          pip install --upgrade pip setuptools wheel
           pip install -e .[doc] -vv
 
       - name: Set Timezone
