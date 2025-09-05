@@ -1,4 +1,5 @@
 import pytest
+
 from chewacla import _get_version
 
 
