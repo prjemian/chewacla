@@ -45,8 +45,18 @@ version = ".".join(release.split(".")[:2])
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
 
 extensions = [
+    "sphinx.ext.autodoc",
+    "sphinx.ext.autosummary",
+    "sphinx.ext.coverage",
+    "sphinx.ext.inheritance_diagram",
+    "sphinx.ext.intersphinx",
+    "sphinx.ext.mathjax",
+    "sphinx.ext.napoleon",
+    # "sphinx.ext.viewcode",
+    "sphinx_design",
     "autoapi.extension",  # Add sphinx-autoapi extension
 ]
+extensions.append("sphinx_tabs.tabs")  # this must be last
 
 templates_path = ["_templates"]
 exclude_patterns = []
