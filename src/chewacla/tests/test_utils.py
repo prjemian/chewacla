@@ -96,6 +96,15 @@ def test_matrix_from_2_vectors_basic(v1, v2, expected_x, expected_z):
     x_expected = np.asarray(v1, dtype=float) / np.linalg.norm(v1)
     assert np.allclose(x, x_expected, atol=1e-12)
 
+    # y is orthogonal to x and z and unit-length
+    assert np.allclose(np.dot(y, x), 0.0, atol=1e-12)
+    assert np.allclose(np.dot(y, z), 0.0, atol=1e-12)
+    assert np.allclose(np.linalg.norm(y), 1.0, atol=1e-12)
+
+    # y should equal z x x (up to sign consistency)
+    y_expected = np.cross(z, x)
+    assert np.allclose(y, y_expected, atol=1e-12)
+
     # z should be perpendicular to both v1 (x) and v2
     assert np.allclose(np.dot(z, x), 0.0, atol=1e-12)
     assert np.allclose(np.dot(z, v2), np.dot(z, np.asarray(v2, dtype=float)), atol=1e-12)

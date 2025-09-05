@@ -132,6 +132,7 @@ def normalize(v: Iterable[float], *, tol: float = 1e-12) -> np.ndarray:
         raise ValueError(f"vector norm ({norm}) is below tolerance ({tol}); cannot normalize")
     return arr / norm
 
+
 def polar_decompose_rotation(M):
     """
     Return R from the polar decomposition M = R @ S where R is a proper rotation

@@ -32,7 +32,8 @@ def is_rotation_matrix(R, atol=1e-12):
         ),
         # Rotation * symmetric positive-definite stretch -> rotation recovered
         (
-            np.diag([2.0, 0.5, 1.5]) @ np.array(
+            np.diag([2.0, 0.5, 1.5])
+            @ np.array(
                 [
                     [0.0, -1.0, 0.0],
                     [1.0, 0.0, 0.0],

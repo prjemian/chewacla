@@ -6,8 +6,8 @@ Lattice support for chewacla.
     ~lattice_B
 """
 
-
 import numpy as np
+
 
 def lattice_B(
     a: float,
