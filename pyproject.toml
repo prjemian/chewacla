@@ -68,6 +68,9 @@ homepage = "https://prjemian.github.io/chewacla"
 issues = "https://github.com/prjemian/chewacla/issues"
 source = "https://github.com/prjemian/chewacla"
 
+[tool.copyright]
+copyright = "2025, Pete R. Jemian"
+
 [tool.setuptools]
 packages = { find = { where = ["src"] } }
 package-dir = { ""= "src" }
