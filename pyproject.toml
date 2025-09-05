@@ -39,6 +39,7 @@ dev = [
   "pre-commit",
   "pyresttable",
   "pytest-cov",
+  "pytest-mock",
   "pytest",
   "ruff",
   "setuptools-scm",
