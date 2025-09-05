@@ -1,0 +1,160 @@
+[build-system]
+requires = ["setuptools_scm[toml]>=8", "setuptools>=77"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "chewacla"
+dynamic = ["version"]
+# version = "0+unknown"
+description = "Ad-hoc Diffractometer Geometry Hklpy2 Solver."
+authors = [{ name = "Pete Jemian", email = "prjemian+chewacla@gmail.com" }]
+maintainers = [{ name = "Pete Jemian", email = "prjemian+chewacla@gmail.com" }]
+readme = "README.md"
+requires-python = ">=3.11"
+keywords = ["diffraction", "hklpy2", "bluesky"]
+license = "CC-BY-4.0"
+license-files = ["LICEN[CS]E*"]
+classifiers = [
+  "Development Status :: 3 - Alpha",
+  "Environment :: Console",
+  "Intended Audience :: Science/Research",
+  "Operating System :: OS Independent",
+  "Programming Language :: Python :: 3",
+  "Topic :: Scientific/Engineering",
+]
+
+dependencies = ["hklpy2", "scipy"]
+
+[project.entry-points."hklpy2.solver"]
+chewacla = "chewacla.solver:ChewaclaSolver"
+
+[project.optional-dependencies]
+dev = [
+  "build",
+  "coverage",
+  "coveralls",
+  "ipython",
+  "isort",
+  # "matplotlib-base",
+  "mypy",
+  "pre-commit",
+  "pyresttable",
+  "pytest-cov",
+  "pytest",
+  "ruff",
+  "setuptools-scm",
+  "twine ==6.0.1",
+]
+doc = [
+  "markupsafe",
+  "myst-nb",
+  "myst-parser",
+  "nbsphinx",
+  "ophyd",
+  "pydata-sphinx-theme",
+  "setuptools >=77",
+  "setuptools-scm >=8",
+  "sphinx >=7",
+  "sphinx-autoapi",
+  "sphinx-design",
+  "sphinx-tabs",
+]
+all = ["chewacla[dev,doc]"]
+
+[project.scripts]
+
+[project.urls]
+homepage = "https://prjemian.github.io/chewacla"
+issues = "https://github.com/prjemian/chewacla/issues"
+source = "https://github.com/prjemian/chewacla"
+
+[tool.setuptools]
+packages = { find = { where = ["src"] } }
+package-dir = { ""= "src" }
+
+[tool.setuptools.package-data]
+# include project metadata files at package root
+"chewacla" = ["../LICENSE", "../README.md", "../CHANGES.rst"]
+
+[tool.setuptools.exclude-package-data]
+"chewacla" = [
+  "tests/*",
+  "*/tests/*",
+]
+
+[tool.setuptools_scm]
+write_to = "src/chewacla/_version.py"
+fallback_version = "0+unknown"
+
+# rest of your tools/configs unchanged (trimmed here for brevity)
+[tool.black]
+line-length = 115
+target-version = ['py312']
+include = '\.pyi?$'
+exclude = '''
+(
+  /(
+      \.eggs
+    | \.git
+    | \.mypy_cache
+    | \.tox
+    | \.venv
+    | \.pytest_cache
+    | _build
+    | examples/archive
+    | build
+    | dist
+    | docs
+  )/
+  | _version.py
+)
+'''
+
+[tool.coverage.run]
+concurrency = ["thread", "multiprocessing"]
+omit = ["*/site-packages/*", "*/_version.py"]
+relative_files = true
+
+[tool.flake8]
+max-line-length = 115
+exclude = [".git", "__pycache__", "build", "dist", "docs/source", "demo"]
+extend-ignore = ["D203","D212","D415","E203","E226","E402","E501","E741","F401","F403","F722","F811","W503","W504","W605"]
+
+[tool.isort]
+force_single_line = "True"
+include_trailing_comma = true
+multi_line_output = "NOQA"
+profile = "black"
+src_paths = ["src"]
+
+[tool.pytest.ini_options]
+addopts = ["--import-mode=importlib", "-ra", "--strict-config", "--strict-markers"]
+filterwarnings = ["ignore:Using or importing the ABCs from:DeprecationWarning", "ignore:.*invalid escape sequence.*:DeprecationWarning"]
+log_cli_level = "INFO"
+minversion = "6"
+testpaths = ["chewacla/tests"]
+xfail_strict = true
+
+[tool.ruff]
+line-length = 115
+indent-width = 4
+target-version = "py311"
+exclude = [".bzr",".direnv",".eggs",".git",".git-rewrite",".hg",".ipynb_checkpoints",".mypy_cache",".nox",".pants.d",".pyenv",".pytest_cache",".pytype",".ruff_cache",".svn",".tox",".venv",".vscode","__pypackages__","_build","buck-out","build","dist","node_modules","site-packages","venv"]
+
+[tool.ruff.lint]
+select = ["E4","E7","E9","F"]
+ignore = ["E402","E741","F405"]
+fixable = ["ALL"]
+dummy-variable-rgx = "^(_+|(_+[a-zA-Z0-9_]*[a-zA-Z0-9]+?))$"
+
+[tool.ruff.lint.per-file-ignores]
+"__init__.py" = ["F401","F403"]
+"**/{tests,docs,tools}/*" = ["E402"]
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+skip-magic-trailing-comma = false
+line-ending = "auto"
+docstring-code-format = false
+docstring-code-line-length = "dynamic"

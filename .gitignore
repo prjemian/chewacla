@@ -39,3 +39,6 @@ docs/_build/
 
 # generated docs
 docs/source/autoapi
+
+# setuptools_scm
+src/chewacla/_version.py
