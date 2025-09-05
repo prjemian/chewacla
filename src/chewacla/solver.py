@@ -13,6 +13,7 @@ from hklpy2.blocks.lattice import Lattice
 
 class ChewaclaSolver(SolverBase):
     """Solver for hklpy2."""
+
     # https://github.com/bluesky/hklpy2/blob/main/hklpy2/backends/base.py
 
     from . import __version__

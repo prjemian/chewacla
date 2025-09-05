@@ -3,6 +3,7 @@
 __settings_orgName__ = "prjemian"
 __package_name__ = "chewacla"
 
+
 def _get_version():
     """Make the version code testable."""
     import importlib.metadata
