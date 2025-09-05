@@ -88,7 +88,7 @@ def matrix_from_2_vectors(v1: Sequence[float], v2: Sequence[float], eps: float =
     cross_norm = np.linalg.norm(v1_cross_v2)
 
     if cross_norm <= eps:
-        raise ValueError(f"{v1=} and {v2=} are ~collinear")  # pragma: no cover
+        raise ValueError(f"{v1=} and {v2=} are ~collinear")
 
     # cross products should be non-zero
     z = v1_cross_v2 / cross_norm
@@ -96,7 +96,7 @@ def matrix_from_2_vectors(v1: Sequence[float], v2: Sequence[float], eps: float =
 
     cross_norm = np.linalg.norm(z_cross_v1)
     if cross_norm <= eps:
-        raise ValueError("unexpected numerical failure when forming y")
+        raise ValueError("unexpected numerical failure when forming y")  # pragma: no cover
     y = z_cross_v1 / cross_norm
 
     return np.column_stack((x, y, z))
