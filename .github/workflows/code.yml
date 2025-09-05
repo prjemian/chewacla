@@ -44,7 +44,7 @@ jobs:
           pip install -e .[dev]
 
       - name: Run ruff
-        uses: davidslusser/actions_python_ruff@v1.0.2
+        uses: davidslusser/actions_python_ruff@v1.0.3
         with:
           python_version: "3.13"
 
