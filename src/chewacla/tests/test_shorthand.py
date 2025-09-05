@@ -38,6 +38,7 @@ def test_DirectionShorthand(ds, sym, expected):
         ["x", pytest.raises(ValueError)],  # too short
         ["xyz", pytest.raises(ValueError)],  # too long
         [None, pytest.raises(TypeError)],  # not a string
+        ["x?", pytest.raises(ValueError)],  # Unknown sign
     ],
 )
 def test_DirectionShorthand_invalid_inputs(expression, context):

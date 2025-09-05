@@ -9,7 +9,7 @@ on:
 
 defaults:
   run:
-    shell: bash -l -vxeu -o pipefail {0}
+    shell: bash -l -xeu -o pipefail {0}  # include -v option when debugging
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
