@@ -75,8 +75,6 @@ class DirectionShorthand:
 
         if name not in self.vocabulary:
             raise ValueError(f"Unknown axis {name!r}. Allowed: {sorted(self.vocabulary.keys())}")
-        if sign not in ("+", "-"):
-            raise ValueError(f"Unknown sign {sign!r}. Must be '+' or '-'")
 
         vec = self.vocabulary[name].astype(float).copy()
         return vec if sign == "+" else -vec

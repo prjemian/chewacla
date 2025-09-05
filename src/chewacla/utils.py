@@ -88,7 +88,7 @@ def matrix_from_2_vectors(v1: Sequence[float], v2: Sequence[float], eps: float =
     cross_norm = np.linalg.norm(v1_cross_v2)
 
     if cross_norm <= eps:
-        raise ValueError("v1 and v2 are collinear or too close to collinear to form a basis")
+        raise ValueError(f"{v1=} and {v2=} are ~collinear")  # pragma: no cover
 
     # cross products should be non-zero
     z = v1_cross_v2 / cross_norm
