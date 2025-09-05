@@ -112,8 +112,11 @@ exclude = '''
 
 [tool.coverage.run]
 concurrency = ["thread", "multiprocessing"]
-omit = ["*/site-packages/*", "*/_version.py"]
+omit = ["*/site-packages/*", "*/_version.py", "*/chewacla/__init__.py"]
 relative_files = true
+
+[tool.coverage.report]
+show_missing = true
 
 [tool.flake8]
 max-line-length = 115

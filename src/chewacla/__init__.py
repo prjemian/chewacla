@@ -5,6 +5,7 @@ __package_name__ = "chewacla"
 
 import importlib.metadata
 
+
 def _get_version(version_module=None):
     """Return package version.
 
@@ -28,8 +29,8 @@ def _get_version(version_module=None):
     # 3) fallback
     return "0+unknown"
 
+
 __version__ = _get_version()
 
-# For testing purposes, we can expose the _get_version function
 if __name__ == "__main__":
     print(f"Package version: {__version__}")
