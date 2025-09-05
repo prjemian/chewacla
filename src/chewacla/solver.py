@@ -40,6 +40,12 @@ class ChewaclaSolver(SolverBase):
         self.UB = []  # TODO
         return self.UB
 
+    @property
+    def extra_axis_names(self) -> list[str]:
+        """Ordered list of any extra axis names (such as x, y, z)."""
+        # Do NOT sort.
+        return []  # TODO
+
     def forward(self, pseudos: dict) -> list[dict[str, float]]:
         """Compute list of solutions(reals) from pseudos (hkl -> [angles])."""
         # based on geometry and mode
