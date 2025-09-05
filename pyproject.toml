@@ -22,7 +22,7 @@ classifiers = [
   "Topic :: Scientific/Engineering",
 ]
 
-dependencies = ["hklpy2", "scipy"]
+dependencies = ["hklpy2", "numpy", "scipy"]
 
 [project.entry-points."hklpy2.solver"]
 chewacla = "chewacla.solver:ChewaclaSolver"

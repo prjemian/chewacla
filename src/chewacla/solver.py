@@ -7,8 +7,8 @@ Solver for hklpy2.
 """
 
 from hklpy2 import SolverBase
-from hklpy2.blocks.reflection import Reflection
 from hklpy2.blocks.lattice import Lattice
+from hklpy2.blocks.reflection import Reflection
 
 
 class ChewaclaSolver(SolverBase):
