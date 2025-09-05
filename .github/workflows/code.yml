@@ -70,11 +70,9 @@ jobs:
         env:
           PYTHONWARNINGS: default
 
-      - name: Upload coverage to Coveralls
-        if: ${{ secrets.GITHUB_TOKEN != '' }}
-        uses: coverallsapp/github-action@v1
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          COVERALLS_FLAG_NAME: ${{ matrix.test-name }}
+      # TODO: enable & fix: Unrecognized named-value: 'secrets'.
+      # - name: Upload coverage to Coveralls
+      #   if: ${{ secrets.GITHUB_TOKEN != '' }}
+      #   uses: coverallsapp/github-action@v1
+      #   with:
+      #     github-token: ${{ secrets.GITHUB_TOKEN }}
