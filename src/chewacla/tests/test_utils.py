@@ -125,8 +125,8 @@ def test_matrix_from_2_vectors_basic(v1, v2, expected_x, expected_z):
         ([1, 0, 0], [-3, 0, 0], 1e-12),
         # nearly collinear within eps
         ([1, 0, 0], [1e-13, 0, 0], 1e-12),
-        # nearly collinear within eps
-        ([1, 1,1], [1+1e-13, 1,1], 1e-12),
+        # nearly collinear within eps: |(v1 cross v2) cross v1| < eps
+        ([1, 1, 1], [1, 1, 1 + 1e-13], 1e-12),
     ],
 )
 def test_matrix_from_2_vectors_collinear_raises(v1, v2, eps):
