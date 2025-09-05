@@ -8,33 +8,40 @@ on:
   pull_request:
     branches:
       - main
-  workflow_dispatch:   # allow manual triggering
+  workflow_dispatch: # allow manual triggering
 
 defaults:
   run:
     shell: bash -l {0}
+
+# set -vxeuo pipefail
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
-
   lint:
     name: Code style
     runs-on: ubuntu-latest
 
     steps:
       - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
 
       - uses: actions/setup-python@v5
         with:
           python-version: "3.13"
 
+      - name: Install build tools
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install build setuptools setuptools_scm
+
       - name: Install package
         run: |
-          set -vxeuo pipefail
-          python -m pip install --upgrade pip
+          pip install -e .[dev]
 
       - name: Run ruff
         uses: davidslusser/actions_python_ruff@v1.0.2
@@ -55,65 +62,67 @@ jobs:
       max-parallel: 5
 
     steps:
-    - uses: actions/checkout@v5
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
 
-    - name: Create Python ${{ matrix.python-version }} environment
-      uses: mamba-org/setup-micromamba@v2
-      with:
-        cache-environment: true
-        cache-environment-key: env-key-${{ matrix.python-version }}
-        condarc: |
-          channels:
-            - conda-forge
-            - nodefaults
-          channel-priority: flexible
-        environment-name: anaconda-test-env-py-${{ matrix.python-version }}
-        create-args: >-
-          pytest
-          python=${{ matrix.python-version }}
-          setuptools-scm
+      - name: Create Python ${{ matrix.python-version }} environment
+        uses: mamba-org/setup-micromamba@v2
+        with:
+          cache-environment: true
+          cache-environment-key: env-key-${{ matrix.python-version }}
+          condarc: |
+            channels:
+              - conda-forge
+              - nodefaults
+            channel-priority: flexible
+          environment-name: anaconda-test-env-py-${{ matrix.python-version }}
+          create-args: >-
+            pytest
+            python=${{ matrix.python-version }}
+            setuptools-scm
 
-    - name: Install our package and its requirements
-      run: |
-        set -vxeuo pipefail
-        pip install -e .[dev]
+      - name: Install our package and its requirements
+        run: |
+          set -vxeuo pipefail
+          pip install -e .[dev]
 
-    - name: Diagnostic
-      run: |
-        micromamba info
-        micromamba list
-        conda config --show-sources
-        conda config --show
-        micromamba env list
-        printenv | sort
+      - name: Diagnostic
+        run: |
+          micromamba info
+          micromamba list
+          conda config --show-sources
+          conda config --show
+          micromamba env list
+          printenv | sort
 
-    - name: Run tests with pytest & coverage
-      shell: bash -l {0}
-      run: |
-        set -vxeuo pipefail
-        coverage run --concurrency=thread --parallel-mode -m pytest -vvv .
-        coverage combine
-        coverage report --precision 3
+      - name: Run tests with pytest & coverage
+        shell: bash -l {0}
+        run: |
+          set -vxeuo pipefail
+          coverage run --concurrency=thread --parallel-mode -m pytest -vvv .
+          coverage combine
+          coverage report --precision 3
 
-    - name: Force Install coveralls by pip
-      shell: bash -l {0}
-      run: |
-        set -vxeuo pipefail
-        python -m pip install --force-reinstall coveralls
+      - name: Force Install coveralls by pip
+        shell: bash -l {0}
+        run: |
+          set -vxeuo pipefail
+          python -m pip install --force-reinstall coveralls
 
-    - name: Upload to coveralls
-      # https://github.com/TheKevJames/coveralls-python
-      shell: bash -l {0}
-      run: |
-        set -vxeuo pipefail
-        micromamba list cover
-        which coveralls
-        coveralls debug
-        coveralls --service=github
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        COVERALLS_FLAG_NAME: ${{ matrix.test-name }}
-        COVERALLS_PARALLEL: true
+      - name: Upload to coveralls
+        # https://github.com/TheKevJames/coveralls-python
+        shell: bash -l {0}
+        run: |
+          set -vxeuo pipefail
+          micromamba list cover
+          which coveralls
+          coveralls debug
+          coveralls --service=github
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          COVERALLS_FLAG_NAME: ${{ matrix.test-name }}
+          COVERALLS_PARALLEL: true
 
   # https://coveralls-python.readthedocs.io/en/latest/usage/configuration.html#github-actions-support
   coveralls:

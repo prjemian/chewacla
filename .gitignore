@@ -1,44 +1,48 @@
+# Byte-compiled / optimized / DLL files
 *.py[cod]
+__pycache__/
 
-# developer local resources
-dev_*
-
-# Packages
+# Distribution / packaging
+dist/
+build/
 *.egg
-*.egg-info
-dist
-build
-eggs
-parts
-bin
-var
-sdist
-develop-eggs
+*.egg-info/
+sdist/
+eggs/
+parts/
+develop-eggs/
 .installed.cfg
-lib
-lib64
-__pycache__
+lib/
+lib64/
+bin/
+var/
+
+# Virtual environments / tooling
+.dev_*
+venv/
+.venv/
+
+# Local developer resources
+dev_*
 
 # Unit test / coverage reports
 .coverage
-.tox
+.tox/
 nosetests.xml
-htmlcov
+htmlcov/
+
+# Generated docs and Sphinx build
+docs/_build/
+docs/source/autoapi/
+
+# Jupyter
+.ipynb_checkpoints/
 
 # Translations
 *.mo
 
-# Microsoft VS Code editor
+# VS Code
 .vscode/
 
-# Sphinx documentation
-docs/_build/
-
-# notebook checkpoints
-.ipynb_checkpoints
-
-# generated docs
-docs/source/autoapi
-
-# setuptools_scm
+# setuptools_scm generated version file
 src/chewacla/_version.py

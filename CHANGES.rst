@@ -18,17 +18,16 @@
 Change History
 ==============
 
-Brief notes describing each release and what's new.
-
-Project `milestones <https://github.com/prjemian/chewacla/milestones>`_
-describe future plans.
+Project milestones
+------------------
+See `milestones <https://github.com/prjemian/chewacla/milestones>`_ for planned work.
 
 Production
 **********
-
 --none--
 
 Development
 ***********
-
-:0.0.1: 2025-09-05 - project started on GitHub
+0.0.1 (2025-09-05)
+------------------
+- Project started on GitHub

@@ -1,26 +1,39 @@
-"""chewacla"""
+"""chewacla package metadata and version loader."""
 
 __settings_orgName__ = "prjemian"
 __package_name__ = "chewacla"
 
 
 def _get_version():
-    """Make the version code testable."""
-    import importlib.metadata
-    import importlib.util
+    """Return package version.
 
-    text = importlib.metadata.version(__package_name__)
+    Priority:
+    1. If a generated _version.py exists (written by setuptools_scm), use it.
+    2. Try importlib.metadata.version().
+    3. Fall back to a safe default.
+    """
+    # 1) try generated version file (recommended)
+    try:
+        from . import _version  # type: ignore
+    except Exception:
+        _version = None
 
-    if importlib.util.find_spec("setuptools_scm") is not None:
-        """Preferred source of package version information."""
-        import setuptools_scm
+    if _version is not None:
+        ver = getattr(_version, "version", None)
+        if ver:
+            return ver
 
-        try:
-            text = setuptools_scm.get_version(root="..", relative_to=__file__)
-        except LookupError:
-            pass  # TODO: How to test this?
+    # 2) try importlib.metadata
+    try:
+        import importlib.metadata
 
-    return text
+        return importlib.metadata.version(__package_name__)
+
+    except Exception:
+        pass
+
+    # 3) fallback
+    return "0+unknown"
 
 
 __version__ = _get_version()
