@@ -1,0 +1,7 @@
+..
+    This file is in restructured text format.
+    It defines canonical representations of various terms.
+
+
+.. |hklpy2| replace:: **hklpy2**
+.. |solver| replace:: **Solver**

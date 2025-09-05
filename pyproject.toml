@@ -22,7 +22,7 @@ classifiers = [
   "Topic :: Scientific/Engineering",
 ]
 
-dependencies = ["hklpy2", "numpy", "scipy"]
+dependencies = ["hklpy2", "numpy", "pyresttable", "scipy"]
 
 [project.entry-points."hklpy2.solver"]
 chewacla = "chewacla.solver:ChewaclaSolver"
@@ -37,7 +37,6 @@ dev = [
   # "matplotlib-base",
   "mypy",
   "pre-commit",
-  "pyresttable",
   "pytest-cov",
   "pytest-mock",
   "pytest",
@@ -73,17 +72,14 @@ copyright = "2025, Pete R. Jemian"
 
 [tool.setuptools]
 packages = { find = { where = ["src"] } }
-package-dir = { ""= "src" }
+package-dir = { "" = "src" }
 
 [tool.setuptools.package-data]
 # include project metadata files at package root
 "chewacla" = ["../LICENSE", "../README.md", "../CHANGES.rst"]
 
 [tool.setuptools.exclude-package-data]
-"chewacla" = [
-  "tests/*",
-  "*/tests/*",
-]
+"chewacla" = ["tests/*", "*/tests/*"]
 
 [tool.setuptools_scm]
 write_to = "src/chewacla/_version.py"
@@ -124,7 +120,23 @@ show_missing = true
 [tool.flake8]
 max-line-length = 115
 exclude = [".git", "__pycache__", "build", "dist", "docs/source", "demo"]
-extend-ignore = ["D203","D212","D415","E203","E226","E402","E501","E741","F401","F403","F722","F811","W503","W504","W605"]
+extend-ignore = [
+  "D203",
+  "D212",
+  "D415",
+  "E203",
+  "E226",
+  "E402",
+  "E501",
+  "E741",
+  "F401",
+  "F403",
+  "F722",
+  "F811",
+  "W503",
+  "W504",
+  "W605",
+]
 
 [tool.isort]
 force_single_line = "True"
@@ -134,8 +146,16 @@ profile = "black"
 src_paths = ["src"]
 
 [tool.pytest.ini_options]
-addopts = ["--import-mode=importlib", "-ra", "--strict-config", "--strict-markers"]
-filterwarnings = ["ignore:Using or importing the ABCs from:DeprecationWarning", "ignore:.*invalid escape sequence.*:DeprecationWarning"]
+addopts = [
+  "--import-mode=importlib",
+  "-ra",
+  "--strict-config",
+  "--strict-markers",
+]
+filterwarnings = [
+  "ignore:Using or importing the ABCs from:DeprecationWarning",
+  "ignore:.*invalid escape sequence.*:DeprecationWarning",
+]
 log_cli_level = "INFO"
 minversion = "6"
 testpaths = ["chewacla/tests"]
@@ -145,17 +165,44 @@ xfail_strict = true
 line-length = 115
 indent-width = 4
 target-version = "py311"
-exclude = [".bzr",".direnv",".eggs",".git",".git-rewrite",".hg",".ipynb_checkpoints",".mypy_cache",".nox",".pants.d",".pyenv",".pytest_cache",".pytype",".ruff_cache",".svn",".tox",".venv",".vscode","__pypackages__","_build","buck-out","build","dist","node_modules","site-packages","venv"]
+exclude = [
+  ".bzr",
+  ".direnv",
+  ".eggs",
+  ".git",
+  ".git-rewrite",
+  ".hg",
+  ".ipynb_checkpoints",
+  ".mypy_cache",
+  ".nox",
+  ".pants.d",
+  ".pyenv",
+  ".pytest_cache",
+  ".pytype",
+  ".ruff_cache",
+  ".svn",
+  ".tox",
+  ".venv",
+  ".vscode",
+  "__pypackages__",
+  "_build",
+  "buck-out",
+  "build",
+  "dist",
+  "node_modules",
+  "site-packages",
+  "venv",
+]
 
 [tool.ruff.lint]
-select = ["E4","E7","E9","F"]
-ignore = ["E402","E741","F405"]
+select = ["E4", "E7", "E9", "F"]
+ignore = ["E402", "E741", "F405"]
 fixable = ["ALL"]
 dummy-variable-rgx = "^(_+|(_+[a-zA-Z0-9_]*[a-zA-Z0-9]+?))$"
 
 [tool.ruff.lint.per-file-ignores]
-"__init__.py" = ["F401","F403"]
-"**/{tests,docs,tools}/*" = ["E402"]
+"__init__.py" = ["F401", "F403"]
+"**/{tests,docs,tools,dev_*}/*" = ["E402"]
 
 [tool.ruff.format]
 quote-style = "double"

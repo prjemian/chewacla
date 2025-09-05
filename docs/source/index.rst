@@ -3,12 +3,11 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-chewacla documentation
-======================
+chewacla : *ad hoc* solver for hklpy2
+============================================
 
-Add your content using ``reStructuredText`` syntax. See the
-`reStructuredText <https://www.sphinx-doc.org/en/master/usage/restructuredtext/index.html>`_
-documentation for details.
+Define an *ad hoc* diffractometer geometry solver for
+[hklpy2](https://github.com/bluesky/hklpy2).
 
 
 .. toctree::

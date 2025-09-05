@@ -37,6 +37,7 @@ def lattice_B(
 
     Raises:
         ValueError: if the cell is degenerate (invalid angles/parameters).
+
     Reference: standard crystallography formulas (see e.g. International Tables).
     """
     if a <= 0 or b <= 0 or c <= 0:

@@ -53,8 +53,8 @@ exclude_patterns = []
 
 # AutoAPI configuration
 autoapi_type = "python"  # Specify the type of API to document
-autoapi_dirs = [f"../../src/{project}"]  # Path to the directory containing your code
-autoapi_excluded_paths = ["src/chewacla/tests/"]  # Exclude the tests directory
+autoapi_dirs = ["../../src"]  # Path to the directory containing the project
+autoapi_ignore = ["dev_*", "*tests*"]
 autoapi_options = [
     "members",  # Include members (functions, classes, etc.)
     "undoc-members",  # Include undocumented members
@@ -70,9 +70,9 @@ autoapi_options = [
 
 html_theme = "pydata_sphinx_theme"
 html_title = f"{project} {version}"
-html_static_path = ['_static']
+html_static_path = ["_static"]
 
 autodoc_mock_imports = """
-    h5py
+    hklpy2
     numpy
 """.split()

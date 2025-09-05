@@ -1,6 +1,9 @@
 """
 Solver for hklpy2.
 
+.. substitutions file is at the root of the docs
+.. include:: /substitutions.txt
+
 .. autosummary::
 
     ~ChewaclaSolver
@@ -9,6 +12,7 @@ Solver for hklpy2.
 from hklpy2 import SolverBase
 from hklpy2.blocks.lattice import Lattice
 from hklpy2.blocks.reflection import Reflection
+from pyRestTable import Table
 
 
 class ChewaclaSolver(SolverBase):
@@ -33,14 +37,13 @@ class ChewaclaSolver(SolverBase):
         r1: Reflection,
         r2: Reflection,
     ) -> list[list[float]]:
-        ...  # TODO
-        # return self.UB
+        self.UB = []  # TODO
+        return self.UB
 
     def forward(self, pseudos: dict) -> list[dict[str, float]]:
         """Compute list of solutions(reals) from pseudos (hkl -> [angles])."""
         # based on geometry and mode
-        # return [{}]
-        ...  # TODO
+        return [{}]  # TODO
 
     @classmethod
     def geometries(cls) -> list[str]:
@@ -50,40 +53,33 @@ class ChewaclaSolver(SolverBase):
         EXAMPLES::
 
             >>> from hklpy2 import get_solver
-            >>> Solver = get_solver("no_op")
-            >>> Solver.geometries()
-            []
-            >>> solver = Solver("TH TTH Q")
+            >>> solver = Solver("chewacla")
             >>> solver.geometries()
             []
         """
-        ...  # TODO
-        # return []
+        return []  # TODO
 
     def inverse(self, reals: dict) -> dict[str, float]:
         """Compute dict of pseudos from reals (angles -> hkl)."""
         ...  # TODO
-        # return {}
+        return {}
 
     @property
     def modes(self) -> list[str]:
         """List of the geometry operating modes."""
-        ...  # TODO
-        # return []
+        return []  # TODO
 
     @property
     def pseudo_axis_names(self) -> list[str]:
         """Ordered list of the pseudo axis names (such as h, k, l)."""
         # Do NOT sort.
-        # return []
-        ...  # TODO
+        return []  # TODO
 
     @property
     def real_axis_names(self) -> list[str]:
         """Ordered list of the real axis names (such as th, tth)."""
         # Do NOT sort.
-        # return []
-        ...  # TODO
+        return []  # TODO
 
     def refineLattice(self, reflections: list[Reflection]) -> Lattice:
         """Refine the lattice parameters from a list of reflections."""
@@ -92,3 +88,27 @@ class ChewaclaSolver(SolverBase):
     def removeAllReflections(self) -> None:
         """Remove all reflections."""
         ...  # TODO
+
+
+    @property
+    def summary(self) -> Table:
+        """
+        Table of this geometry (modes, axes).
+
+        .. seealso:: https://blueskyproject.io/hklpy2/diffractometers.html#available-solver-geometry-tables
+        """
+        table = Table()
+        table.labels = "mode pseudo(s) real(s) writable(s) extra(s)".split()
+        # TODO:
+        # sdict = self._summary_dict
+        # for mode_name, mode in sdict["modes"].items():
+        #     self.mode = mode_name
+        #     row = [
+        #         mode_name,
+        #         ", ".join(sdict["pseudos"]),
+        #         ", ".join(sdict["reals"]),
+        #         ", ".join(mode["reals"]),
+        #         ", ".join(mode["extras"]),
+        #     ]
+        #     table.addRow(row)
+        return table
