@@ -6,7 +6,7 @@ Describe diffraction vectors with a shorthand vocabulary.
     ~DirectionShorthand
 """
 
-from typing import Mapping
+from collections.abc import Mapping as _ABCMapping
 from typing import Sequence
 
 import numpy as np
@@ -15,8 +15,12 @@ from numpy.typing import NDArray
 DirectionVector = Sequence[float] | NDArray
 """Unit vector description of a direction."""
 
-DirectionMap = Mapping[str, DirectionVector | str]
-"""Ordered dictionary of DirectionVectors, keyed by rotational axis names."""
+DirectionMap = _ABCMapping[str, DirectionVector | str]
+"""
+Ordered dictionary of DirectionVectors, keyed by rotational axis names.
+
+runtime-safe alias (for isinstance checks use collections.abc.Mapping)
+"""
 
 x_hat: DirectionVector = np.array((1, 0, 0))
 y_hat: DirectionVector = np.array((0, 1, 0))
