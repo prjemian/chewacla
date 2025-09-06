@@ -13,13 +13,16 @@ from typing import Mapping
 from typing import Sequence
 
 from hklpy2 import SolverBase
-from hklpy2.blocks.lattice import Lattice
-from hklpy2.blocks.reflection import Reflection
-from hklpy2.misc import IDENTITY_MATRIX_3X3
+from hklpy2.backends.base import Lattice
+from hklpy2.backends.base import Reflection
+from hklpy2.backends.base import Sample
+from hklpy2.misc import IDENTITY_MATRIX_3X3, istype
 from pyRestTable import Table
 
+from chewacla.bl1967 import calcUB_BusingLevy
 from chewacla.shorthand import DirectionMap
 from chewacla.shorthand import DirectionVector
+from chewacla.lattice import lattice_B
 
 
 class ChewaclaSolver(SolverBase):
@@ -27,7 +30,7 @@ class ChewaclaSolver(SolverBase):
 
     # https://github.com/bluesky/hklpy2/blob/main/hklpy2/backends/base.py
 
-    from . import __version__
+    from chewacla import __version__
 
     name = "chewacla"
     """Name of this Solver."""
@@ -106,14 +109,17 @@ class ChewaclaSolver(SolverBase):
         r1: Reflection,
         r2: Reflection,
     ) -> list[list[float]]:
-        # self.UB = calcUB_BusingLevy(r1, r2, sample axes dict...)  # TODO
+        geom = self.geometry_structure
+        if "sample" in geom:
+            sample_axes = geom["sample"]
+            self.UB = calcUB_BusingLevy(r1, r2, self.B, sample_axes)
         return self.UB
 
     @property
     def extra_axis_names(self) -> list[str]:
         """Ordered list of any extra axis names (such as x, y, z)."""
         # Do NOT sort.
-        return []  # TODO
+        return []  # no extra axes
 
     def forward(self, pseudos: dict) -> Sequence[Mapping[str, float]]:
         """Compute list of solutions(reals) from pseudos (hkl -> [angles])."""
@@ -136,35 +142,78 @@ class ChewaclaSolver(SolverBase):
         """
         return list(cls._geometries.keys())
 
+    @property
+    def geometry_structure(self) -> Mapping:
+        """Return the current geometry dict."""
+        return self._geometries.get(self.geometry, {})
+
     def inverse(self, reals: dict) -> Mapping[str, float]:
         """Compute dict of pseudos from reals (angles -> hkl)."""
         ...  # TODO
         return {}
 
     @property
+    def lattice(self) -> Lattice:
+        """
+        Crystal lattice parameters.
+        """
+        return self._lattice
+
+    @lattice.setter
+    def lattice(self, value: Lattice):
+        if not istype(value, Lattice):
+            raise TypeError(f"Must supply {Lattice} object, received {value!r}")
+        self._lattice = value
+        self.B = lattice_B(**value)
+
+    @property
     def modes(self) -> Sequence[str]:
         """List of the geometry operating modes."""
-        return []  # TODO
+        return ["default"]
 
     @property
     def pseudo_axis_names(self) -> Sequence[str]:
         """Ordered list of the pseudo axis names (such as h, k, l)."""
         # Do NOT sort.
-        return []  # TODO
+        return "h k l".split()
 
     @property
     def real_axis_names(self) -> Sequence[str]:
         """Ordered list of the real axis names (such as th, tth)."""
-        # Do NOT sort.
-        return []  # TODO
+        geom = self.geometry_structure
+        if len(geom) == 0:
+            return []
+
+        names = list(geom["sample"])
+        for key in geom["detector"]:
+            if key not in names:
+                names.append(key)
+        return names
 
     def refineLattice(self, reflections: Sequence[Reflection]) -> Lattice:
         """Refine the lattice parameters from a list of reflections."""
-        ...  # TODO
+        raise NotImplementedError("Lattice parameter refinement not implemented.")
 
     def removeAllReflections(self) -> None:
         """Remove all reflections."""
         ...  # TODO
+
+    @property
+    def sample(self) -> object:
+        """
+        Crystalline sample.
+        """
+        return self._sample
+
+    @sample.setter
+    def sample(self, value: Sample):
+        if not istype(value, Sample):
+            raise TypeError(f"Must supply {Sample} object, received {value!r}")
+        self._sample = value
+        # TODO: structure of the Sample object is not well-defined
+        lattice = value.get("lattice")
+        if isinstance(lattice, Mapping):
+            self.lattice = lattice
 
     @property
     def summary(self) -> Table:

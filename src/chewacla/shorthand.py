@@ -12,7 +12,7 @@ from typing import Sequence
 import numpy as np
 from numpy.typing import NDArray
 
-DirectionVector = Sequence[float]
+DirectionVector = Sequence[float] | NDArray
 """Unit vector description of a direction."""
 
 DirectionMap = Mapping[str, DirectionVector | str]
