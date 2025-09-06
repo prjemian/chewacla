@@ -45,8 +45,12 @@ class _AHLattice:
     alpha: float  # degrees
     beta: float  # degrees
     gamma: float  # degrees
-    B: Optional[NDArray]
+    # TODO: B should update if any of these change
+    
+    _B: Optional[NDArray]
+    """Crystalline sample orientation matrix."""
     digits: int | None = None
+    """Display precision (number of digits), default is full precision."""
 
     def __init__(
         self,
@@ -115,6 +119,7 @@ class _AHLattice:
         }
 
     def __repr__(self) -> str:
+        """Nice text representation."""
         vals = self.to_dict(self.digits)
         body = ", ".join(f"{k}={v}" for k, v in vals.items())
         return f"{self.__class__.__name__}({body})"
@@ -134,6 +139,13 @@ class _AHReflection:
             Wavelength associated with this reflection (in same length units as the
             rest of the system, typically Angstroms).
     """
+
+    _pseudos: MutableMapping[str, float]
+    """Ordered dictionary of $hkl$ values."""
+    _reals: MutableMapping[str, float]
+    """Ordered dictionary of diffractometer rotation axis values."""
+    _wavelength: float
+    """Wavelength (angstrom) of the incident radiation."""
 
     def __init__(
         self,
@@ -225,12 +237,14 @@ class _AHReflection:
 
     # --- representation and equality ----------------------------------------
     def __repr__(self) -> str:
+        """Nice text representation."""
         return (
             f"{self.__class__.__name__}("
             f"pseudos={self._pseudos!r}, reals={self._reals!r}, wavelength={self._wavelength!r})"
         )
 
     def __eq__(self, other: object) -> bool:
+        """Compare with 'other' reflection for equality."""
         if not isinstance(other, _AHReflection):
             return NotImplemented
         return (
@@ -289,12 +303,14 @@ class _AHReflectionList:
         return iter(self._items.items())
 
     def names(self) -> Iterator[str]:
+        """Just the names of the reflections."""
         return iter(self._items.keys())
 
     def values(self) -> Iterator[_AHReflection]:
         return iter(self._items.values())
 
     def __repr__(self) -> str:
+        """Nice text representation."""
         # use reprlib to avoid extremely long output
         r = reprlib.Repr()
         r.maxlist = 10
@@ -349,6 +365,9 @@ class Chewacla:
     UB: NDArray
     """Crystal orientation matrix"""
 
+    _ds: DirectionShorthand
+    """(internal) DirectionShorthand object"""
+
     # TODO: Apply consistent use of "unit vector" term throughout
 
     def __init__(
@@ -365,7 +384,7 @@ class Chewacla:
         self.detector_stage = detector_stage
         self.wavelength = 1.54 if wavelength is None else float(wavelength)
 
-        self.ds = DirectionShorthand(direction_map)
+        self._ds = DirectionShorthand(direction_map)
         self.lattice = (1, 1, 1, 90, 90, 90)
         self.reflections = []
         self.U = IDENTITY_MATRIX_3X3
@@ -384,12 +403,13 @@ class Chewacla:
 
     @property
     def detector_stage(self) -> DirectionMap:
+        """Describes the detector stage stack of rotations."""
         return self._detector_stage
 
     @detector_stage.setter
     def detector_stage(self, value: Any) -> None:
         """Accept mapping-like; minimal conversion here."""
-        self._detector_stage = self.expand_direction_map(self.ds, value)
+        self._detector_stage = self.expand_direction_map(self._ds, value)
 
     @property
     def incident_beam(self) -> DirectionVector:
@@ -451,12 +471,13 @@ class Chewacla:
 
     @property
     def sample_stage(self) -> DirectionMap:
+        """Describes the sample stage stack of rotations."""
         return self._sample_stage
 
     @sample_stage.setter
     def sample_stage(self, value: Any) -> None:
         """Accept mapping-like; minimal conversion here."""
-        self._sample_stage = self.expand_direction_map(self.ds, value)
+        self._sample_stage = self.expand_direction_map(self._ds, value)
 
     @property
     def wavelength(self) -> float:
