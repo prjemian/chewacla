@@ -2,8 +2,12 @@
 
 import numpy as np
 from hklpy2.misc import IDENTITY_MATRIX_3X3
-from chewacla.shorthand import x_hat, y_hat, z_hat
-from chewacla.utils import R_axis, is_colinear, matrix_from_2_vectors
+
+from chewacla.shorthand import x_hat
+from chewacla.shorthand import z_hat
+from chewacla.utils import R_axis
+from chewacla.utils import is_colinear
+from chewacla.utils import matrix_from_2_vectors
 
 rad = np.pi / 180.0
 deg = 1 / rad

@@ -16,13 +16,14 @@ from hklpy2 import SolverBase
 from hklpy2.backends.base import Lattice
 from hklpy2.backends.base import Reflection
 from hklpy2.backends.base import Sample
-from hklpy2.misc import IDENTITY_MATRIX_3X3, istype
+from hklpy2.misc import IDENTITY_MATRIX_3X3
+from hklpy2.misc import istype
 from pyRestTable import Table
 
 from chewacla.bl1967 import calcUB_BusingLevy
+from chewacla.lattice import lattice_B
 from chewacla.shorthand import DirectionMap
 from chewacla.shorthand import DirectionVector
-from chewacla.lattice import lattice_B
 
 
 class ChewaclaSolver(SolverBase):
