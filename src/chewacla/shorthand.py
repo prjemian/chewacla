@@ -10,10 +10,17 @@ from typing import Mapping
 from typing import Sequence
 
 import numpy as np
+from numpy.typing import NDArray
 
-x_hat = np.array((1, 0, 0))
-y_hat = np.array((0, 1, 0))
-z_hat = np.array((0, 0, 1))
+DirectionVector = Sequence[float]
+"""Unit vector description of a direction."""
+
+DirectionMap = Mapping[str, DirectionVector | str]
+"""Ordered dictionary of DirectionVectors, keyed by rotational axis names."""
+
+x_hat: DirectionVector = np.array((1, 0, 0))
+y_hat: DirectionVector = np.array((0, 1, 0))
+z_hat: DirectionVector = np.array((0, 0, 1))
 
 
 class DirectionShorthand:
@@ -32,7 +39,7 @@ class DirectionShorthand:
         [1 0 0]
     """
 
-    def __init__(self, vocabulary: Mapping[str, Sequence[int]] | None = None):
+    def __init__(self, vocabulary: DirectionMap | None = None):
         if vocabulary is None:
             vocabulary = {
                 "x": (1, 0, 0),
@@ -44,7 +51,7 @@ class DirectionShorthand:
             }
         self.vocabulary = vocabulary
 
-    def vector(self, symbol: str) -> np.ndarray:
+    def vector(self, symbol: str) -> NDArray:
         """
         Convert a symbol like 'x+' or '+x' to a numpy array (copy).
 
@@ -79,11 +86,11 @@ class DirectionShorthand:
         return vec if sign == "+" else -vec
 
     @property
-    def vocabulary(self) -> dict:
+    def vocabulary(self) -> DirectionMap:
         return self._vocabulary
 
     @vocabulary.setter
-    def vocabulary(self, value: Mapping[str, Sequence[int]]) -> None:
+    def vocabulary(self, value: DirectionMap) -> None:
         norm = {}
         for k, v in value.items():
             if not isinstance(k, str) or len(k) != 1:
@@ -95,5 +102,5 @@ class DirectionShorthand:
         self._vocabulary = norm
 
     def __repr__(self) -> str:
-        vocab_repr = ', '.join(f"{k}: {v}" for k, v in self.vocabulary.items())
+        vocab_repr = ", ".join(f"{k}: {v}" for k, v in self.vocabulary.items())
         return f"DirectionShorthand(vocabulary={{ {vocab_repr} }})"

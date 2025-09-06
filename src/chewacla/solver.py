@@ -9,11 +9,17 @@ Solver for hklpy2.
     ~ChewaclaSolver
 """
 
+from typing import Mapping
+from typing import Sequence
+
 from hklpy2 import SolverBase
 from hklpy2.blocks.lattice import Lattice
 from hklpy2.blocks.reflection import Reflection
 from hklpy2.misc import IDENTITY_MATRIX_3X3
 from pyRestTable import Table
+
+from chewacla.shorthand import DirectionMap
+from chewacla.shorthand import DirectionVector
 
 
 class ChewaclaSolver(SolverBase):
@@ -28,6 +34,68 @@ class ChewaclaSolver(SolverBase):
 
     version = __version__
     """Version of this Solver."""
+
+    _geometries: Mapping = {}
+
+    @classmethod
+    def addGeometry(
+        cls,
+        key: str,
+        incident: DirectionVector | str,
+        sample: DirectionMap,
+        detector: DirectionMap,
+    ) -> None:
+        """
+        Add/update a geometry named 'key'.
+
+        Add geometries before creating a diffractometer object.
+
+        PARAMETERS
+
+        key *str* :
+            Name of the geometry.  Should be a single word.
+        incident : DirectionVector | str
+            Direction of the incident beam.  Either an array of float with shape (3,)
+            or a shorthand (interpreted by :class:`chewacla.shorthand.DirectionShorthand`).
+        sample : dict[name, DirectionVector | str]
+            Describes the stack of rotational axes for the sample stage.
+            Keys are the names of the axes, values are the the rotation axis.
+            The order is significant, starting from the outermost rotation.
+        detector : dict[name, DirectionVector | str]
+            Describes the stack of rotational axes for the detector stage.
+            Keys are the names of the axes, values are the the rotation axis.
+            The order is significant, starting from the outermost rotation.
+
+        Axis names can be duplicated in the sample and detector, indicating they
+        share the same axis.
+
+        EXAMPLES::
+
+            >>> import hklpy2
+            >>> SolverClass = hklpy2.get_solver("chewacla")
+            >>> SolverClass.addGeometry(
+                "fourc",
+                incident="x+",
+                sample=dict(omega="z+", chi="x+", phi="z+"),
+                detector=dict(ttheta="z+"),
+            )
+            >>> SolverClass.addGeometry(
+                "mys2d2",
+                incident=(0, 0, 1),
+                sample=dict(omega="x-", chi="z+"),
+                detector=dict(delta="x-", gamma="z+"),
+            )
+            >>> SolverClass.geometries()
+            ["fourc", "mys2d2"]
+            >>> fourc = SolverClass("fourc")
+            >>> mys2d2 = SolverClass("mys2d2")
+
+        """
+        cls._geometries[key] = dict(
+            incident=incident,
+            sample=sample,
+            detector=detector,
+        )
 
     def addReflection(self, reflection: Reflection) -> None:
         """Add coordinates of a diffraction condition (a reflection)."""
@@ -47,48 +115,50 @@ class ChewaclaSolver(SolverBase):
         # Do NOT sort.
         return []  # TODO
 
-    def forward(self, pseudos: dict) -> list[dict[str, float]]:
+    def forward(self, pseudos: dict) -> Sequence[Mapping[str, float]]:
         """Compute list of solutions(reals) from pseudos (hkl -> [angles])."""
         # based on geometry and mode
         return [{}]  # TODO
 
     @classmethod
-    def geometries(cls) -> list[str]:
+    def geometries(cls) -> Sequence[str]:
         """
         Ordered list of the geometry names.
 
         EXAMPLES::
 
-            >>> from hklpy2 import get_solver
+            >>> import hklpy2
+            >>> SolverClass = hklpy2.get_solver("chewacla")
+            >>> SolverClass.addGeometry("example", ...)
             >>> solver = Solver("chewacla")
             >>> solver.geometries()
-            []
+            ["example"]
         """
-        return []  # TODO
+        return list(cls._geometries.keys())
 
-    def inverse(self, reals: dict) -> dict[str, float]:
+    def inverse(self, reals: dict) -> Mapping[str, float]:
         """Compute dict of pseudos from reals (angles -> hkl)."""
         ...  # TODO
         return {}
 
     @property
-    def modes(self) -> list[str]:
+    def modes(self) -> Sequence[str]:
         """List of the geometry operating modes."""
         return []  # TODO
 
     @property
-    def pseudo_axis_names(self) -> list[str]:
+    def pseudo_axis_names(self) -> Sequence[str]:
         """Ordered list of the pseudo axis names (such as h, k, l)."""
         # Do NOT sort.
         return []  # TODO
 
     @property
-    def real_axis_names(self) -> list[str]:
+    def real_axis_names(self) -> Sequence[str]:
         """Ordered list of the real axis names (such as th, tth)."""
         # Do NOT sort.
         return []  # TODO
 
-    def refineLattice(self, reflections: list[Reflection]) -> Lattice:
+    def refineLattice(self, reflections: Sequence[Reflection]) -> Lattice:
         """Refine the lattice parameters from a list of reflections."""
         ...  # TODO
 
