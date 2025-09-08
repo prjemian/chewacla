@@ -511,8 +511,6 @@ class Chewacla:
     _ds: DirectionShorthand
     """(internal) DirectionShorthand object"""
 
-    # TODO: Apply consistent use of "unit vector" term throughout
-
     def __init__(
         self,
         sample_stage: DirectionMapInput,
@@ -545,6 +543,46 @@ class Chewacla:
             f"detector_stage={self.raw_detector_stage!r}",
         ]
         return f"{self.__class__.__name__}({', '.join(body)})"
+
+    def addReflection(self, name: str, reflection: _AHReflection | Mapping[str, Any] | Sequence[Any]) -> None:
+        """Add a single reflection by name.
+
+        Parameters
+        - name: str, reflection name
+        - reflection: either an _AHReflection instance, or one of:
+            * (pseudos, reals)
+            * (pseudos, reals, wavelength)
+            * mapping with keys 'pseudos' and 'reals' and optional 'wavelength'
+
+        Constructs an _AHReflection when callers supply raw parameters.
+        """
+        if not isinstance(name, str):
+            raise TypeError("name must be a str")
+
+        # already a reflection object
+        if isinstance(reflection, _AHReflection):
+            refl = reflection
+        # mapping with explicit keys
+        elif isinstance(reflection, Mapping):
+            if "pseudos" in reflection and "reals" in reflection:
+                pseudos = reflection["pseudos"]
+                reals = reflection["reals"]
+                wavelength = float(reflection.get("wavelength", 1.0))
+                refl = _AHReflection(pseudos, reals, wavelength)
+            else:
+                raise TypeError("mapping reflection must contain 'pseudos' and 'reals' keys")
+        # tuple/list of params
+        elif isinstance(reflection, (tuple, list)) and len(reflection) in (2, 3):
+            pseudos = reflection[0]
+            reals = reflection[1]
+            wavelength = float(reflection[2]) if len(reflection) == 3 else 1.0
+            refl = _AHReflection(pseudos, reals, wavelength)
+        else:
+            raise TypeError(
+                "reflection must be an _AHReflection or (pseudos, reals[, wavelength]) or mapping with 'pseudos' and 'reals'"
+            )
+
+        self.reflections.set(name, refl)
 
     def calc_UB_BL67(self) -> np.ndarray:
         """Calculate the U & UB matrices from the given reflections."""

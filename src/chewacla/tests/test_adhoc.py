@@ -478,6 +478,25 @@ def test_Chewacla_calc_UB_BL67_requires_two_reflections():
     with pytest.raises(ValueError, match="requires exactly two reflections"):
         c.calc_UB_BL67()
 
+
+def test_Chewacla_addReflection_success_and_errors():
+    c = Chewacla({"a": "x+"}, {"d": "y+"})
+    r = _AHReflection({"h": 1}, {"phi": 1.0})
+
+    # add by (name, reflection)
+    c.addReflection("one", r)
+    assert "one" in c.reflections
+
+    # add by pair (new API: name + reflection)
+    c.addReflection("two", _AHReflection({"h": 2}, {"phi": 2.0}))
+    assert "two" in c.reflections
+
+    # invalid calls
+    with pytest.raises(TypeError):
+        c.addReflection(123)  # not a pair
+    with pytest.raises(TypeError):
+        c.addReflection("bad", object())  # not an _AHReflection
+
     # with one reflection
     c.reflections = {"one": _AHReflection({"h": 1}, {"phi": 1.0})}
     with pytest.raises(ValueError, match="requires exactly two reflections"):
