@@ -1,39 +1,98 @@
 """
 Chewacla: *ad hoc* diffractometer with stages as described by a dictionary.
 
-.. autosummary::
+..
+    .. autosummary::
 
-    ~Chewacla
-    ~expand_direction_map
+        ~Chewacla
+        ~expand_direction_map
 
-.. rubric:: Internal use only
-.. autosummary::
+    .. rubric:: Internal use only
+    .. autosummary::
 
-    ~_AHLattice
-    ~_AHReflection
-    ~_AHReflectionList
+        ~_AHLattice
+        ~_AHReflection
+        ~_AHReflectionList
 """
 
 import numbers
 import reprlib
-from collections.abc import Mapping as _ABCMapping
+from collections.abc import Mapping
+from collections.abc import Sequence
+from functools import wraps
 from typing import Any
 from typing import Dict
 from typing import Iterator
-from typing import Mapping
-from typing import MutableMapping
 from typing import Optional
 from typing import Tuple
 
 import numpy as np
 from hklpy2.misc import IDENTITY_MATRIX_3X3
-from numpy.typing import NDArray
 
-import chewacla.lattice
 from chewacla.shorthand import DirectionMap
+from chewacla.shorthand import DirectionMapInput
 from chewacla.shorthand import DirectionShorthand
 from chewacla.shorthand import DirectionVector
-from chewacla.shorthand import x_hat
+from chewacla.shorthand import DirectionVectorInput
+from chewacla.shorthand import unit_vector
+
+TAU = 2 * np.pi
+"""Prefactor, either 1 or 2 pi"""
+
+
+# --- validators and decorator -------------------------------------------------
+def _validate_length(name: str, val: float) -> None:
+    if val <= 0:
+        # keep the original message used in tests
+        raise ValueError("lattice lengths a, b, c must be positive")
+
+
+def _validate_angle(name: str, val: float) -> None:
+    if not (0.0 < val < 180.0):
+        raise ValueError(f"{name} must be in (0, 180) degrees")
+
+
+def _validated_setter(attr_name: str, validator):
+    """Decorator for property setters: convert to float, validate, set internal
+    _<attr_name>, and invalidate cached self._B.
+    """
+
+    def decorator(func):
+        @wraps(func)
+        def wrapper(self, value):
+            val = float(value)
+            validator(attr_name, val)
+            setattr(self, f"_{attr_name}", val)
+            # invalidate cached B
+            self._B = None
+
+        return wrapper
+
+    return decorator
+
+
+def expand_direction_map(
+    ds: DirectionShorthand,
+    stage_map: DirectionMapInput,
+) -> Dict[str, np.ndarray]:
+    """Return dict: {axis name: direction} where shorthand is direction, a unit vector.
+
+    Example::
+
+        ds = DirectionShorthand()
+        rotation_axes = {"a": "x+", "b": "y-", "c": "z+"}
+        expanded = expand_direction_map(ds, rotation_axes)
+        # expanded -> {"a": array([1.,0.,0.]), "b": array([0.,-1.,0.]), ...}
+    """
+    out: Dict[str, np.ndarray] = {}
+    for axis_name, code in stage_map.items():
+        if not isinstance(axis_name, str):
+            raise TypeError("stage_map keys must be str")
+        if not isinstance(code, str):
+            raise TypeError("stage_map values must be str")
+        vec = ds.vector(code)
+        out[axis_name] = np.asarray(vec, dtype=float)
+    return out
 
 
 class _AHLattice:
@@ -45,9 +104,9 @@ class _AHLattice:
     alpha: float  # degrees
     beta: float  # degrees
     gamma: float  # degrees
-    # TODO: B should update if any of these change
-    
-    _B: Optional[NDArray]
+    # TODO: B should update if any lattice parameters change
+
+    _B: Optional[np.ndarray]
     """Crystalline sample orientation matrix."""
     digits: int | None = None
     """Display precision (number of digits), default is full precision."""
@@ -64,39 +123,150 @@ class _AHLattice:
         self._B = None  # initial default is unset
 
         # convert and validate lengths
-        self.a = float(a)
-        self.b = float(b)
-        self.c = float(c)
-        if self.a <= 0 or self.b <= 0 or self.c <= 0:
-            raise ValueError("lattice lengths a, b, c must be positive")
+        # use property setters (which validate and invalidate _B)
+        self.a = a
+        self.b = b
+        self.c = c
 
         # convert and validate angles (degrees)
-        self.alpha = float(alpha)
-        self.beta = float(beta)
-        self.gamma = float(gamma)
-        for name, val in (
-            ("alpha", self.alpha),
-            ("beta", self.beta),
-            ("gamma", self.gamma),
-        ):
-            if not (0.0 < val < 180.0):
-                raise ValueError(f"{name} must be in (0, 180) degrees")
+        self.alpha = alpha
+        self.beta = beta
+        self.gamma = gamma
+
+    # --- lattice parameter properties ---------------------------------
+    @property
+    def a(self) -> float:
+        return self._a
+
+    @a.setter
+    @_validated_setter("a", _validate_length)
+    def a(self, value: numbers.Real) -> None:
+        # validation and setting handled by decorator
+        pass
+
+    @property
+    def b(self) -> float:
+        return self._b
+
+    @b.setter
+    @_validated_setter("b", _validate_length)
+    def b(self, value: numbers.Real) -> None:
+        # validation and setting handled by decorator
+        pass
+
+    @property
+    def c(self) -> float:
+        return self._c
+
+    @c.setter
+    @_validated_setter("c", _validate_length)
+    def c(self, value: numbers.Real) -> None:
+        # validation and setting handled by decorator
+        pass
+
+    @property
+    def alpha(self) -> float:
+        return self._alpha
+
+    @alpha.setter
+    @_validated_setter("alpha", _validate_angle)
+    def alpha(self, value: numbers.Real) -> None:
+        # validation and setting handled by decorator
+        pass
+
+    @property
+    def beta(self) -> float:
+        return self._beta
+
+    @beta.setter
+    @_validated_setter("beta", _validate_angle)
+    def beta(self, value: numbers.Real) -> None:
+        # validation and setting handled by decorator
+        pass
+
+    @property
+    def gamma(self) -> float:
+        return self._gamma
+
+    @gamma.setter
+    @_validated_setter("gamma", _validate_angle)
+    def gamma(self, value: numbers.Real) -> None:
+        # validation and setting handled by decorator
+        pass
 
     @property
     def B(self) -> np.ndarray:
-        """Return a copy of the lattice B matrix (3x3 ndarray)."""
+        """Return the lattice B matrix (3x3 ndarray) [per BL67].
+
+        * BL67: Busing&Levy Acta Cyst. 22, 457 (1967)
+        * https://repo.or.cz/hkl.git/blob/HEAD:/hkl/hkl-lattice.c
+
+        Compute the reciprocal-lattice B matrix from unit-cell parameters.
+        This matrix depends only on the crystal cell parameters.
+
+        Input Units:
+
+        * angles alpha, beta, gamma are given in degrees
+        * a, b, c are in the same units as the wavelength
+
+        Returns:
+            B: (3,3) numpy.ndarray (float64)
+
+        Raises:
+            ValueError: if the cell is degenerate (invalid angles/parameters).
+
+        Note:
+            This implementation uses the Busing & Levy convention and includes the
+            factor 2π (TAU) so that G = B @ h has units of Å⁻¹.
+        """
         if self._B is None:
-            self._B = np.asarray(
-                chewacla.lattice.lattice_B(
-                    self.a,
-                    self.b,
-                    self.c,
-                    self.alpha,
-                    self.beta,
-                    self.gamma,
-                ),
-                dtype=float,
+            # compute B from lattice parameters
+            if self.a <= 0 or self.b <= 0 or self.c <= 0:
+                raise ValueError("a,b,c must be > 0")
+
+            # convert degrees -> radians once
+            rad = np.pi / 180.0
+            alpha_r = self.alpha * rad
+            beta_r = self.beta * rad
+            gamma_r = self.gamma * rad
+
+            ca = np.cos(alpha_r)
+            cb = np.cos(beta_r)
+            cg = np.cos(gamma_r)
+            sa = np.sin(alpha_r)
+            sb = np.sin(beta_r)
+            sg = np.sin(gamma_r)
+
+            # underflow
+            tol = 10 ** (-(self.digits if self.digits is not None else 12))
+
+            # metric determinant factor
+            D_val = 1.0 - ca * ca - cb * cb - cg * cg + 2.0 * ca * cb * cg
+            if D_val <= tol:
+                raise ValueError(f"Invalid unit cell (D <= {tol}): D={D_val}")
+            inv_sqrtD = 1.0 / np.sqrt(D_val)
+
+            # guard against near-zero sines (angles near 0 or 180 deg)
+            if (abs(sg) < tol) or (abs(sb) < tol) or (abs(sa) < tol):
+                raise ValueError("Unit cell angles produce near-zero sine terms; degenerate cell")
+
+            # precompute scaled denominators
+            inv_a = inv_sqrtD / self.a
+            inv_b = inv_sqrtD / self.b
+            inv_c = inv_sqrtD / self.c
+
+            # Canonical upper-triangular B matrix giving reciprocal vectors in Cartesian (Å^-1)
+            # following Busing & Levy conventions with 2π factor (TAU)
+            B = TAU * np.array(
+                [
+                    [inv_a, -cg * inv_a / sg, (cb * cg - ca) * inv_a / (sg * sb)],
+                    [0.0, inv_b / sg, (ca * cg - cb) * inv_b / (sg * sb)],
+                    [0.0, 0.0, sa * inv_c / (sb * sg)],
+                ],
+                dtype=np.float64,
             )
+
+            self._B = B
         return self._B.copy()
 
     def to_dict(self, digits: Optional[int] = None) -> Dict[str, float]:
@@ -126,37 +296,25 @@ class _AHLattice:
 
 
 class _AHReflection:
-    """Orienting reflection used only by the AdHocDiffractometer.
+    """Orienting reflection used only by the AdHocDiffractometer."""
 
-    ..
-        Attributes
-        ----------
-        _pseudos
-            Mapping of pseudo-axis names to their values (units depend on usage).
-        _reals
-            Mapping of real-axis names to their values (units depend on usage).
-        _wavelength
-            Wavelength associated with this reflection (in same length units as the
-            rest of the system, typically Angstroms).
-    """
-
-    _pseudos: MutableMapping[str, float]
-    """Ordered dictionary of $hkl$ values."""
-    _reals: MutableMapping[str, float]
-    """Ordered dictionary of diffractometer rotation axis values."""
+    _pseudos: Dict[str, float]
+    """(internal) dict of pseudo-axis names to float values (e.g., h,k,l)."""
+    _reals: Dict[str, float]
+    """(internal) dict of real-axis names to float values (diffractometer angles)."""
     _wavelength: float
-    """Wavelength (angstrom) of the incident radiation."""
+    """(internal) Wavelength associated with this reflection (in length units, typically Å)."""
 
     def __init__(
         self,
-        pseudos: Optional[Mapping[str, float]] = None,
-        reals: Optional[Mapping[str, float]] = None,
+        pseudos: Mapping[str, float],
+        reals: Mapping[str, float],
         wavelength: float = 1.0,
     ) -> None:
-        # store internal copies (mutable) to avoid external modification surprises
-        self._pseudos: MutableMapping[str, float] = dict(pseudos or {})
-        self._reals: MutableMapping[str, float] = dict(reals or {})
-        self._wavelength: float = float(wavelength)
+        # store internal copies (mutable dict) to avoid external modification surprises
+        self.pseudos = dict(pseudos)
+        self.reals = dict(reals)
+        self.wavelength = float(wavelength)
 
     # --- wavelength property -------------------------------------------------
     @property
@@ -179,10 +337,9 @@ class _AHReflection:
 
     @pseudos.setter
     def pseudos(self, value: Mapping[str, float]) -> None:
-        # use collections.abc.Mapping for runtime isinstance checks
-        if not isinstance(value, _ABCMapping):
+        if not isinstance(value, Mapping):
             raise TypeError("pseudos must be a Mapping[str, numeric]")
-        new: MutableMapping[str, float] = {}
+        new: Dict[str, float] = {}
         for k, v in value.items():
             if not isinstance(k, str):
                 raise TypeError("pseudos keys must be strings")
@@ -211,10 +368,9 @@ class _AHReflection:
 
     @reals.setter
     def reals(self, value: Mapping[str, float]) -> None:
-        # use collections.abc.Mapping for runtime isinstance checks
-        if not isinstance(value, _ABCMapping):
+        if not isinstance(value, Mapping):
             raise TypeError("reals must be a Mapping[str, numeric]")
-        new: MutableMapping[str, float] = {}
+        new: Dict[str, float] = {}
         for k, v in value.items():
             if not isinstance(k, str):
                 raise TypeError("reals keys must be strings")
@@ -237,25 +393,37 @@ class _AHReflection:
 
     # --- representation and equality ----------------------------------------
     def __repr__(self) -> str:
-        """Nice text representation."""
-        return (
-            f"{self.__class__.__name__}("
-            f"pseudos={self._pseudos!r}, reals={self._reals!r}, wavelength={self._wavelength!r})"
-        )
+        """Nice, truncated text representation for long dicts."""
+        r = reprlib.Repr()
+        r.maxlist = 10
+        pseudos_r = r.repr(self._pseudos)
+        reals_r = r.repr(self._reals)
+        return f"{self.__class__.__name__}(pseudos={pseudos_r}, reals={reals_r}, wavelength={self._wavelength!r})"
 
     def __eq__(self, other: object) -> bool:
-        """Compare with 'other' reflection for equality."""
+        """Compare with 'other' reflection for equality with numeric tolerance."""
         if not isinstance(other, _AHReflection):
             return NotImplemented
-        return (
-            self._pseudos == other._pseudos
-            and self._reals == other._reals
-            and np.isclose(self._wavelength, other._wavelength)
-        )
+
+        # compare keys
+        if set(self._pseudos.keys()) != set(other._pseudos.keys()):
+            return False
+        if set(self._reals.keys()) != set(other._reals.keys()):
+            return False
+
+        # compare values with tolerance
+        for k in self._pseudos:
+            if not np.isclose(self._pseudos[k], other._pseudos[k]):
+                return False
+        for k in self._reals:
+            if not np.isclose(self._reals[k], other._reals[k]):
+                return False
+
+        return bool(np.isclose(self._wavelength, other._wavelength))
 
 
 class _AHReflectionList:
-    """Manage a mapping of name -> _AHReflection.
+    """Manage orienting reflections as named _AHReflection objects.
 
     Behaviors:
     - Stores reflections in an internal dict.
@@ -263,9 +431,9 @@ class _AHReflectionList:
     - Provides a concise, readable repr that truncates long contents.
     """
 
-    def __init__(self, initial: Optional[_ABCMapping[str, _AHReflection]] = None) -> None:
+    def __init__(self, initial: Optional[Mapping[str, _AHReflection]] = None) -> None:
         if initial is None:
-            self._items: MutableMapping[str, _AHReflection] = {}
+            self._items: Dict[str, _AHReflection] = {}
         else:
             # copy to prevent external mutation
             self._items = dict(initial)
@@ -311,36 +479,11 @@ class _AHReflectionList:
 
     def __repr__(self) -> str:
         """Nice text representation."""
-        # use reprlib to avoid extremely long output
         r = reprlib.Repr()
         r.maxlist = 10
         inner = ", ".join(f"{k!r}: {v!r}" for k, v in list(self._items.items())[:10])
         more = "" if len(self._items) <= 10 else f", ... (+{len(self._items) - 10} more)"
         return f"{self.__class__.__name__}({{{inner}{more}}})"
-
-
-def expand_direction_map(
-    ds: DirectionShorthand,
-    stage_map: Mapping[str, str],
-) -> Dict[str, np.ndarray]:
-    """Return dict: {axis name: direction} where shorthand is direction is unit vector.
-
-    Example::
-
-        ds = DirectionShorthand()
-        rotation_axes = {"a": "x+", "b": "y-", "c": "z+"}
-        expanded = expand_direction_map(ds, rotation_axes)
-        # expanded -> {"a": array([1.,0.,0.]), "b": array([0.,-1.,0.]), ...}
-    """
-    out: Dict[str, np.ndarray] = {}
-    for axis_name, code in stage_map.items():
-        if not isinstance(axis_name, str):
-            raise TypeError("stage_map keys must be str")
-        if not isinstance(code, str):
-            raise TypeError("stage_map values must be str")
-        vec = ds.vector(code)
-        out[axis_name] = np.asarray(vec, dtype=float)
-    return out
 
 
 class Chewacla:
@@ -360,9 +503,9 @@ class Chewacla:
     """Wavelength of incident beam (angstroms)"""
     _reflections: _AHReflectionList
     """Orienting reflections to be used in computation of UB matrix."""
-    U: NDArray
+    U: np.ndarray
     """Goniometer orientation matrix"""
-    UB: NDArray
+    UB: np.ndarray
     """Crystal orientation matrix"""
 
     _ds: DirectionShorthand
@@ -372,25 +515,38 @@ class Chewacla:
 
     def __init__(
         self,
-        sample_stage: Any,
-        detector_stage: Any,
+        sample_stage: DirectionMapInput,
+        detector_stage: DirectionMapInput,
         wavelength: Optional[float] = None,
-        incident_beam: Optional[DirectionVector] = None,
-        direction_map: DirectionMap = None,
+        incident_beam: Optional[DirectionVectorInput] = None,
+        direction_map: Optional[DirectionMapInput] = None,
     ) -> None:
-        # +x unit vector  # TODO: use "+x" literal
-        self.incident_beam = x_hat if incident_beam is None else incident_beam
+        self._ds = DirectionShorthand(direction_map)
+
+        self.raw_incident_beam = None
+        self.raw_sample_stage = None
+        self.raw_detector_stage = None
+
+        self.incident_beam = "+x" if incident_beam is None else incident_beam
         self.sample_stage = sample_stage
         self.detector_stage = detector_stage
         self.wavelength = 1.54 if wavelength is None else float(wavelength)
 
-        self._ds = DirectionShorthand(direction_map)
         self.lattice = (1, 1, 1, 90, 90, 90)
-        self.reflections = []
+        self.reflections = _AHReflectionList()
         self.U = IDENTITY_MATRIX_3X3
         self.UB = IDENTITY_MATRIX_3X3
 
-    def calc_UB_BL67(self) -> NDArray:
+    def __repr__(self) -> str:
+        """Nice text representation."""
+        body = [
+            f"incident_beam={self.raw_incident_beam!r}",
+            f"sample_stage={self.raw_sample_stage!r}",
+            f"detector_stage={self.raw_detector_stage!r}",
+        ]
+        return f"{self.__class__.__name__}({', '.join(body)})"
+
+    def calc_UB_BL67(self) -> np.ndarray:
         """Calculate the U & UB matrices from the given reflections."""
         if len(self.reflections) != 2:
             raise ValueError(
@@ -407,9 +563,10 @@ class Chewacla:
         return self._detector_stage
 
     @detector_stage.setter
-    def detector_stage(self, value: Any) -> None:
+    def detector_stage(self, value: DirectionMapInput) -> None:
         """Accept mapping-like; minimal conversion here."""
-        self._detector_stage = self.expand_direction_map(self._ds, value)
+        self.raw_detector_stage = value
+        self._detector_stage = expand_direction_map(self._ds, value)
 
     @property
     def incident_beam(self) -> DirectionVector:
@@ -417,15 +574,16 @@ class Chewacla:
         return self._incident_beam
 
     @incident_beam.setter
-    def incident_beam(self, value: Any) -> None:
-        """Accept DirectionVector or array-like of shape (3,)."""
-        if isinstance(value, DirectionVector):
+    def incident_beam(self, raw: DirectionVectorInput) -> None:
+        """Define the direction of the incident beam."""
+        value = raw
+        self.raw_incident_beam = raw
+        if isinstance(value, str):
+            value = self._ds.vector(value)
+        if isinstance(value, (Sequence | np.ndarray)):
             self._incident_beam = value
             return
-        arr = np.asarray(value, dtype=float)
-        if arr.shape != (3,):
-            raise ValueError("incident_beam must be of shape (3,)")
-        self._incident_beam = DirectionVector(arr)  # type: ignore[arg-type]
+        self._incident_beam = unit_vector(value)
 
     @property
     def lattice(self) -> _AHLattice:
@@ -475,9 +633,10 @@ class Chewacla:
         return self._sample_stage
 
     @sample_stage.setter
-    def sample_stage(self, value: Any) -> None:
+    def sample_stage(self, value: DirectionMapInput) -> None:
         """Accept mapping-like; minimal conversion here."""
-        self._sample_stage = self.expand_direction_map(self._ds, value)
+        self.raw_sample_stage = value
+        self._sample_stage = expand_direction_map(self._ds, value)
 
     @property
     def wavelength(self) -> float:

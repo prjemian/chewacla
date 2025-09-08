@@ -4,6 +4,10 @@ pushd %~dp0
 
 REM Command file for Sphinx documentation
 
+:: advanced diagnostics
+:: enable verbose Sphinx output and keep build directory
+:: set SPHINXOPTS=-vv --keep-going
+
 if "%SPHINXBUILD%" == "" (
 	set SPHINXBUILD=sphinx-build
 )

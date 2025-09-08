@@ -4,27 +4,67 @@ Describe diffraction vectors with a shorthand vocabulary.
 .. autosummary::
 
     ~DirectionShorthand
+    ~unit_vector
 """
 
-from collections.abc import Mapping as _ABCMapping
-from typing import Sequence
+from collections.abc import Mapping
+from collections.abc import Sequence
+from typing import Dict
+from typing import Optional
+from typing import Union
 
 import numpy as np
 from numpy.typing import NDArray
 
-DirectionVector = Sequence[float] | NDArray
+DirectionVector = NDArray[np.float64]  # type-only alias
 """Unit vector description of a direction."""
 
-DirectionMap = _ABCMapping[str, DirectionVector | str]
-"""
-Ordered dictionary of DirectionVectors, keyed by rotational axis names.
+DirectionVectorInput = Union[DirectionVector, Sequence[float], str]
+"""Allowed variations for user input."""
 
-runtime-safe alias (for isinstance checks use collections.abc.Mapping)
-"""
+DirectionMap = Dict[str, DirectionVector]  # type-only alias
+"""Ordered dictionary of DirectionVectors, keyed by rotational axis names."""
 
-x_hat: DirectionVector = np.array((1, 0, 0))
-y_hat: DirectionVector = np.array((0, 1, 0))
-z_hat: DirectionVector = np.array((0, 0, 1))
+DirectionMapInput = Dict[str, DirectionVectorInput]  # type-only alias
+"""Allowed variations for user input."""
+
+x_hat: DirectionVector = np.array((1, 0, 0), dtype=float)
+r"""Basis vector, $\hat{x}$"""
+
+y_hat: DirectionVector = np.array((0, 1, 0), dtype=float)
+r"""Basis vector, $\hat{y}$"""
+
+z_hat: DirectionVector = np.array((0, 0, 1), dtype=float)
+r"""Basis vector, $\hat{z}$"""
+
+
+def unit_vector(v: np.ndarray) -> np.ndarray:
+    """Return a unit vector from a length-3 ndarray.
+
+    Parameters
+    ----------
+    v : np.ndarray
+        Input array of shape (3,).
+
+    Returns
+    -------
+    np.ndarray
+        New array of shape (3,) with unit length.
+
+    Raises
+    ------
+    TypeError
+        If `v` is not an array-like of numeric type.
+    ValueError
+        If `v` does not have shape (3,) or has zero length.
+    """
+    arr = np.asarray(v, dtype=float)
+    if arr.shape != (3,):
+        raise ValueError("input must be a 1-D array of length 3")
+    norm = np.linalg.norm(arr)
+    if not np.isfinite(norm) or norm == 0.0:
+        raise ValueError("cannot normalize a zero or non-finite vector")
+    return arr / norm
 
 
 class DirectionShorthand:
@@ -43,7 +83,10 @@ class DirectionShorthand:
         [1 0 0]
     """
 
-    def __init__(self, vocabulary: DirectionMap | None = None):
+    def __init__(
+        self,
+        vocabulary: Optional[DirectionMap | Mapping[str, Sequence[float]]] | None = None,
+    ):
         if vocabulary is None:
             vocabulary = {
                 "x": (1, 0, 0),
@@ -55,7 +98,7 @@ class DirectionShorthand:
             }
         self.vocabulary = vocabulary
 
-    def vector(self, symbol: str) -> NDArray:
+    def vector(self, symbol: str) -> np.ndarray:
         """
         Convert a symbol like 'x+' or '+x' to a numpy array (copy).
 
@@ -70,23 +113,29 @@ class DirectionShorthand:
         if len(s) != 2:
             raise ValueError(f"Expected 2-character string like 'x+' or '+x'. Got: {symbol!r}")
 
-        # Determine which position is sign and which is letter without permuting input
-        if s[0] in "+-":
-            sign = s[0]
-            name = s[1]
-        elif s[1] in "+-":
-            name = s[0]
-            sign = s[1]
+        # now s is exactly two chars; identify sign and letter deterministically
+        if s[0] in "+-" and s[1].isalpha():
+            sign, name = s[0], s[1]
+        elif s[1] in "+-" and s[0].isalpha():
+            sign, name = s[1], s[0]
         else:
-            raise ValueError(f"Missing sign in symbol {symbol!r}; must include '+' or '-'")
+            raise ValueError(
+                f"Invalid symbol {symbol!r}; must be"
+                #
+                " sign and single letter in positions (±letter or letter±)"
+            )
 
         if not name.isalpha() or len(name) != 1:
             raise ValueError(f"Invalid axis character {name!r}; must be a single letter")
 
         if name not in self.vocabulary:
-            raise ValueError(f"Unknown axis {name!r}. Allowed: {sorted(self.vocabulary.keys())}")
+            raise ValueError(
+                f"Unknown axis {name!r}."
+                #
+                f" Allowed: {sorted(self.vocabulary.keys())}"
+            )
 
-        vec = self.vocabulary[name].astype(float).copy()
+        vec = np.asarray(self.vocabulary[name], dtype=float).copy()
         return vec if sign == "+" else -vec
 
     @property
@@ -107,4 +156,4 @@ class DirectionShorthand:
 
     def __repr__(self) -> str:
         vocab_repr = ", ".join(f"{k}: {v}" for k, v in self.vocabulary.items())
-        return f"DirectionShorthand(vocabulary={{ {vocab_repr} }})"
+        return f"{self.__class__.__name__}(vocabulary={{ {vocab_repr} }})"

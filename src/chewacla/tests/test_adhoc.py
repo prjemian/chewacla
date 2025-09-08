@@ -1,235 +1,484 @@
-"""Test the adhoc module."""
+"""
+Test the adhoc module.
 
-import math
+prompt> Write parametrized pytests
+        using a context manager
+        with parameter for pytest.raises(exception) or does_not_raise() for no exception
+        (from contextlib import nullcontext as does_not_raise)
+        when using pytest.raises(match=text), enclose with re.escape(text)
+        label all tests with the class name
+"""
+
+import re
+from contextlib import nullcontext as does_not_raise
 
 import numpy as np
 import pytest
 
+from chewacla.adhoc import Chewacla
 from chewacla.adhoc import _AHLattice
 from chewacla.adhoc import _AHReflection
 from chewacla.adhoc import _AHReflectionList
 from chewacla.adhoc import expand_direction_map
 from chewacla.shorthand import DirectionShorthand
 
-# ---------------------------
-# _AHLattice tests
-# ---------------------------
+# ------------ expand_direction_map --------------------
 
 
 @pytest.mark.parametrize(
-    "a,b,c,alpha,beta,gamma,raises",
+    "ds, stage_map, expected_output, expected_exception",
     [
-        (1, 1, 1, 90, 90, 90, None),
-        (2.5, 3.0, 4.1, 60, 70, 80, None),
-        (0, 1, 1, 90, 90, 90, ValueError),
-        (-1, 1, 1, 90, 90, 90, ValueError),
-        (1, 1, 1, 0, 90, 90, ValueError),  # invalid angle
-        (1, 1, 1, 90, 180, 90, ValueError),  # invalid angle
-    ],
-)
-def test_lattice_init_param(a, b, c, alpha, beta, gamma, raises):
-    if raises is not None:
-        with pytest.raises(raises):
-            _AHLattice(a, b, c, alpha, beta, gamma)
-    else:
-        L = _AHLattice(a, b, c, alpha, beta, gamma)
-        assert isinstance(L.a, float)
-        assert isinstance(L.alpha, float)
-
-
-def test_lattice_B_cached_and_copy(monkeypatch):
-    L = _AHLattice(3, 4, 5, 90, 90, 90)
-    # Ensure chewacla.lattice.lattice_B is called and value returned used
-    called = {}
-
-    def fake_lattice_B(a, b, c, alpha, beta, gamma):
-        called["args"] = (a, b, c, alpha, beta, gamma)
-        return np.eye(3) * 2.0
-
-    monkeypatch.setattr("chewacla.lattice.lattice_B", fake_lattice_B)
-    B1 = L.B
-    assert "args" in called
-    # B returns a copy so modifying result should not change internal cache
-    B1[0, 0] = 99.0
-    B2 = L.B
-    assert B2[0, 0] != 99.0
-    assert isinstance(B2, np.ndarray)
-    assert B2.shape == (3, 3)
-
-
-@pytest.mark.parametrize(
-    "digits,expected_keys",
-    [(None, {"a", "b", "c", "alpha", "beta", "gamma"}), (3, {"a", "b", "c", "alpha", "beta", "gamma"})],
-)
-def test_lattice_to_dict_rounding(digits, expected_keys):
-    L = _AHLattice(1.23456, 2.34567, 3.45678, 10.12345, 20.23456, 30.34567)
-    d = L.to_dict(digits=digits)
-    assert set(d.keys()) == expected_keys
-    for k in expected_keys:
-        assert isinstance(d[k], float)
-    if isinstance(digits, int):
-        # string of rounded decimal places by comparing repr formatted length
-        for v in d.values():
-            # at most digits decimals when converted to string
-            s = f"{v:.{digits}f}"
-            assert "." in s
-
-
-# ---------------------------
-# _AHReflection tests
-# ---------------------------
-
-
-@pytest.mark.parametrize(
-    "pseudos,reals,wavelength,expect_error",
-    [
-        ({"h": 1, "k": 2, "l": 3}, {"x": 0.1, "y": 0.2}, 1.0, None),
-        (None, None, 0.5, None),
-    ],
-)
-def test_reflection_init_and_props(pseudos, reals, wavelength, expect_error):
-    if expect_error:
-        with pytest.raises(expect_error):
-            _AHReflection(pseudos=pseudos, reals=reals, wavelength=wavelength)
-        return
-    r = _AHReflection(pseudos=pseudos, reals=reals, wavelength=wavelength)
-    assert math.isclose(r.wavelength, float(wavelength), rel_tol=1e-12)
-    # verify returned views are copies / valid types
-    pview = r.pseudos
-    rview = r.reals
-    assert isinstance(pview, dict)
-    assert isinstance(rview, dict)
-    # setting from property should validate types
-    r.pseudos = {"h": 5, "k": 6}
-    assert r.get_pseudo("h") == 5.0
-    r.reals = {"ax": 1.1}
-    assert r.get_real("ax") == 1.1
-
-
-@pytest.mark.parametrize("bad_value", [("not-a-mapping"), 123, [1, 2, 3]])
-def test_reflection_pseudos_setter_type_errors(bad_value):
-    r = _AHReflection()
-    with pytest.raises(TypeError):
-        r.pseudos = bad_value  # type: ignore[assignment]
-
-
-def test_reflection_wavelength_setter_validation():
-    r = _AHReflection()
-    with pytest.raises(ValueError):
-        r.wavelength = 0
-    with pytest.raises(ValueError):
-        r.wavelength = -1.0
-    r.wavelength = 2.0
-    assert r.wavelength == 2.0
-
-
-def test_reflection_equality_and_repr():
-    r1 = _AHReflection(pseudos={"h": 1}, reals={"x": 0.1}, wavelength=1.0)
-    r2 = _AHReflection(pseudos={"h": 1}, reals={"x": 0.1}, wavelength=1.0)
-    r3 = _AHReflection(pseudos={"h": 2}, reals={"x": 0.1}, wavelength=1.0)
-    assert r1 == r2
-    assert not (r1 == r3)
-    s = repr(r1)
-    assert "pseudos" in s and "reals" in s
-
-
-# ---------------------------
-# _AHReflectionList tests
-# ---------------------------
-
-
-@pytest.mark.parametrize("initial", [None, {}, {"a": _AHReflection({"h": 1}, {"x": 0.1}, 1.0)}])
-def test_reflection_list_init_and_len(initial):
-    lst = _AHReflectionList(initial=initial)
-    assert isinstance(len(lst), int)
-    if initial is None:
-        assert len(lst) == 0
-    else:
-        assert len(lst) == len(initial)
-
-
-def test_reflection_list_set_get_pop_clear_and_contains():
-    L = _AHReflectionList()
-    r = _AHReflection(pseudos={"h": 1}, reals={"x": 0.1})
-    L.set("one", r)
-    assert "one" in L
-    got = L.get("one")
-    assert got is r
-    popped = L.pop("one")
-    assert popped is r
-    L.set("a", r)
-    L.set("b", r)
-    assert len(L) == 2
-    L.clear()
-    assert len(L) == 0
-
-
-def test_reflection_list_iteration_and_repr_truncation():
-    items = {str(i): _AHReflection(pseudos={"h": i}, reals={"x": float(i)}) for i in range(12)}
-    L = _AHReflectionList(initial=items)
-    # iteration yields names
-    names = list(iter(L))
-    assert set(names) == set(items.keys())
-    # repr should contain truncated summary, not full 12 entries printed
-    s = repr(L)
-    assert "..." in s or "+2" in s or len(s) < 2000
-
-
-# ---------------------------
-# expand_direction_map tests
-# ---------------------------
-
-
-@pytest.mark.parametrize(
-    "vocab, stage_map, expected",
-    [
-        (None, {"a": "x+"}, {"a": np.array([1.0, 0.0, 0.0])}),
-        (None, {"a": "x+", "b": "y-"}, {"a": np.array([1.0, 0.0, 0.0]), "b": np.array([0.0, -1.0, 0.0])}),
-        (None, {"rot": "z+"}, {"rot": np.array([0.0, 0.0, 1.0])}),
+        # Valid input case
         (
-            {"p": (1, 0, 0), "q": (0, 1, 0)},
-            {"pname": "p+", "qname": "-q"},
-            {"pname": np.array([1.0, 0.0, 0.0]), "qname": np.array([0.0, -1.0, 0.0])},
+            DirectionShorthand(),
+            {"a": "x+", "b": "y-", "c": "z+"},
+            {"a": np.array([1.0, 0.0, 0.0]), "b": np.array([0.0, -1.0, 0.0]), "c": np.array([0.0, 0.0, 1.0])},
+            does_not_raise(),
+        ),
+        # Invalid key type in stage_map
+        (
+            DirectionShorthand(),
+            {1: "x+", "b": "y-"},  # Key is an integer
+            None,
+            pytest.raises(TypeError, match="stage_map keys must be str"),
+        ),
+        # Invalid value type in stage_map
+        (
+            DirectionShorthand(),
+            {"a": "x+", "b": 2},  # Value is an integer
+            None,
+            pytest.raises(TypeError, match="stage_map values must be str"),
+        ),
+        # Invalid shorthand code
+        (
+            DirectionShorthand(),
+            {"a": "invalid_code"},  # Invalid shorthand
+            None,
+            pytest.raises(
+                ValueError,
+                match=re.escape("Expected 2-character string like 'x+' or '+x'. Got: 'invalid_code'"),
+            ),
+        ),
+        # Mixed valid and invalid inputs
+        (
+            DirectionShorthand(),
+            {"a": "x+", "b": "invalid_code"},  # One valid and one invalid shorthand
+            None,
+            pytest.raises(
+                ValueError,
+                match=re.escape("Expected 2-character string like 'x+' or '+x'. Got: 'invalid_code'"),
+            ),
         ),
     ],
 )
-def test_expand_direction_map_returns_expected_vectors(vocab, stage_map, expected):
-    ds = DirectionShorthand(vocabulary=vocab) if vocab is not None else DirectionShorthand()
-    out = expand_direction_map(ds, stage_map)
-    assert set(out.keys()) == set(expected.keys())
-    for k, v in expected.items():
-        assert isinstance(out[k], np.ndarray)
-        assert out[k].shape == (3,)
-        assert np.allclose(out[k], v)
+def test_expand_direction_map(ds, stage_map, expected_output, expected_exception):
+    with expected_exception:
+        result = expand_direction_map(ds, stage_map)
+        if expected_output is not None:
+            # Use np.array_equal for comparing NumPy arrays
+            for key in expected_output:
+                assert np.array_equal(result[key], expected_output[key])
+
+
+# ------------ _AHLattice --------------------
 
 
 @pytest.mark.parametrize(
-    "vocab,bad_map",
+    "a, b, c, alpha, beta, gamma, expected_B, expected_exception",
     [
-        (None, {"a": 1}),  # non-str value
-        (None, {1: "x+"}),  # non-str key
-        ({"p": (1, 0, 0)}, {"p": 123}),  # invalid shorthand value for custom vocab
+        # Valid initialization
+        (5.0, 5.0, 5.0, 90.0, 90.0, 90.0, 2 * np.pi / 5.0 * np.eye(3), does_not_raise()),
+        # Invalid lengths
+        (
+            -1.0,
+            5.0,
+            5.0,
+            90.0,
+            90.0,
+            90.0,
+            None,
+            pytest.raises(ValueError, match=re.escape("lattice lengths a, b, c must be positive")),
+        ),
+        # Invalid angles
+        (
+            5.0,
+            5.0,
+            5.0,
+            0.0,
+            90.0,
+            90.0,
+            None,
+            pytest.raises(ValueError, match=re.escape("alpha must be in (0, 180) degrees")),
+        ),
+        (
+            5.0,
+            5.0,
+            5.0,
+            90.0,
+            180.0,
+            90.0,
+            None,
+            pytest.raises(ValueError, match=re.escape("beta must be in (0, 180) degrees")),
+        ),
+        (
+            5.0,
+            5.0,
+            5.0,
+            90.0,
+            90.0,
+            180.0,
+            None,
+            pytest.raises(ValueError, match=re.escape("gamma must be in (0, 180) degrees")),
+        ),
+        # Degenerate cell (invalid angles)
+        (
+            5.0,
+            5.0,
+            5.0,
+            0.0,
+            90.0,
+            90.0,
+            None,
+            pytest.raises(ValueError, match=re.escape("alpha must be in (0, 180) degrees")),
+        ),
+        (
+            5.0,
+            5.0,
+            5.0,
+            90.0,
+            90.0,
+            0.0,
+            None,
+            pytest.raises(ValueError, match=re.escape("gamma must be in (0, 180) degrees")),
+        ),
     ],
 )
-def test_expand_direction_map_raises_type_error_on_invalid_map(vocab, bad_map):
-    ds = DirectionShorthand(vocabulary=vocab) if vocab is not None else DirectionShorthand()
-    with pytest.raises(TypeError):
-        expand_direction_map(ds, bad_map)
+def test_ahlattice(a, b, c, alpha, beta, gamma, expected_B, expected_exception):
+    with expected_exception:
+        lattice = _AHLattice(a, b, c, alpha, beta, gamma)
+        if expected_B is not None:
+            B = lattice.B
+            assert B.shape == (3, 3)  # Check shape
+            assert np.allclose(B, expected_B)  # Check values
 
 
-@pytest.mark.parametrize("vocab", [None, {"p": (1, 0, 0)}])
-def test_expand_direction_map_raises_value_error_on_invalid_shorthand(vocab):
-    ds = DirectionShorthand(vocabulary=vocab) if vocab is not None else DirectionShorthand()
-    with pytest.raises(ValueError):
-        expand_direction_map(ds, {"a": ""})
+@pytest.mark.parametrize(
+    "a, b, c, alpha, beta, gamma, expected_dict",
+    [
+        (
+            5.0,
+            5.0,
+            5.0,
+            90.0,
+            90.0,
+            90.0,
+            {
+                "a": 5.0,
+                "b": 5.0,
+                "c": 5.0,
+                "alpha": 90.0,
+                "beta": 90.0,
+                "gamma": 90.0,
+            },
+        ),
+        (
+            5.123456,
+            5.654321,
+            5.987654,
+            90.0,
+            90.0,
+            90.0,
+            {
+                "a": 5.123456,
+                "b": 5.654321,
+                "c": 5.987654,
+                "alpha": 90.0,
+                "beta": 90.0,
+                "gamma": 90.0,
+            },
+        ),
+    ],
+)
+def test_ahlattice_to_dict(a, b, c, alpha, beta, gamma, expected_dict):
+    lattice = _AHLattice(a, b, c, alpha, beta, gamma)
+    assert lattice.to_dict() == expected_dict
 
 
-@pytest.mark.parametrize("vocab", [None, {"p": (1, 0, 0)}])
-def test_expand_direction_map_returns_independent_copies(vocab):
-    ds = DirectionShorthand(vocabulary=vocab) if vocab is not None else DirectionShorthand()
-    code = "x+" if vocab is None else list(vocab.keys())[0] + "+"
-    stage_map = {"a": code}
-    out = expand_direction_map(ds, stage_map)
-    out["a"][0] = 99.0
-    out2 = expand_direction_map(ds, stage_map)
-    assert out2["a"][0] != 99.0
+@pytest.mark.parametrize(
+    "a, b, c, alpha, beta, gamma, expected_repr",
+    [
+        (5.0, 5.0, 5.0, 90.0, 90.0, 90.0, "_AHLattice(a=5.0, b=5.0, c=5.0, alpha=90.0, beta=90.0, gamma=90.0)"),
+    ],
+)
+def test_ahlattice_repr(a, b, c, alpha, beta, gamma, expected_repr):
+    lattice = _AHLattice(a, b, c, alpha, beta, gamma)
+    assert repr(lattice) == expected_repr
+
+
+# ------------ _AHReflection --------------------
+
+
+@pytest.mark.parametrize(
+    "input_value, expected_dict, expected_exception",
+    [
+        ({"h": 1, "k": 2.0}, {"h": 1.0, "k": 2.0}, does_not_raise()),
+        ({}, {}, does_not_raise()),
+        ({"h": np.float64(2.5)}, {"h": 2.5}, does_not_raise()),
+        ([("h", 1)], None, pytest.raises(TypeError, match=re.escape("pseudos must be a Mapping[str, numeric]"))),
+        ({1: 2}, None, pytest.raises(TypeError, match=re.escape("pseudos keys must be strings"))),
+        ({"h": "a"}, None, pytest.raises(TypeError, match=re.escape("pseudos values must be numeric"))),
+    ],
+    ids=[
+        "valid_ints_floats",
+        "empty",
+        "numpy_float",
+        "non_mapping",
+        "non_str_key",
+        "non_numeric_value",
+    ],
+)
+def test_AHReflection_pseudos_setter(input_value, expected_dict, expected_exception):
+    """Test _AHReflection.pseudos setter with various valid and invalid inputs."""
+    refl = _AHReflection({}, {})
+    with expected_exception:
+        refl.pseudos = input_value
+        if expected_dict is not None:
+            assert refl.pseudos == expected_dict
+            # ensure values are converted to plain Python floats
+            for v in refl.pseudos.values():
+                assert isinstance(v, float)
+
+
+@pytest.mark.parametrize(
+    "initial, name, value",
+    [
+        ({"h": 1}, "k", 2),
+        ({}, "h", 3.5),
+    ],
+    ids=["add_to_existing", "add_to_empty"],
+)
+def test_AHReflection_set_get_remove_pseudo(initial, name, value):
+    refl = _AHReflection(initial, {})
+    # set and get
+    refl.set_pseudo(name, value)
+    assert refl.get_pseudo(name) == float(value)
+    assert refl.pseudos[name] == float(value)
+
+    # remove and ensure missing afterwards
+    refl.remove_pseudo(name)
+    assert refl.get_pseudo(name, None) is None
+    with pytest.raises(KeyError):
+        refl.remove_pseudo(name)
+
+
+@pytest.mark.parametrize(
+    "input_value, expected_dict, expected_exception",
+    [
+        ({"phi": 1, "chi": 2.0}, {"phi": 1.0, "chi": 2.0}, does_not_raise()),
+        ({}, {}, does_not_raise()),
+        ({"omega": np.float64(2.5)}, {"omega": 2.5}, does_not_raise()),
+        ([("phi", 1)], None, pytest.raises(TypeError, match=re.escape("reals must be a Mapping[str, numeric]"))),
+        ({1: 2}, None, pytest.raises(TypeError, match=re.escape("reals keys must be strings"))),
+        ({"phi": "a"}, None, pytest.raises(TypeError, match=re.escape("reals values must be numeric"))),
+    ],
+    ids=["valid_ints_floats", "empty", "numpy_float", "non_mapping", "non_str_key", "non_numeric_value"],
+)
+def test_AHReflection_reals_setter(input_value, expected_dict, expected_exception):
+    refl = _AHReflection({}, {})
+    with expected_exception:
+        refl.reals = input_value
+        if expected_dict is not None:
+            assert refl.reals == expected_dict
+            for v in refl.reals.values():
+                assert isinstance(v, float)
+
+
+@pytest.mark.parametrize(
+    "initial, name, value",
+    [
+        ({"phi": 10.0}, "chi", 20.5),
+        ({}, "omega", 5),
+    ],
+)
+def test_AHReflection_set_get_remove_real(initial, name, value):
+    refl = _AHReflection({}, initial)
+    refl.set_real(name, value)
+    assert refl.get_real(name) == float(value)
+    assert refl.reals[name] == float(value)
+
+    refl.remove_real(name)
+    assert refl.get_real(name, None) is None
+    with pytest.raises(KeyError):
+        refl.remove_real(name)
+
+
+def test_AHReflection_repr():
+    a = _AHReflection({"h": 1}, {"phi": 10.0}, wavelength=1.0)
+    r = repr(a)
+    assert "_AHReflection" in r
+    assert "pseudos=" in r
+    assert "reals=" in r
+
+
+@pytest.mark.parametrize(
+    "other, expected",
+    [
+        (_AHReflection({"h": 1.0}, {"phi": 10.0}, wavelength=1.0), True),
+        (_AHReflection({"h": 1.0 + 1e-9}, {"phi": 10.0}, wavelength=1.0), True),
+        (_AHReflection({"k": 1.0}, {"phi": 10.0}, wavelength=1.0), False),
+        (_AHReflection({"h": 1.0}, {"chi": 10.0}, wavelength=1.0), False),
+        (_AHReflection({"h": 1.0}, {"phi": 10.0}, wavelength=2.0), False),
+        (object(), False),
+    ],
+    ids=[
+        "identical",
+        "close_values",
+        "diff_pseudo_keys",
+        "diff_real_keys",
+        "diff_wavelength",
+        "other_type",
+    ],
+)
+def test_AHReflection_eq_param(other, expected):
+    a = _AHReflection({"h": 1}, {"phi": 10.0}, wavelength=1.0)
+    assert (a == other) is expected
+
+
+# ------------ _AHReflectionList --------------------
+
+
+def test_AHReflectionList_init_and_basic_ops():
+    # empty init
+    lst = _AHReflectionList()
+    assert len(lst) == 0
+
+    # init with mapping
+    a = _AHReflection({"h": 1}, {"phi": 1.0})
+    b = _AHReflection({"h": 2}, {"phi": 2.0})
+    m = {"first": a, "second": b}
+    lst2 = _AHReflectionList(m)
+    assert len(lst2) == 2
+    assert "first" in lst2
+    assert lst2.get("first") is a
+
+
+def test_AHReflectionList_set_pop_contains_len_iter():
+    lst = _AHReflectionList()
+    a = _AHReflection({"h": 1}, {"phi": 1.0})
+
+    # set with valid inputs
+    lst.set("one", a)
+    assert len(lst) == 1
+    assert lst.get("one") is a
+
+    # type errors for set
+    with pytest.raises(TypeError, match=re.escape("name must be a str")):
+        lst.set(1, a)  # type: ignore[arg-type]
+    with pytest.raises(TypeError, match=re.escape("reflection must be an _AHReflection instance")):
+        lst.set("bad", object())  # type: ignore[arg-type]
+
+    # pop behaviour
+    popped = lst.pop("one")
+    assert popped is a
+    assert len(lst) == 0
+    with pytest.raises(KeyError):
+        lst.pop("one")
+
+
+def test_AHReflectionList_items_names_values_clear_and_repr():
+    # create >10 items to exercise repr truncation
+    items = {f"r{i}": _AHReflection({"h": i}, {"phi": float(i)}) for i in range(11)}
+    lst = _AHReflectionList(items)
+    assert len(lst) == 11
+
+    # items/names/values
+    names = list(lst.names())
+    assert set(names) == set(items.keys())
+    items_list = list(lst.items())
+    assert all(isinstance(k, str) and isinstance(v, _AHReflection) for k, v in items_list)
+    vals = list(lst.values())
+    assert all(isinstance(v, _AHReflection) for v in vals)
+
+    # clear
+    lst.clear()
+    assert len(lst) == 0
+
+    # repr truncation: create 11 again to check '+1 more' text
+    lst = _AHReflectionList(items)
+    r = repr(lst)
+    assert lst.__class__.__name__ in r
+    assert "+1 more" in r
+
+
+# ------------ Chewacla --------------------
+
+
+def test_Chewacla_init_and_properties():
+    sample_stage = {"a": "x+"}
+    detector_stage = {"d": "y+"}
+    c = Chewacla(sample_stage, detector_stage)
+    assert isinstance(c, Chewacla)
+
+    # sample/detector stage expansion and raw storage
+    assert c.raw_sample_stage == sample_stage
+    assert c.raw_detector_stage == detector_stage
+    assert np.array_equal(c.sample_stage["a"], np.array([1.0, 0.0, 0.0]))
+    assert np.array_equal(c.detector_stage["d"], np.array([0.0, 1.0, 0.0]))
+
+    # defaults
+    assert c.wavelength == 1.54
+    assert len(c.reflections) == 0
+
+    # incident beam default and assignment
+    assert np.allclose(c.incident_beam, np.array([1.0, 0.0, 0.0]))
+    arr = np.array([0.0, 1.0, 0.0])
+    c.incident_beam = arr
+    assert np.array_equal(c.raw_incident_beam, arr)
+    assert np.array_equal(c.incident_beam, arr)
+
+    # lattice setter
+    c.lattice = (2, 3, 4, 90, 90, 90)
+    assert isinstance(c.lattice, _AHLattice)
+    assert c.lattice.a == 2.0
+
+
+def test_Chewacla_reflections_setter_and_types():
+    c = Chewacla({"a": "x+"}, {"d": "y+"})
+
+    # set with _AHReflectionList
+    r = _AHReflection({"h": 1}, {"phi": 1.0})
+    rl = _AHReflectionList({"one": r})
+    c.reflections = rl
+    assert len(c.reflections) == 1
+
+    # set to None clears
+    c.reflections = None
+    assert len(c.reflections) == 0
+
+    # set with mapping
+    mapping = {"x": _AHReflection({"h": 2}, {"phi": 2.0})}
+    c.reflections = mapping
+    assert len(c.reflections) == 1
+    assert c.reflections.get("x").get_pseudo("h") == 2.0
+
+    # set with iterable of pairs
+    pairs = [("a", _AHReflection({"h": 3}, {"phi": 3.0})), ("b", _AHReflection({"h": 4}, {"phi": 4.0}))]
+    c.reflections = pairs
+    assert len(c.reflections) == 2
+    assert "a" in c.reflections and "b" in c.reflections
+
+    # invalid type should raise TypeError
+    with pytest.raises(TypeError, match=re.escape("reflections must be an _AHReflectionList, mapping,")):
+        c.reflections = 123  # type: ignore[assignment]
+
+
+def test_Chewacla_calc_UB_BL67_requires_two_reflections():
+    c = Chewacla({"a": "x+"}, {"d": "y+"})
+    # with zero reflections
+    with pytest.raises(ValueError, match="requires exactly two reflections"):
+        c.calc_UB_BL67()
+
+    # with one reflection
+    c.reflections = {"one": _AHReflection({"h": 1}, {"phi": 1.0})}
+    with pytest.raises(ValueError, match="requires exactly two reflections"):
+        c.calc_UB_BL67()
