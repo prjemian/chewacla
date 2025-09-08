@@ -28,9 +28,6 @@ Production
 
 Development
 ***********
-0.1.0 (2025-09-05)
-------------------
-- Unconfigured solver class: ChewaclaSolver
 
 0.0.1 (2025-09-05)
 ------------------
