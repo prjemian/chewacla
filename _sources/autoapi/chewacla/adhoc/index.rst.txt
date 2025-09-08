@@ -1,0 +1,451 @@
+chewacla.adhoc
+==============
+
+.. py:module:: chewacla.adhoc
+
+.. autoapi-nested-parse::
+
+   Chewacla: *ad hoc* diffractometer with stages as described by a dictionary.
+
+   ..
+       .. autosummary::
+
+           ~Chewacla
+           ~expand_direction_map
+
+       .. rubric:: Internal use only
+       .. autosummary::
+
+           ~_AHLattice
+           ~_AHReflection
+           ~_AHReflectionList
+
+
+
+
+
+
+
+
+
+Module Contents
+---------------
+
+.. py:data:: TAU
+
+   Prefactor, either 1 or 2 pi
+
+.. py:function:: _validate_length(name: str, val: float) -> None
+
+.. py:function:: _validate_angle(name: str, val: float) -> None
+
+.. py:function:: _validated_setter(attr_name: str, validator)
+
+   Decorator for property setters: convert to float, validate, set internal
+   _<attr_name>, and invalidate cached self._B.
+
+
+.. py:function:: expand_direction_map(ds: chewacla.shorthand.DirectionShorthand, stage_map: chewacla.shorthand.DirectionMapInput) -> Dict[str, numpy.ndarray]
+
+   Return dict: {axis name: direction} where shorthand is direction, a unit vector.
+
+   Example::
+
+       ds = DirectionShorthand()
+       rotation_axes = {"a": "x+", "b": "y-", "c": "z+"}
+       expanded = expand_direction_map(ds, rotation_axes)
+       # expanded -> {"a": array([1.,0.,0.]), "b": array([0.,-1.,0.]), ...}
+
+
+.. py:class:: _AHLattice(a: numbers.Real, b: numbers.Real, c: numbers.Real, alpha: numbers.Real, beta: numbers.Real, gamma: numbers.Real)
+
+   Crystal lattice of sample on the AdHocDiffractometer.
+
+
+   .. py:property:: a
+      :type: float
+
+
+
+   .. py:property:: b
+      :type: float
+
+
+
+   .. py:property:: c
+      :type: float
+
+
+
+   .. py:property:: alpha
+      :type: float
+
+
+
+   .. py:property:: beta
+      :type: float
+
+
+
+   .. py:property:: gamma
+      :type: float
+
+
+
+   .. py:attribute:: _B
+      :type:  Optional[numpy.ndarray]
+
+      Crystalline sample orientation matrix.
+
+
+   .. py:attribute:: digits
+      :type:  int | None
+      :value: None
+
+
+      Display precision (number of digits), default is full precision.
+
+
+   .. py:property:: B
+      :type: numpy.ndarray
+
+
+      Return the lattice B matrix (3x3 ndarray) [per BL67].
+
+      * BL67: Busing&Levy Acta Cyst. 22, 457 (1967)
+      * https://repo.or.cz/hkl.git/blob/HEAD:/hkl/hkl-lattice.c
+
+      Compute the reciprocal-lattice B matrix from unit-cell parameters.
+      This matrix depends only on the crystal cell parameters.
+
+      Input Units:
+
+      * angles alpha, beta, gamma are given in degrees
+      * a, b, c are in the same units as the wavelength
+
+      :returns: (3,3) numpy.ndarray (float64)
+      :rtype: B
+
+      :raises ValueError: if the cell is degenerate (invalid angles/parameters).
+
+      .. note::
+
+         This implementation uses the Busing & Levy convention and includes the
+         factor 2π (TAU) so that G = B @ h has units of Å⁻¹.
+
+
+   .. py:method:: to_dict(digits: Optional[int] = None) -> Dict[str, float]
+
+      Return lattice constants as a dict.
+
+      If `digits` is an int, numeric values are rounded to that many decimal places.
+      If `digits` is None (default), full precision floats are returned.
+
+
+
+   .. py:method:: __repr__() -> str
+
+      Nice text representation.
+
+
+
+.. py:class:: _AHReflection(pseudos: collections.abc.Mapping[str, float], reals: collections.abc.Mapping[str, float], wavelength: float = 1.0)
+
+   Orienting reflection used only by the AdHocDiffractometer.
+
+
+   .. py:attribute:: _pseudos
+      :type:  Dict[str, float]
+
+      (internal) dict of pseudo-axis names to float values (e.g., h,k,l).
+
+
+   .. py:attribute:: _reals
+      :type:  Dict[str, float]
+
+      (internal) dict of real-axis names to float values (diffractometer angles).
+
+
+   .. py:attribute:: _wavelength
+      :type:  float
+
+      (internal) Wavelength associated with this reflection (in length units, typically Å).
+
+
+   .. py:property:: pseudos
+      :type: collections.abc.Mapping[str, float]
+
+
+      Read-only view of pseudos (hkl) mapping.
+
+
+   .. py:property:: reals
+      :type: collections.abc.Mapping[str, float]
+
+
+      Read-only view of reals mapping.
+
+
+   .. py:property:: wavelength
+      :type: float
+
+
+      Wavelength (float).
+
+
+   .. py:method:: set_pseudo(name: str, value: float) -> None
+
+      Set a single pseudo value.
+
+
+
+   .. py:method:: get_pseudo(name: str, default: Optional[float] = None) -> Optional[float]
+
+      Get a single pseudo value or default if missing.
+
+
+
+   .. py:method:: remove_pseudo(name: str) -> None
+
+      Remove a pseudo entry; KeyError if absent.
+
+
+
+   .. py:method:: set_real(name: str, value: float) -> None
+
+      Set a single real value.
+
+
+
+   .. py:method:: get_real(name: str, default: Optional[float] = None) -> Optional[float]
+
+      Get a single real value or default if missing.
+
+
+
+   .. py:method:: remove_real(name: str) -> None
+
+      Remove a real entry; KeyError if absent.
+
+
+
+   .. py:method:: __repr__() -> str
+
+      Nice, truncated text representation for long dicts.
+
+
+
+   .. py:method:: __eq__(other: object) -> bool
+
+      Compare with 'other' reflection for equality with numeric tolerance.
+
+
+
+.. py:class:: _AHReflectionList(initial: Optional[collections.abc.Mapping[str, _AHReflection]] = None)
+
+   Manage orienting reflections as named _AHReflection objects.
+
+   Behaviors:
+   - Stores reflections in an internal dict.
+   - Supports get/set by key, deletion, iteration, length, clear.
+   - Provides a concise, readable repr that truncates long contents.
+
+
+   .. py:method:: get(name: str) -> _AHReflection
+
+      Return the reflection for name or raise KeyError if missing.
+
+
+
+   .. py:method:: set(name: str, reflection: _AHReflection) -> None
+
+      Set a reflection by name.
+
+
+
+   .. py:method:: pop(name: str) -> _AHReflection
+
+      Remove and return the reflection for name; raises KeyError if absent.
+
+
+
+   .. py:method:: clear() -> None
+
+      Remove all stored reflections.
+
+
+
+   .. py:method:: __contains__(name: object) -> bool
+
+
+   .. py:method:: __len__() -> int
+
+
+   .. py:method:: __iter__() -> Iterator[str]
+
+
+   .. py:method:: items() -> Iterator[Tuple[str, _AHReflection]]
+
+
+   .. py:method:: names() -> Iterator[str]
+
+      Just the names of the reflections.
+
+
+
+   .. py:method:: values() -> Iterator[_AHReflection]
+
+
+   .. py:method:: __repr__() -> str
+
+      Nice text representation.
+
+
+
+.. py:class:: Chewacla(sample_stage: chewacla.shorthand.DirectionMapInput, detector_stage: chewacla.shorthand.DirectionMapInput, wavelength: Optional[float] = None, incident_beam: Optional[chewacla.shorthand.DirectionVectorInput] = None, direction_map: Optional[chewacla.shorthand.DirectionMapInput] = None)
+
+   The *ad hoc* diffractometer with stages as described by a dictionary.
+
+
+   .. py:attribute:: _incident_beam
+      :type:  chewacla.shorthand.DirectionVector
+
+      Unit vector describing the direction of the incident beam.
+
+
+   .. py:attribute:: _sample_stage
+      :type:  chewacla.shorthand.DirectionMap
+
+      names and unit vectors for sample stage rotations
+
+
+   .. py:attribute:: _detector_stage
+      :type:  chewacla.shorthand.DirectionMap
+
+      names and unit vectors for detector stage rotations
+
+
+   .. py:attribute:: _lattice
+      :type:  _AHLattice
+
+      crystal lattice parameters (angstroms and degrees)
+
+
+   .. py:attribute:: _wavelength
+      :type:  float
+
+      Wavelength of incident beam (angstroms)
+
+
+   .. py:attribute:: _reflections
+      :type:  _AHReflectionList
+
+      Orienting reflections to be used in computation of UB matrix.
+
+
+   .. py:attribute:: U
+      :type:  numpy.ndarray
+
+      Goniometer orientation matrix
+
+
+   .. py:attribute:: UB
+      :type:  numpy.ndarray
+
+      Crystal orientation matrix
+
+
+   .. py:attribute:: _ds
+      :type:  chewacla.shorthand.DirectionShorthand
+
+      (internal) DirectionShorthand object
+
+
+   .. py:attribute:: raw_incident_beam
+      :value: None
+
+
+
+   .. py:attribute:: raw_sample_stage
+      :value: None
+
+
+
+   .. py:attribute:: raw_detector_stage
+      :value: None
+
+
+
+   .. py:property:: incident_beam
+      :type: chewacla.shorthand.DirectionVector
+
+
+      Unit vector describing the direction of the incident beam.
+
+
+   .. py:property:: sample_stage
+      :type: chewacla.shorthand.DirectionMap
+
+
+      Describes the sample stage stack of rotations.
+
+
+   .. py:property:: detector_stage
+      :type: chewacla.shorthand.DirectionMap
+
+
+      Describes the detector stage stack of rotations.
+
+
+   .. py:property:: wavelength
+      :type: float
+
+
+
+   .. py:property:: lattice
+      :type: _AHLattice
+
+
+      Return the Lattice object.
+
+
+   .. py:property:: reflections
+      :type: _AHReflectionList
+
+
+      Return the reflection manager for name->_AHReflection access.
+
+
+   .. py:method:: __repr__() -> str
+
+      Nice text representation.
+
+
+
+   .. py:method:: addReflection(name: str, reflection: _AHReflection | collections.abc.Mapping[str, Any] | collections.abc.Sequence[Any]) -> None
+
+      Add a single reflection by name.
+
+      Parameters
+      - name: str, reflection name
+      - reflection: either an _AHReflection instance, or one of:
+          * (pseudos, reals)
+          * (pseudos, reals, wavelength)
+          * mapping with keys 'pseudos' and 'reals' and optional 'wavelength'
+
+      Constructs an _AHReflection when callers supply raw parameters.
+
+
+
+   .. py:method:: calc_UB_BL67() -> numpy.ndarray
+
+      Calculate the U & UB matrices from the given reflections.
+
+
+
+   .. py:method:: forward(pseudos: Dict[str, float]) -> collections.abc.Sequence[Dict[str, float]]
+
+
+   .. py:method:: inverse(reals: Dict[str, float]) -> Dict[str, float]
+
+

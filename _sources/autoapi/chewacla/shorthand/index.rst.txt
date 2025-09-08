@@ -7,9 +7,12 @@ chewacla.shorthand
 
    Describe diffraction vectors with a shorthand vocabulary.
 
-   .. from autosummary::
+   .. autosummary::
 
        ~DirectionShorthand
+       ~unit_vector
+
+
 
 
 
@@ -20,13 +23,52 @@ chewacla.shorthand
 Module Contents
 ---------------
 
+.. py:data:: DirectionVector
+
+   Unit vector description of a direction.
+
+.. py:data:: DirectionVectorInput
+
+   Allowed variations for user input.
+
+.. py:data:: DirectionMap
+
+   Ordered dictionary of DirectionVectors, keyed by rotational axis names.
+
+.. py:data:: DirectionMapInput
+
+   Allowed variations for user input.
+
 .. py:data:: x_hat
+   :type:  DirectionVector
+
+   Basis vector, $\hat{x}$
 
 .. py:data:: y_hat
+   :type:  DirectionVector
+
+   Basis vector, $\hat{y}$
 
 .. py:data:: z_hat
+   :type:  DirectionVector
 
-.. py:class:: DirectionShorthand(vocabulary: Mapping[str, Sequence[int]] | None = None)
+   Basis vector, $\hat{z}$
+
+.. py:function:: unit_vector(v: numpy.ndarray) -> numpy.ndarray
+
+   Return a unit vector from a length-3 ndarray.
+
+   :param v: Input array of shape (3,).
+   :type v: np.ndarray
+
+   :returns: New array of shape (3,) with unit length.
+   :rtype: np.ndarray
+
+   :raises TypeError: If `v` is not an array-like of numeric type.
+   :raises ValueError: If `v` does not have shape (3,) or has zero length.
+
+
+.. py:class:: DirectionShorthand(vocabulary: Optional[DirectionMap | collections.abc.Mapping[str, collections.abc.Sequence[float]]] | None = None)
 
    Describe vectors with shorthand from xrayutilities.
 
@@ -43,7 +85,7 @@ Module Contents
 
 
    .. py:property:: vocabulary
-      :type: dict
+      :type: DirectionMap
 
 
 
@@ -56,5 +98,8 @@ Module Contents
       - Does NOT permute characters; validates positions instead.
       - Whitespace allowed; case-insensitive.
 
+
+
+   .. py:method:: __repr__() -> str
 
 

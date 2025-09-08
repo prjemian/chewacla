@@ -16,10 +16,8 @@ Submodules
    :maxdepth: 1
 
    /autoapi/chewacla/_version/index
-   /autoapi/chewacla/lattice/index
+   /autoapi/chewacla/adhoc/index
    /autoapi/chewacla/shorthand/index
-   /autoapi/chewacla/solver/index
-   /autoapi/chewacla/utils/index
 
 
 
