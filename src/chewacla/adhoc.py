@@ -294,8 +294,9 @@ class _AHLattice:
         body = ", ".join(f"{k}={v}" for k, v in vals.items())
         return f"{self.__class__.__name__}({body})"
 
+# TODO: refactor _AHReflection classes into Chewacla?
 
-class _AHReflection:
+class _AHReflection:  # TODO: needs to know diffractometer axes
     """Orienting reflection used only by the AdHocDiffractometer."""
 
     _pseudos: Dict[str, float]
@@ -532,8 +533,8 @@ class Chewacla:
 
         self.lattice = (1, 1, 1, 90, 90, 90)
         self.reflections = _AHReflectionList()
-        self.U = IDENTITY_MATRIX_3X3
-        self.UB = IDENTITY_MATRIX_3X3
+        self.U = np.asarray(IDENTITY_MATRIX_3X3)
+        self.UB = np.asarray(IDENTITY_MATRIX_3X3)
 
     def __repr__(self) -> str:
         """Nice text representation."""
@@ -592,6 +593,16 @@ class Chewacla:
                 f" UB matrix. {len(self.reflections)} reflection(s) are defined."
             )
         # TODO: proceed
+        return self.UB
+
+    def forward(self, pseudos: Dict[str, float]) -> Sequence[Dict[str, float]]:
+        return [{}]  # TODO:
+
+
+    def inverse(self, reals: Dict[str, float]) -> Dict[str, float]:
+        return {}  # TODO:
+
+    # TODO: mode property getter & setter
 
     # -------------- getter/setter property methods
 
