@@ -5,20 +5,34 @@ chewacla.adhoc
 
 .. autoapi-nested-parse::
 
-   Chewacla: *ad hoc* diffractometer with stages as described by a dictionary.
+   Chewacla: *ad hoc* diffractometer with rotation stages described by the caller.
 
-   ..
-       .. autosummary::
+   This module provides a lightweight, dictionary-driven representation of a
+   diffractometer and supporting types used for small, interactive workflows.
 
-           ~Chewacla
-           ~expand_direction_map
+   Key classes
+   -----------
+   - :class:`~chewacla.adhoc.Chewacla`: *ad hoc* diffractometer.
+   - :class:`~chewacla.adhoc.AHReflection`: orienting reflection: (h,k,l) & angles (& optional wavelength).
 
-       .. rubric:: Internal use only
-       .. autosummary::
+   .. rubric:: Example
 
-           ~_AHLattice
-           ~_AHReflection
-           ~_AHReflectionList
+   Construct a simple *Chewacla* diffractometer and add a reflection:
+
+   .. code-block:: python
+       :linenos:
+
+       from chewacla.adhoc import Chewacla, AHReflection
+
+       c = Chewacla({"s": "y+"}, {"d": "y+"})
+       c.lattice = 1, 1, 1, 90, 90, 90
+       r = AHReflection("one", {"h": 1, "k": 0, "l": 0}, {"s": 14.4, "d": 28.8})
+       c.addReflection(r)
+
+   Utilities
+   ---------
+   - ``expand_direction_map``: expand shorthand direction codes (``'x+'``, ``'y-'``)
+       into unit vectors using the `DirectionShorthand` vocabulary.
 
 
 
@@ -35,6 +49,18 @@ Module Contents
 
    Prefactor, either 1 or 2 pi
 
+.. py:data:: DEFAULT_WAVELENGTH
+   :value: 1.54
+
+
+   Approximately copper K-alpha in angstroms.
+
+.. py:data:: DEFAULT_LATTICE_PARAMS
+   :value: (1, 1, 1, 90, 90, 90)
+
+
+   Trivial cubic crystal.
+
 .. py:function:: _validate_length(name: str, val: float) -> None
 
 .. py:function:: _validate_angle(name: str, val: float) -> None
@@ -43,6 +69,18 @@ Module Contents
 
    Decorator for property setters: convert to float, validate, set internal
    _<attr_name>, and invalidate cached self._B.
+
+
+.. py:function:: _compare_axis_sets(kind: str, reflection_name: str, defined: set, given: set) -> None
+
+   Compare two sets of axis/key names and raise ValueError on mismatch.
+
+   :param kind: 'real' or 'pseudo' — selects wording for the error message.
+   :param reflection_name: Name of the reflection for error context.
+   :param defined: The canonical set of names expected by the instrument.
+   :param given: The set of names provided by the reflection.
+
+   :raises ValueError: If the given set does not exactly match the defined set.
 
 
 .. py:function:: expand_direction_map(ds: chewacla.shorthand.DirectionShorthand, stage_map: chewacla.shorthand.DirectionMapInput) -> Dict[str, numpy.ndarray]
@@ -59,7 +97,7 @@ Module Contents
 
 .. py:class:: _AHLattice(a: numbers.Real, b: numbers.Real, c: numbers.Real, alpha: numbers.Real, beta: numbers.Real, gamma: numbers.Real)
 
-   Crystal lattice of sample on the AdHocDiffractometer.
+   Internal container for lattice parameters and B-matrix computation.
 
 
    .. py:property:: a
@@ -149,9 +187,15 @@ Module Contents
 
 
 
-.. py:class:: _AHReflection(pseudos: collections.abc.Mapping[str, float], reals: collections.abc.Mapping[str, float], wavelength: float = 1.0)
+.. py:class:: AHReflection(name: str, pseudos: collections.abc.Mapping[str, float], reals: collections.abc.Mapping[str, float], wavelength: Optional[float] = None)
 
-   Orienting reflection used only by the AdHocDiffractometer.
+   Orienting reflection used by the AdHocDiffractometer.
+
+
+   .. py:attribute:: _name
+      :type:  str
+
+      (internal) name given to this reflection by the caller.
 
 
    .. py:attribute:: _pseudos
@@ -191,6 +235,13 @@ Module Contents
 
 
       Wavelength (float).
+
+
+   .. py:property:: name
+      :type: str
+
+
+      Name given to this reflection (read-only).
 
 
    .. py:method:: set_pseudo(name: str, value: float) -> None
@@ -241,70 +292,28 @@ Module Contents
 
 
 
-.. py:class:: _AHReflectionList(initial: Optional[collections.abc.Mapping[str, _AHReflection]] = None)
+   .. py:method:: validate_against(expected_reals: Optional[collections.abc.Sequence[str]] = None, expected_pseudos: Optional[collections.abc.Sequence[str]] = None) -> None
 
-   Manage orienting reflections as named _AHReflection objects.
+      Validate this reflection's keys against expected instrument axes.
 
-   Behaviors:
-   - Stores reflections in an internal dict.
-   - Supports get/set by key, deletion, iteration, length, clear.
-   - Provides a concise, readable repr that truncates long contents.
+      :param expected_reals: Sequence of real-axis names expected by the instrument (e.g. sample/detector axes).
+      :param expected_pseudos: Sequence of pseudo-axis keys expected (usually 'h','k','l').
 
-
-   .. py:method:: get(name: str) -> _AHReflection
-
-      Return the reflection for name or raise KeyError if missing.
-
-
-
-   .. py:method:: set(name: str, reflection: _AHReflection) -> None
-
-      Set a reflection by name.
-
-
-
-   .. py:method:: pop(name: str) -> _AHReflection
-
-      Remove and return the reflection for name; raises KeyError if absent.
-
-
-
-   .. py:method:: clear() -> None
-
-      Remove all stored reflections.
-
-
-
-   .. py:method:: __contains__(name: object) -> bool
-
-
-   .. py:method:: __len__() -> int
-
-
-   .. py:method:: __iter__() -> Iterator[str]
-
-
-   .. py:method:: items() -> Iterator[Tuple[str, _AHReflection]]
-
-
-   .. py:method:: names() -> Iterator[str]
-
-      Just the names of the reflections.
-
-
-
-   .. py:method:: values() -> Iterator[_AHReflection]
-
-
-   .. py:method:: __repr__() -> str
-
-      Nice text representation.
+      :raises ValueError: If the reflection's keys do not exactly match the expected sets.
 
 
 
 .. py:class:: Chewacla(sample_stage: chewacla.shorthand.DirectionMapInput, detector_stage: chewacla.shorthand.DirectionMapInput, wavelength: Optional[float] = None, incident_beam: Optional[chewacla.shorthand.DirectionVectorInput] = None, direction_map: Optional[chewacla.shorthand.DirectionMapInput] = None)
 
    The *ad hoc* diffractometer with stages as described by a dictionary.
+
+   .. rubric:: Notes
+
+   - Reflections are managed by name. Use :meth:`addReflection` to add an
+       :class:`AHReflection` to the instrument. By default adding a reflection
+       with a name that already exists raises ``ValueError`` to prevent
+       accidental overwrites; pass ``force=True`` to replace an existing
+       reflection deliberately.
 
 
    .. py:attribute:: _incident_beam
@@ -338,9 +347,9 @@ Module Contents
 
 
    .. py:attribute:: _reflections
-      :type:  _AHReflectionList
+      :type:  Dict[str, AHReflection]
 
-      Orienting reflections to be used in computation of UB matrix.
+      Orienting reflections (name -> AHReflection) to be used in computation of UB matrix.
 
 
    .. py:attribute:: U
@@ -409,31 +418,30 @@ Module Contents
       Return the Lattice object.
 
 
-   .. py:property:: reflections
-      :type: _AHReflectionList
-
-
-      Return the reflection manager for name->_AHReflection access.
-
-
    .. py:method:: __repr__() -> str
 
       Nice text representation.
 
 
 
-   .. py:method:: addReflection(name: str, reflection: _AHReflection | collections.abc.Mapping[str, Any] | collections.abc.Sequence[Any]) -> None
+   .. py:method:: addReflection(reflection: AHReflection, force: bool = False) -> None
 
-      Add a single reflection by name.
+      Add a single reflection using its own `name` attribute as the key.
 
-      Parameters
-      - name: str, reflection name
-      - reflection: either an _AHReflection instance, or one of:
-          * (pseudos, reals)
-          * (pseudos, reals, wavelength)
-          * mapping with keys 'pseudos' and 'reals' and optional 'wavelength'
+      Parameters:
 
-      Constructs an _AHReflection when callers supply raw parameters.
+      - reflection: an already-constructed `AHReflection` instance with a valid
+        `name` attribute (str). The reflection's `name` will be used as the key
+        when storing it in the manager.
+
+
+
+   .. py:method:: make_reflection(name: str, pseudos: collections.abc.Mapping[str, float], reals: collections.abc.Mapping[str, float], wavelength: Optional[float] = None) -> AHReflection
+
+      Factory: construct and validate an AHReflection using this instrument's axes.
+
+      The returned AHReflection has already been validated against the Chewacla
+      `real_axis_names` and `pseudo_axis_names`.
 
 
 
@@ -447,5 +455,26 @@ Module Contents
 
 
    .. py:method:: inverse(reals: Dict[str, float]) -> Dict[str, float]
+
+
+   .. py:property:: pseudo_axis_names
+      :type: list[str]
+
+
+      List of the pseudo axis names.
+
+
+   .. py:property:: real_axis_names
+      :type: list[str]
+
+
+      List of the real axis names.
+
+
+   .. py:property:: reflections
+      :type: dict
+
+
+      Return the reflection mapping (name -> AHReflection).
 
 

@@ -1,0 +1,1405 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>chewacla.adhoc &#8212; chewacla 0.1</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=8f2a1f02" />
+    <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css?v=4ae1632d" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sphinx-design.min.css?v=95c83b7e" />
+  
+  <!-- So that users can add custom icons -->
+  <script src="../../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
+<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
+
+    <script src="../../_static/documentation_options.js?v=43f72869"></script>
+    <script src="../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/design-tabs.js?v=f930bc37"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = '_modules/chewacla/adhoc';</script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="0.1" />
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../../index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../../_static/chewacla-light.png" class="logo__image only-light" alt="chewacla 0.1 - Home"/>
+    <img src="../../_static/chewacla-dark.png" class="logo__image only-dark pst-js-only" alt="chewacla 0.1 - Home"/>
+  
+  
+</a></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../guide.html">
+    User Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../install.html">
+    Installation
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../release_notes.html">
+    Change History
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../license.html">
+    License
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../autoapi/index.html">
+    API Reference
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/prjemian/chewacla" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+        
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar hide-on-wide">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../guide.html">
+    User Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../install.html">
+    Installation
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../release_notes.html">
+    Change History
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../license.html">
+    License
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../autoapi/index.html">
+    API Reference
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/prjemian/chewacla" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="../index.html" class="nav-link">Module code</a></li>
+    
+    
+    <li class="breadcrumb-item"><a href="../chewacla.html" class="nav-link">chewacla</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">chewacla.adhoc</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <h1>Source code for chewacla.adhoc</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Chewacla: *ad hoc* diffractometer with rotation stages described by the caller.</span>
+
+<span class="sd">This module provides a lightweight, dictionary-driven representation of a</span>
+<span class="sd">diffractometer and supporting types used for small, interactive workflows.</span>
+
+<span class="sd">Key classes</span>
+<span class="sd">-----------</span>
+<span class="sd">- :class:`~chewacla.adhoc.Chewacla`: *ad hoc* diffractometer.</span>
+<span class="sd">- :class:`~chewacla.adhoc.AHReflection`: orienting reflection: (h,k,l) &amp; angles (&amp; optional wavelength).</span>
+
+<span class="sd">Example</span>
+<span class="sd">-------</span>
+<span class="sd">Construct a simple *Chewacla* diffractometer and add a reflection:</span>
+
+<span class="sd">.. code-block:: python</span>
+<span class="sd">    :linenos:</span>
+
+<span class="sd">    from chewacla.adhoc import Chewacla, AHReflection</span>
+
+<span class="sd">    c = Chewacla({&quot;s&quot;: &quot;y+&quot;}, {&quot;d&quot;: &quot;y+&quot;})</span>
+<span class="sd">    c.lattice = 1, 1, 1, 90, 90, 90</span>
+<span class="sd">    r = AHReflection(&quot;one&quot;, {&quot;h&quot;: 1, &quot;k&quot;: 0, &quot;l&quot;: 0}, {&quot;s&quot;: 14.4, &quot;d&quot;: 28.8})</span>
+<span class="sd">    c.addReflection(r)</span>
+
+<span class="sd">Utilities</span>
+<span class="sd">---------</span>
+<span class="sd">- ``expand_direction_map``: expand shorthand direction codes (``&#39;x+&#39;``, ``&#39;y-&#39;``)</span>
+<span class="sd">    into unit vectors using the `DirectionShorthand` vocabulary.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">numbers</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">reprlib</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">collections.abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">Mapping</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">collections.abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">Sequence</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">functools</span><span class="w"> </span><span class="kn">import</span> <span class="n">wraps</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Dict</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Optional</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">hklpy2.misc</span><span class="w"> </span><span class="kn">import</span> <span class="n">IDENTITY_MATRIX_3X3</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">chewacla.shorthand</span><span class="w"> </span><span class="kn">import</span> <span class="n">DirectionMap</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">chewacla.shorthand</span><span class="w"> </span><span class="kn">import</span> <span class="n">DirectionMapInput</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">chewacla.shorthand</span><span class="w"> </span><span class="kn">import</span> <span class="n">DirectionShorthand</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">chewacla.shorthand</span><span class="w"> </span><span class="kn">import</span> <span class="n">DirectionVector</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">chewacla.shorthand</span><span class="w"> </span><span class="kn">import</span> <span class="n">DirectionVectorInput</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">chewacla.shorthand</span><span class="w"> </span><span class="kn">import</span> <span class="n">unit_vector</span>
+
+<div class="viewcode-block" id="TAU">
+<a class="viewcode-back" href="../../autoapi/chewacla/adhoc/index.html#chewacla.adhoc.TAU">[docs]</a>
+<span class="n">TAU</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span></div>
+
+<span class="sd">&quot;&quot;&quot;Prefactor, either 1 or 2 pi&quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="DEFAULT_WAVELENGTH">
+<a class="viewcode-back" href="../../autoapi/chewacla/adhoc/index.html#chewacla.adhoc.DEFAULT_WAVELENGTH">[docs]</a>
+<span class="n">DEFAULT_WAVELENGTH</span> <span class="o">=</span> <span class="mf">1.54</span></div>
+
+<span class="sd">&quot;&quot;&quot;Approximately copper K-alpha in angstroms.&quot;&quot;&quot;</span>
+<div class="viewcode-block" id="DEFAULT_LATTICE_PARAMS">
+<a class="viewcode-back" href="../../autoapi/chewacla/adhoc/index.html#chewacla.adhoc.DEFAULT_LATTICE_PARAMS">[docs]</a>
+<span class="n">DEFAULT_LATTICE_PARAMS</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">90</span><span class="p">,</span> <span class="mi">90</span><span class="p">,</span> <span class="mi">90</span><span class="p">)</span></div>
+
+<span class="sd">&quot;&quot;&quot;Trivial cubic crystal.&quot;&quot;&quot;</span>
+
+
+<span class="c1"># --- validators and decorator -------------------------------------------------</span>
+<div class="viewcode-block" id="_validate_length">
+<a class="viewcode-back" href="../../autoapi/chewacla/adhoc/index.html#chewacla.adhoc._validate_length">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">_validate_length</span><span class="p">(</span><span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">val</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">val</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="c1"># keep the original message used in tests</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;lattice lengths a, b, c must be positive&quot;</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="_validate_angle">
+<a class="viewcode-back" href="../../autoapi/chewacla/adhoc/index.html#chewacla.adhoc._validate_angle">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">_validate_angle</span><span class="p">(</span><span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">val</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="mf">0.0</span> <span class="o">&lt;</span> <span class="n">val</span> <span class="o">&lt;</span> <span class="mf">180.0</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2"> must be in (0, 180) degrees&quot;</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="_validated_setter">
+<a class="viewcode-back" href="../../autoapi/chewacla/adhoc/index.html#chewacla.adhoc._validated_setter">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">_validated_setter</span><span class="p">(</span><span class="n">attr_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">validator</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Decorator for property setters: convert to float, validate, set internal</span>
+<span class="sd">    _&lt;attr_name&gt;, and invalidate cached self._B.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">decorator</span><span class="p">(</span><span class="n">func</span><span class="p">):</span>
+        <span class="nd">@wraps</span><span class="p">(</span><span class="n">func</span><span class="p">)</span>
+        <span class="k">def</span><span class="w"> </span><span class="nf">wrapper</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+            <span class="n">val</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+            <span class="n">validator</span><span class="p">(</span><span class="n">attr_name</span><span class="p">,</span> <span class="n">val</span><span class="p">)</span>
+            <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;_</span><span class="si">{</span><span class="n">attr_name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">val</span><span class="p">)</span>
+            <span class="c1"># invalidate cached B</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_B</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="k">return</span> <span class="n">wrapper</span>
+
+    <span class="k">return</span> <span class="n">decorator</span></div>
+
+
+
+<div class="viewcode-block" id="_compare_axis_sets">
+<a class="viewcode-back" href="../../autoapi/chewacla/adhoc/index.html#chewacla.adhoc._compare_axis_sets">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">_compare_axis_sets</span><span class="p">(</span><span class="n">kind</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">reflection_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">defined</span><span class="p">:</span> <span class="nb">set</span><span class="p">,</span> <span class="n">given</span><span class="p">:</span> <span class="nb">set</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Compare two sets of axis/key names and raise ValueError on mismatch.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    kind:</span>
+<span class="sd">        &#39;real&#39; or &#39;pseudo&#39; — selects wording for the error message.</span>
+<span class="sd">    reflection_name:</span>
+<span class="sd">        Name of the reflection for error context.</span>
+<span class="sd">    defined:</span>
+<span class="sd">        The canonical set of names expected by the instrument.</span>
+<span class="sd">    given:</span>
+<span class="sd">        The set of names provided by the reflection.</span>
+
+<span class="sd">    Raises</span>
+<span class="sd">    ------</span>
+<span class="sd">    ValueError</span>
+<span class="sd">        If the given set does not exactly match the defined set.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">missing</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">defined</span> <span class="o">-</span> <span class="n">given</span><span class="p">))</span>
+    <span class="n">extra</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">given</span> <span class="o">-</span> <span class="n">defined</span><span class="p">))</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">missing</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">extra</span><span class="p">:</span>
+        <span class="k">return</span>
+    <span class="n">parts</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">if</span> <span class="n">missing</span><span class="p">:</span>
+        <span class="n">parts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;missing </span><span class="si">{</span><span class="p">(</span><span class="s1">&#39;real axes&#39;</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="n">kind</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="s1">&#39;real&#39;</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="s1">&#39;pseudo keys&#39;</span><span class="p">)</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">missing</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">extra</span><span class="p">:</span>
+        <span class="n">parts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;unexpected </span><span class="si">{</span><span class="p">(</span><span class="s1">&#39;real axes&#39;</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="n">kind</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="s1">&#39;real&#39;</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="s1">&#39;pseudo keys&#39;</span><span class="p">)</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">extra</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">kind</span> <span class="o">==</span> <span class="s2">&quot;real&quot;</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;Reflection </span><span class="si">{</span><span class="n">reflection_name</span><span class="si">!r}</span><span class="s2"> real-axis names do not match instrument axes: &quot;</span> <span class="o">+</span> <span class="s2">&quot;, &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">parts</span><span class="p">)</span>
+        <span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Reflection </span><span class="si">{</span><span class="n">reflection_name</span><span class="si">!r}</span><span class="s2"> pseudos do not match expected keys: &quot;</span> <span class="o">+</span> <span class="s2">&quot;, &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">parts</span><span class="p">))</span></div>
+
+
+
+<div class="viewcode-block" id="expand_direction_map">
+<a class="viewcode-back" href="../../autoapi/chewacla/adhoc/index.html#chewacla.adhoc.expand_direction_map">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">expand_direction_map</span><span class="p">(</span>
+    <span class="n">ds</span><span class="p">:</span> <span class="n">DirectionShorthand</span><span class="p">,</span>
+    <span class="n">stage_map</span><span class="p">:</span> <span class="n">DirectionMapInput</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return dict: {axis name: direction} where shorthand is direction, a unit vector.</span>
+
+<span class="sd">    Example::</span>
+
+<span class="sd">        ds = DirectionShorthand()</span>
+<span class="sd">        rotation_axes = {&quot;a&quot;: &quot;x+&quot;, &quot;b&quot;: &quot;y-&quot;, &quot;c&quot;: &quot;z+&quot;}</span>
+<span class="sd">        expanded = expand_direction_map(ds, rotation_axes)</span>
+<span class="sd">        # expanded -&gt; {&quot;a&quot;: array([1.,0.,0.]), &quot;b&quot;: array([0.,-1.,0.]), ...}</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">out</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">for</span> <span class="n">axis_name</span><span class="p">,</span> <span class="n">code</span> <span class="ow">in</span> <span class="n">stage_map</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">axis_name</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;stage_map keys must be str&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">code</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;stage_map values must be str&quot;</span><span class="p">)</span>
+        <span class="n">vec</span> <span class="o">=</span> <span class="n">ds</span><span class="o">.</span><span class="n">vector</span><span class="p">(</span><span class="n">code</span><span class="p">)</span>
+        <span class="n">out</span><span class="p">[</span><span class="n">axis_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">vec</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">out</span></div>
+
+
+
+<div class="viewcode-block" id="_AHLattice">
+<a class="viewcode-back" href="../../autoapi/chewacla/adhoc/index.html#chewacla.adhoc._AHLattice">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">_AHLattice</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Internal container for lattice parameters and B-matrix computation.&quot;&quot;&quot;</span>
+
+    <span class="n">a</span><span class="p">:</span> <span class="nb">float</span>  <span class="c1"># angstrom</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Crystal unit cell length along $\hat x$ axis.&quot;&quot;&quot;</span>
+    <span class="n">b</span><span class="p">:</span> <span class="nb">float</span>  <span class="c1"># angstrom</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Crystal unit cell length at angle gamma from $\hat x$ in $\hat x$-$\hat y$ plane.&quot;&quot;&quot;</span>
+    <span class="n">c</span><span class="p">:</span> <span class="nb">float</span>  <span class="c1"># angstrom</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Crystal unit cell length&quot;&quot;&quot;</span>
+    <span class="n">alpha</span><span class="p">:</span> <span class="nb">float</span>  <span class="c1"># degrees</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Angle between c axis and $\hat x$-$\hat y$ plane.&quot;&quot;&quot;</span>
+    <span class="n">beta</span><span class="p">:</span> <span class="nb">float</span>  <span class="c1"># degrees</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Angle between a and c axes in a-c plane.&quot;&quot;&quot;</span>
+    <span class="n">gamma</span><span class="p">:</span> <span class="nb">float</span>  <span class="c1"># degrees</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Angle between a and b axes in $\hat x$-$\hat y$ plane.&quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="_AHLattice._B">
+<a class="viewcode-back" href="../../autoapi/chewacla/adhoc/index.html#chewacla.adhoc._AHLattice._B">[docs]</a>
+    <span class="n">_B</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]</span></div>
+
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Crystalline sample orientation matrix.&quot;&quot;&quot;</span>
+<div class="viewcode-block" id="_AHLattice.digits">
+<a class="viewcode-back" href="../../autoapi/chewacla/adhoc/index.html#chewacla.adhoc._AHLattice.digits">[docs]</a>
+    <span class="n">digits</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span></div>
+
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Display precision (number of digits), default is full precision.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">a</span><span class="p">:</span> <span class="n">numbers</span><span class="o">.</span><span class="n">Real</span><span class="p">,</span>
+        <span class="n">b</span><span class="p">:</span> <span class="n">numbers</span><span class="o">.</span><span class="n">Real</span><span class="p">,</span>
+        <span class="n">c</span><span class="p">:</span> <span class="n">numbers</span><span class="o">.</span><span class="n">Real</span><span class="p">,</span>
+        <span class="n">alpha</span><span class="p">:</span> <span class="n">numbers</span><span class="o">.</span><span class="n">Real</span><span class="p">,</span>
+        <span class="n">beta</span><span class="p">:</span> <span class="n">numbers</span><span class="o">.</span><span class="n">Real</span><span class="p">,</span>
+        <span class="n">gamma</span><span class="p">:</span> <span class="n">numbers</span><span class="o">.</span><span class="n">Real</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_B</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># initial default is unset</span>
+
+        <span class="c1"># convert and validate lengths</span>
+        <span class="c1"># use property setters (which validate and invalidate _B)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">a</span> <span class="o">=</span> <span class="n">a</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">b</span> <span class="o">=</span> <span class="n">b</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">c</span> <span class="o">=</span> <span class="n">c</span>
+
+        <span class="c1"># convert and validate angles (degrees)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">alpha</span> <span class="o">=</span> <span class="n">alpha</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">beta</span> <span class="o">=</span> <span class="n">beta</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">gamma</span> <span class="o">=</span> <span class="n">gamma</span>
+
+    <span class="c1"># --- lattice parameter properties ---------------------------------</span>
+    <span class="nd">@property</span>
+<div class="viewcode-block" id="_AHLattice.a">
+<a class="viewcode-back" href="../../autoapi/chewacla/adhoc/index.html#chewacla.adhoc._AHLattice.a">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">a</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_a</span></div>
+
+
+    <span class="nd">@a</span><span class="o">.</span><span class="n">setter</span>
+    <span class="nd">@_validated_setter</span><span class="p">(</span><span class="s2">&quot;a&quot;</span><span class="p">,</span> <span class="n">_validate_length</span><span class="p">)</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">a</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">numbers</span><span class="o">.</span><span class="n">Real</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="c1"># validation and setting handled by decorator</span>
+        <span class="k">pass</span>
+
+    <span class="nd">@property</span>
+<div class="viewcode-block" id="_AHLattice.b">
+<a class="viewcode-back" href="../../autoapi/chewacla/adhoc/index.html#chewacla.adhoc._AHLattice.b">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">b</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_b</span></div>
+
+
+    <span class="nd">@b</span><span class="o">.</span><span class="n">setter</span>
+    <span class="nd">@_validated_setter</span><span class="p">(</span><span class="s2">&quot;b&quot;</span><span class="p">,</span> <span class="n">_validate_length</span><span class="p">)</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">b</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">numbers</span><span class="o">.</span><span class="n">Real</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="c1"># validation and setting handled by decorator</span>
+        <span class="k">pass</span>
+
+    <span class="nd">@property</span>
+<div class="viewcode-block" id="_AHLattice.c">
+<a class="viewcode-back" href="../../autoapi/chewacla/adhoc/index.html#chewacla.adhoc._AHLattice.c">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_c</span></div>
+
+
+    <span class="nd">@c</span><span class="o">.</span><span class="n">setter</span>
+    <span class="nd">@_validated_setter</span><span class="p">(</span><span class="s2">&quot;c&quot;</span><span class="p">,</span> <span class="n">_validate_length</span><span class="p">)</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">numbers</span><span class="o">.</span><span class="n">Real</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="c1"># validation and setting handled by decorator</span>
+        <span class="k">pass</span>
+
+    <span class="nd">@property</span>
+<div class="viewcode-block" id="_AHLattice.alpha">
+<a class="viewcode-back" href="../../autoapi/chewacla/adhoc/index.html#chewacla.adhoc._AHLattice.alpha">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">alpha</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_alpha</span></div>
+
+
+    <span class="nd">@alpha</span><span class="o">.</span><span class="n">setter</span>
+    <span class="nd">@_validated_setter</span><span class="p">(</span><span class="s2">&quot;alpha&quot;</span><span class="p">,</span> <span class="n">_validate_angle</span><span class="p">)</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">alpha</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">numbers</span><span class="o">.</span><span class="n">Real</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="c1"># validation and setting handled by decorator</span>
+        <span class="k">pass</span>
+
+    <span class="nd">@property</span>
+<div class="viewcode-block" id="_AHLattice.beta">
+<a class="viewcode-back" href="../../autoapi/chewacla/adhoc/index.html#chewacla.adhoc._AHLattice.beta">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">beta</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_beta</span></div>
+
+
+    <span class="nd">@beta</span><span class="o">.</span><span class="n">setter</span>
+    <span class="nd">@_validated_setter</span><span class="p">(</span><span class="s2">&quot;beta&quot;</span><span class="p">,</span> <span class="n">_validate_angle</span><span class="p">)</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">beta</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">numbers</span><span class="o">.</span><span class="n">Real</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="c1"># validation and setting handled by decorator</span>
+        <span class="k">pass</span>
+
+    <span class="nd">@property</span>
+<div class="viewcode-block" id="_AHLattice.gamma">
+<a class="viewcode-back" href="../../autoapi/chewacla/adhoc/index.html#chewacla.adhoc._AHLattice.gamma">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">gamma</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_gamma</span></div>
+
+
+    <span class="nd">@gamma</span><span class="o">.</span><span class="n">setter</span>
+    <span class="nd">@_validated_setter</span><span class="p">(</span><span class="s2">&quot;gamma&quot;</span><span class="p">,</span> <span class="n">_validate_angle</span><span class="p">)</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">gamma</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">numbers</span><span class="o">.</span><span class="n">Real</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="c1"># validation and setting handled by decorator</span>
+        <span class="k">pass</span>
+
+    <span class="nd">@property</span>
+<div class="viewcode-block" id="_AHLattice.B">
+<a class="viewcode-back" href="../../autoapi/chewacla/adhoc/index.html#chewacla.adhoc._AHLattice.B">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">B</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the lattice B matrix (3x3 ndarray) [per BL67].</span>
+
+<span class="sd">        * BL67: Busing&amp;Levy Acta Cyst. 22, 457 (1967)</span>
+<span class="sd">        * https://repo.or.cz/hkl.git/blob/HEAD:/hkl/hkl-lattice.c</span>
+
+<span class="sd">        Compute the reciprocal-lattice B matrix from unit-cell parameters.</span>
+<span class="sd">        This matrix depends only on the crystal cell parameters.</span>
+
+<span class="sd">        Input Units:</span>
+
+<span class="sd">        * angles alpha, beta, gamma are given in degrees</span>
+<span class="sd">        * a, b, c are in the same units as the wavelength</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            B: (3,3) numpy.ndarray (float64)</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            ValueError: if the cell is degenerate (invalid angles/parameters).</span>
+
+<span class="sd">        Note:</span>
+<span class="sd">            This implementation uses the Busing &amp; Levy convention and includes the</span>
+<span class="sd">            factor 2π (TAU) so that G = B @ h has units of Å⁻¹.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_B</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="c1"># compute B from lattice parameters</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">a</span> <span class="o">&lt;=</span> <span class="mi">0</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">b</span> <span class="o">&lt;=</span> <span class="mi">0</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">c</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;a,b,c must be &gt; 0&quot;</span><span class="p">)</span>
+
+            <span class="c1"># convert degrees -&gt; radians once</span>
+            <span class="n">rad</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mf">180.0</span>
+            <span class="n">alpha_r</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">alpha</span> <span class="o">*</span> <span class="n">rad</span>
+            <span class="n">beta_r</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">beta</span> <span class="o">*</span> <span class="n">rad</span>
+            <span class="n">gamma_r</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">gamma</span> <span class="o">*</span> <span class="n">rad</span>
+
+            <span class="n">ca</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">alpha_r</span><span class="p">)</span>
+            <span class="n">cb</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">beta_r</span><span class="p">)</span>
+            <span class="n">cg</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">gamma_r</span><span class="p">)</span>
+            <span class="n">sa</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">alpha_r</span><span class="p">)</span>
+            <span class="n">sb</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">beta_r</span><span class="p">)</span>
+            <span class="n">sg</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">gamma_r</span><span class="p">)</span>
+
+            <span class="c1"># underflow</span>
+            <span class="n">tol</span> <span class="o">=</span> <span class="mi">10</span> <span class="o">**</span> <span class="p">(</span><span class="o">-</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">digits</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">digits</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="mi">12</span><span class="p">))</span>
+
+            <span class="c1"># metric determinant factor</span>
+            <span class="n">D_val</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="o">-</span> <span class="n">ca</span> <span class="o">*</span> <span class="n">ca</span> <span class="o">-</span> <span class="n">cb</span> <span class="o">*</span> <span class="n">cb</span> <span class="o">-</span> <span class="n">cg</span> <span class="o">*</span> <span class="n">cg</span> <span class="o">+</span> <span class="mf">2.0</span> <span class="o">*</span> <span class="n">ca</span> <span class="o">*</span> <span class="n">cb</span> <span class="o">*</span> <span class="n">cg</span>
+            <span class="k">if</span> <span class="n">D_val</span> <span class="o">&lt;=</span> <span class="n">tol</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Invalid unit cell (D &lt;= </span><span class="si">{</span><span class="n">tol</span><span class="si">}</span><span class="s2">): D=</span><span class="si">{</span><span class="n">D_val</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">inv_sqrtD</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">D_val</span><span class="p">)</span>
+
+            <span class="c1"># guard against near-zero sines (angles near 0 or 180 deg)</span>
+            <span class="k">if</span> <span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">sg</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">tol</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">sb</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">tol</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">sa</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">tol</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Unit cell angles produce near-zero sine terms; degenerate cell&quot;</span><span class="p">)</span>
+
+            <span class="c1"># precompute scaled denominators</span>
+            <span class="n">inv_a</span> <span class="o">=</span> <span class="n">inv_sqrtD</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">a</span>
+            <span class="n">inv_b</span> <span class="o">=</span> <span class="n">inv_sqrtD</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">b</span>
+            <span class="n">inv_c</span> <span class="o">=</span> <span class="n">inv_sqrtD</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">c</span>
+
+            <span class="c1"># Canonical upper-triangular B matrix giving reciprocal vectors in Cartesian (Å^-1)</span>
+            <span class="c1"># following Busing &amp; Levy conventions with 2π factor (TAU)</span>
+            <span class="n">B</span> <span class="o">=</span> <span class="n">TAU</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
+                <span class="p">[</span>
+                    <span class="p">[</span><span class="n">inv_a</span><span class="p">,</span> <span class="o">-</span><span class="n">cg</span> <span class="o">*</span> <span class="n">inv_a</span> <span class="o">/</span> <span class="n">sg</span><span class="p">,</span> <span class="p">(</span><span class="n">cb</span> <span class="o">*</span> <span class="n">cg</span> <span class="o">-</span> <span class="n">ca</span><span class="p">)</span> <span class="o">*</span> <span class="n">inv_a</span> <span class="o">/</span> <span class="p">(</span><span class="n">sg</span> <span class="o">*</span> <span class="n">sb</span><span class="p">)],</span>
+                    <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">inv_b</span> <span class="o">/</span> <span class="n">sg</span><span class="p">,</span> <span class="p">(</span><span class="n">ca</span> <span class="o">*</span> <span class="n">cg</span> <span class="o">-</span> <span class="n">cb</span><span class="p">)</span> <span class="o">*</span> <span class="n">inv_b</span> <span class="o">/</span> <span class="p">(</span><span class="n">sg</span> <span class="o">*</span> <span class="n">sb</span><span class="p">)],</span>
+                    <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="n">sa</span> <span class="o">*</span> <span class="n">inv_c</span> <span class="o">/</span> <span class="p">(</span><span class="n">sb</span> <span class="o">*</span> <span class="n">sg</span><span class="p">)],</span>
+                <span class="p">],</span>
+                <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">,</span>
+            <span class="p">)</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">_B</span> <span class="o">=</span> <span class="n">B</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_B</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="_AHLattice.to_dict">
+<a class="viewcode-back" href="../../autoapi/chewacla/adhoc/index.html#chewacla.adhoc._AHLattice.to_dict">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">to_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">digits</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">float</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return lattice constants as a dict.</span>
+
+<span class="sd">        If `digits` is an int, numeric values are rounded to that many decimal places.</span>
+<span class="sd">        If `digits` is None (default), full precision floats are returned.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">def</span><span class="w"> </span><span class="nf">fmt</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+            <span class="k">return</span> <span class="nb">float</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">digits</span><span class="p">))</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">digits</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span> <span class="k">else</span> <span class="nb">float</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="p">{</span>
+            <span class="s2">&quot;a&quot;</span><span class="p">:</span> <span class="n">fmt</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">a</span><span class="p">),</span>
+            <span class="s2">&quot;b&quot;</span><span class="p">:</span> <span class="n">fmt</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">b</span><span class="p">),</span>
+            <span class="s2">&quot;c&quot;</span><span class="p">:</span> <span class="n">fmt</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">c</span><span class="p">),</span>
+            <span class="s2">&quot;alpha&quot;</span><span class="p">:</span> <span class="n">fmt</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">alpha</span><span class="p">),</span>
+            <span class="s2">&quot;beta&quot;</span><span class="p">:</span> <span class="n">fmt</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">beta</span><span class="p">),</span>
+            <span class="s2">&quot;gamma&quot;</span><span class="p">:</span> <span class="n">fmt</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">gamma</span><span class="p">),</span>
+        <span class="p">}</span></div>
+
+
+<div class="viewcode-block" id="_AHLattice.__repr__">
+<a class="viewcode-back" href="../../autoapi/chewacla/adhoc/index.html#chewacla.adhoc._AHLattice.__repr__">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Nice text representation.&quot;&quot;&quot;</span>
+        <span class="n">vals</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">to_dict</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">digits</span><span class="p">)</span>
+        <span class="n">body</span> <span class="o">=</span> <span class="s2">&quot;, &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">k</span><span class="si">}</span><span class="s2">=</span><span class="si">{</span><span class="n">v</span><span class="si">}</span><span class="s2">&quot;</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">vals</span><span class="o">.</span><span class="n">items</span><span class="p">())</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">(</span><span class="si">{</span><span class="n">body</span><span class="si">}</span><span class="s2">)&quot;</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="AHReflection">
+<a class="viewcode-back" href="../../autoapi/chewacla/adhoc/index.html#chewacla.adhoc.AHReflection">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">AHReflection</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Orienting reflection used by the AdHocDiffractometer.&quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="AHReflection._name">
+<a class="viewcode-back" href="../../autoapi/chewacla/adhoc/index.html#chewacla.adhoc.AHReflection._name">[docs]</a>
+    <span class="n">_name</span><span class="p">:</span> <span class="nb">str</span></div>
+
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;(internal) name given to this reflection by the caller.&quot;&quot;&quot;</span>
+<div class="viewcode-block" id="AHReflection._pseudos">
+<a class="viewcode-back" href="../../autoapi/chewacla/adhoc/index.html#chewacla.adhoc.AHReflection._pseudos">[docs]</a>
+    <span class="n">_pseudos</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">float</span><span class="p">]</span></div>
+
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;(internal) dict of pseudo-axis names to float values (e.g., h,k,l).&quot;&quot;&quot;</span>
+<div class="viewcode-block" id="AHReflection._reals">
+<a class="viewcode-back" href="../../autoapi/chewacla/adhoc/index.html#chewacla.adhoc.AHReflection._reals">[docs]</a>
+    <span class="n">_reals</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">float</span><span class="p">]</span></div>
+
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;(internal) dict of real-axis names to float values (diffractometer angles).&quot;&quot;&quot;</span>
+<div class="viewcode-block" id="AHReflection._wavelength">
+<a class="viewcode-back" href="../../autoapi/chewacla/adhoc/index.html#chewacla.adhoc.AHReflection._wavelength">[docs]</a>
+    <span class="n">_wavelength</span><span class="p">:</span> <span class="nb">float</span></div>
+
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;(internal) Wavelength associated with this reflection (in length units, typically Å).&quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">pseudos</span><span class="p">:</span> <span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">float</span><span class="p">],</span>
+        <span class="n">reals</span><span class="p">:</span> <span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">float</span><span class="p">],</span>
+        <span class="n">wavelength</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;name must be a str&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_name</span> <span class="o">=</span> <span class="n">name</span>
+
+        <span class="c1"># use the public setters to validate and store the mappings</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pseudos</span> <span class="o">=</span> <span class="n">pseudos</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">reals</span> <span class="o">=</span> <span class="n">reals</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">wavelength</span> <span class="o">=</span> <span class="n">DEFAULT_WAVELENGTH</span> <span class="k">if</span> <span class="n">wavelength</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="nb">float</span><span class="p">(</span><span class="n">wavelength</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+<div class="viewcode-block" id="AHReflection.name">
+<a class="viewcode-back" href="../../autoapi/chewacla/adhoc/index.html#chewacla.adhoc.AHReflection.name">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">name</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Name given to this reflection (read-only).&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_name</span></div>
+
+
+    <span class="c1"># --- wavelength property -------------------------------------------------</span>
+    <span class="nd">@property</span>
+<div class="viewcode-block" id="AHReflection.wavelength">
+<a class="viewcode-back" href="../../autoapi/chewacla/adhoc/index.html#chewacla.adhoc.AHReflection.wavelength">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">wavelength</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Wavelength (float).&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_wavelength</span></div>
+
+
+    <span class="nd">@wavelength</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">wavelength</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">val</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">val</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;wavelength must be positive&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_wavelength</span> <span class="o">=</span> <span class="n">val</span>
+
+    <span class="c1"># --- pseudos property ---------------------------------------------------</span>
+
+    <span class="nd">@property</span>
+<div class="viewcode-block" id="AHReflection.pseudos">
+<a class="viewcode-back" href="../../autoapi/chewacla/adhoc/index.html#chewacla.adhoc.AHReflection.pseudos">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">pseudos</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">float</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Read-only view of pseudos (hkl) mapping.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">dict</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_pseudos</span><span class="p">)</span></div>
+
+
+    <span class="nd">@pseudos</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">pseudos</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">float</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">Mapping</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;pseudos must be a Mapping[str, numeric]&quot;</span><span class="p">)</span>
+        <span class="n">new</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">value</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;pseudos keys must be strings&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">numbers</span><span class="o">.</span><span class="n">Real</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;pseudos values must be numeric&quot;</span><span class="p">)</span>
+            <span class="n">new</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_pseudos</span> <span class="o">=</span> <span class="n">new</span>
+
+<div class="viewcode-block" id="AHReflection.set_pseudo">
+<a class="viewcode-back" href="../../autoapi/chewacla/adhoc/index.html#chewacla.adhoc.AHReflection.set_pseudo">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">set_pseudo</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set a single pseudo value.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_pseudos</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">value</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="AHReflection.get_pseudo">
+<a class="viewcode-back" href="../../autoapi/chewacla/adhoc/index.html#chewacla.adhoc.AHReflection.get_pseudo">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_pseudo</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">default</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get a single pseudo value or default if missing.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pseudos</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">default</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="AHReflection.remove_pseudo">
+<a class="viewcode-back" href="../../autoapi/chewacla/adhoc/index.html#chewacla.adhoc.AHReflection.remove_pseudo">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">remove_pseudo</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Remove a pseudo entry; KeyError if absent.&quot;&quot;&quot;</span>
+        <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pseudos</span><span class="p">[</span><span class="n">name</span><span class="p">]</span></div>
+
+
+    <span class="c1"># --- reals property -----------------------------------------------------</span>
+    <span class="nd">@property</span>
+<div class="viewcode-block" id="AHReflection.reals">
+<a class="viewcode-back" href="../../autoapi/chewacla/adhoc/index.html#chewacla.adhoc.AHReflection.reals">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">reals</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">float</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Read-only view of reals mapping.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">dict</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_reals</span><span class="p">)</span></div>
+
+
+    <span class="nd">@reals</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">reals</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">float</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">Mapping</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;reals must be a Mapping[str, numeric]&quot;</span><span class="p">)</span>
+        <span class="n">new</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">value</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;reals keys must be strings&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">numbers</span><span class="o">.</span><span class="n">Real</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;reals values must be numeric&quot;</span><span class="p">)</span>
+            <span class="n">new</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_reals</span> <span class="o">=</span> <span class="n">new</span>
+
+<div class="viewcode-block" id="AHReflection.set_real">
+<a class="viewcode-back" href="../../autoapi/chewacla/adhoc/index.html#chewacla.adhoc.AHReflection.set_real">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">set_real</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set a single real value.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_reals</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">value</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="AHReflection.get_real">
+<a class="viewcode-back" href="../../autoapi/chewacla/adhoc/index.html#chewacla.adhoc.AHReflection.get_real">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_real</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">default</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get a single real value or default if missing.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_reals</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">default</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="AHReflection.remove_real">
+<a class="viewcode-back" href="../../autoapi/chewacla/adhoc/index.html#chewacla.adhoc.AHReflection.remove_real">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">remove_real</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Remove a real entry; KeyError if absent.&quot;&quot;&quot;</span>
+        <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">_reals</span><span class="p">[</span><span class="n">name</span><span class="p">]</span></div>
+
+
+    <span class="c1"># --- representation and equality ----------------------------------------</span>
+<div class="viewcode-block" id="AHReflection.__repr__">
+<a class="viewcode-back" href="../../autoapi/chewacla/adhoc/index.html#chewacla.adhoc.AHReflection.__repr__">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Nice, truncated text representation for long dicts.&quot;&quot;&quot;</span>
+        <span class="n">r</span> <span class="o">=</span> <span class="n">reprlib</span><span class="o">.</span><span class="n">Repr</span><span class="p">()</span>
+        <span class="n">r</span><span class="o">.</span><span class="n">maxlist</span> <span class="o">=</span> <span class="mi">10</span>
+        <span class="n">body</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="sa">f</span><span class="s2">&quot;name=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_name</span><span class="si">!r}</span><span class="s2">&quot;</span><span class="p">,</span>
+            <span class="sa">f</span><span class="s2">&quot;pseudos=</span><span class="si">{</span><span class="n">r</span><span class="o">.</span><span class="n">repr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pseudos</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+            <span class="sa">f</span><span class="s2">&quot;reals=</span><span class="si">{</span><span class="n">r</span><span class="o">.</span><span class="n">repr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">reals</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+            <span class="sa">f</span><span class="s2">&quot;wavelength=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_wavelength</span><span class="si">!r}</span><span class="s2">&quot;</span><span class="p">,</span>
+        <span class="p">]</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">(</span><span class="si">{</span><span class="n">body</span><span class="si">}</span><span class="s2">)&quot;</span></div>
+
+
+<div class="viewcode-block" id="AHReflection.__eq__">
+<a class="viewcode-back" href="../../autoapi/chewacla/adhoc/index.html#chewacla.adhoc.AHReflection.__eq__">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="nb">object</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Compare with &#39;other&#39; reflection for equality with numeric tolerance.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">AHReflection</span><span class="p">):</span>
+            <span class="k">return</span> <span class="bp">NotImplemented</span>
+
+        <span class="c1"># compare keys using public properties</span>
+        <span class="k">if</span> <span class="nb">set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pseudos</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">set</span><span class="p">(</span><span class="n">other</span><span class="o">.</span><span class="n">pseudos</span><span class="p">):</span>
+            <span class="k">return</span> <span class="kc">False</span>
+        <span class="k">if</span> <span class="nb">set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">reals</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">set</span><span class="p">(</span><span class="n">other</span><span class="o">.</span><span class="n">reals</span><span class="p">):</span>
+            <span class="k">return</span> <span class="kc">False</span>
+
+        <span class="c1"># compare values with tolerance</span>
+        <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">pseudos</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">isclose</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pseudos</span><span class="p">[</span><span class="n">k</span><span class="p">],</span> <span class="n">other</span><span class="o">.</span><span class="n">pseudos</span><span class="p">[</span><span class="n">k</span><span class="p">]):</span>
+                <span class="k">return</span> <span class="kc">False</span>
+        <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">reals</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">isclose</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">reals</span><span class="p">[</span><span class="n">k</span><span class="p">],</span> <span class="n">other</span><span class="o">.</span><span class="n">reals</span><span class="p">[</span><span class="n">k</span><span class="p">]):</span>
+                <span class="k">return</span> <span class="kc">False</span>
+
+        <span class="k">return</span> <span class="nb">bool</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">isclose</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_wavelength</span><span class="p">,</span> <span class="n">other</span><span class="o">.</span><span class="n">_wavelength</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="AHReflection.validate_against">
+<a class="viewcode-back" href="../../autoapi/chewacla/adhoc/index.html#chewacla.adhoc.AHReflection.validate_against">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">validate_against</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">expected_reals</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">expected_pseudos</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Validate this reflection&#39;s keys against expected instrument axes.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        expected_reals:</span>
+<span class="sd">            Sequence of real-axis names expected by the instrument (e.g. sample/detector axes).</span>
+<span class="sd">        expected_pseudos:</span>
+<span class="sd">            Sequence of pseudo-axis keys expected (usually &#39;h&#39;,&#39;k&#39;,&#39;l&#39;).</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        ValueError</span>
+<span class="sd">            If the reflection&#39;s keys do not exactly match the expected sets.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Use the public properties rather than internal attributes to preserve</span>
+        <span class="c1"># encapsulation. `self.pseudos` and `self.reals` return dict copies,</span>
+        <span class="c1"># so converting them to sets yields the key sets expected by</span>
+        <span class="c1"># `_compare_axis_sets`.</span>
+        <span class="k">if</span> <span class="n">expected_pseudos</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">_compare_axis_sets</span><span class="p">(</span><span class="s2">&quot;pseudo&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="nb">set</span><span class="p">(</span><span class="n">expected_pseudos</span><span class="p">),</span> <span class="nb">set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pseudos</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">expected_reals</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">_compare_axis_sets</span><span class="p">(</span><span class="s2">&quot;real&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="nb">set</span><span class="p">(</span><span class="n">expected_reals</span><span class="p">),</span> <span class="nb">set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">reals</span><span class="p">))</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="Chewacla">
+<a class="viewcode-back" href="../../autoapi/chewacla/adhoc/index.html#chewacla.adhoc.Chewacla">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">Chewacla</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    The *ad hoc* diffractometer with stages as described by a dictionary.</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    - Reflections are managed by name. Use :meth:`addReflection` to add an</span>
+<span class="sd">        :class:`AHReflection` to the instrument. By default adding a reflection</span>
+<span class="sd">        with a name that already exists raises ``ValueError`` to prevent</span>
+<span class="sd">        accidental overwrites; pass ``force=True`` to replace an existing</span>
+<span class="sd">        reflection deliberately.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="Chewacla._incident_beam">
+<a class="viewcode-back" href="../../autoapi/chewacla/adhoc/index.html#chewacla.adhoc.Chewacla._incident_beam">[docs]</a>
+    <span class="n">_incident_beam</span><span class="p">:</span> <span class="n">DirectionVector</span></div>
+
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Unit vector describing the direction of the incident beam.&quot;&quot;&quot;</span>
+<div class="viewcode-block" id="Chewacla._sample_stage">
+<a class="viewcode-back" href="../../autoapi/chewacla/adhoc/index.html#chewacla.adhoc.Chewacla._sample_stage">[docs]</a>
+    <span class="n">_sample_stage</span><span class="p">:</span> <span class="n">DirectionMap</span></div>
+
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;names and unit vectors for sample stage rotations&quot;&quot;&quot;</span>
+<div class="viewcode-block" id="Chewacla._detector_stage">
+<a class="viewcode-back" href="../../autoapi/chewacla/adhoc/index.html#chewacla.adhoc.Chewacla._detector_stage">[docs]</a>
+    <span class="n">_detector_stage</span><span class="p">:</span> <span class="n">DirectionMap</span></div>
+
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;names and unit vectors for detector stage rotations&quot;&quot;&quot;</span>
+<div class="viewcode-block" id="Chewacla._lattice">
+<a class="viewcode-back" href="../../autoapi/chewacla/adhoc/index.html#chewacla.adhoc.Chewacla._lattice">[docs]</a>
+    <span class="n">_lattice</span><span class="p">:</span> <span class="n">_AHLattice</span></div>
+
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;crystal lattice parameters (angstroms and degrees)&quot;&quot;&quot;</span>
+<div class="viewcode-block" id="Chewacla._wavelength">
+<a class="viewcode-back" href="../../autoapi/chewacla/adhoc/index.html#chewacla.adhoc.Chewacla._wavelength">[docs]</a>
+    <span class="n">_wavelength</span><span class="p">:</span> <span class="nb">float</span></div>
+
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Wavelength of incident beam (angstroms)&quot;&quot;&quot;</span>
+<div class="viewcode-block" id="Chewacla._reflections">
+<a class="viewcode-back" href="../../autoapi/chewacla/adhoc/index.html#chewacla.adhoc.Chewacla._reflections">[docs]</a>
+    <span class="n">_reflections</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">AHReflection</span><span class="p">]</span></div>
+
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Orienting reflections (name -&gt; AHReflection) to be used in computation of UB matrix.&quot;&quot;&quot;</span>
+<div class="viewcode-block" id="Chewacla.U">
+<a class="viewcode-back" href="../../autoapi/chewacla/adhoc/index.html#chewacla.adhoc.Chewacla.U">[docs]</a>
+    <span class="n">U</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span></div>
+
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Goniometer orientation matrix&quot;&quot;&quot;</span>
+<div class="viewcode-block" id="Chewacla.UB">
+<a class="viewcode-back" href="../../autoapi/chewacla/adhoc/index.html#chewacla.adhoc.Chewacla.UB">[docs]</a>
+    <span class="n">UB</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span></div>
+
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Crystal orientation matrix&quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="Chewacla._ds">
+<a class="viewcode-back" href="../../autoapi/chewacla/adhoc/index.html#chewacla.adhoc.Chewacla._ds">[docs]</a>
+    <span class="n">_ds</span><span class="p">:</span> <span class="n">DirectionShorthand</span></div>
+
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;(internal) DirectionShorthand object&quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">sample_stage</span><span class="p">:</span> <span class="n">DirectionMapInput</span><span class="p">,</span>
+        <span class="n">detector_stage</span><span class="p">:</span> <span class="n">DirectionMapInput</span><span class="p">,</span>
+        <span class="n">wavelength</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">incident_beam</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">DirectionVectorInput</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">direction_map</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">DirectionMapInput</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="c1"># Initialize internal direction shorthand</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_ds</span> <span class="o">=</span> <span class="n">DirectionShorthand</span><span class="p">(</span><span class="n">direction_map</span><span class="p">)</span>
+
+        <span class="c1"># raw inputs preserved for repr/debug</span>
+<div class="viewcode-block" id="Chewacla.raw_incident_beam">
+<a class="viewcode-back" href="../../autoapi/chewacla/adhoc/index.html#chewacla.adhoc.Chewacla.raw_incident_beam">[docs]</a>
+        <span class="bp">self</span><span class="o">.</span><span class="n">raw_incident_beam</span> <span class="o">=</span> <span class="kc">None</span></div>
+
+<div class="viewcode-block" id="Chewacla.raw_sample_stage">
+<a class="viewcode-back" href="../../autoapi/chewacla/adhoc/index.html#chewacla.adhoc.Chewacla.raw_sample_stage">[docs]</a>
+        <span class="bp">self</span><span class="o">.</span><span class="n">raw_sample_stage</span> <span class="o">=</span> <span class="kc">None</span></div>
+
+<div class="viewcode-block" id="Chewacla.raw_detector_stage">
+<a class="viewcode-back" href="../../autoapi/chewacla/adhoc/index.html#chewacla.adhoc.Chewacla.raw_detector_stage">[docs]</a>
+        <span class="bp">self</span><span class="o">.</span><span class="n">raw_detector_stage</span> <span class="o">=</span> <span class="kc">None</span></div>
+
+
+        <span class="c1"># Set basic instrument descriptors. Use provided values or sensible defaults.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">incident_beam</span> <span class="o">=</span> <span class="s2">&quot;+x&quot;</span> <span class="k">if</span> <span class="n">incident_beam</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">incident_beam</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sample_stage</span> <span class="o">=</span> <span class="n">sample_stage</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">detector_stage</span> <span class="o">=</span> <span class="n">detector_stage</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">wavelength</span> <span class="o">=</span> <span class="n">DEFAULT_WAVELENGTH</span> <span class="k">if</span> <span class="n">wavelength</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="nb">float</span><span class="p">(</span><span class="n">wavelength</span><span class="p">)</span>
+
+        <span class="c1"># Lattice defaults and reflection storage</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">lattice</span> <span class="o">=</span> <span class="n">DEFAULT_LATTICE_PARAMS</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_reflections</span> <span class="o">=</span> <span class="p">{}</span>  <span class="c1"># no reflections defined yet</span>
+
+        <span class="c1"># Orientation matrices default to identity</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">U</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">IDENTITY_MATRIX_3X3</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">UB</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">IDENTITY_MATRIX_3X3</span><span class="p">)</span>
+
+<div class="viewcode-block" id="Chewacla.__repr__">
+<a class="viewcode-back" href="../../autoapi/chewacla/adhoc/index.html#chewacla.adhoc.Chewacla.__repr__">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Nice text representation.&quot;&quot;&quot;</span>
+        <span class="n">body</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="sa">f</span><span class="s2">&quot;incident_beam=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">raw_incident_beam</span><span class="si">!r}</span><span class="s2">&quot;</span><span class="p">,</span>
+            <span class="sa">f</span><span class="s2">&quot;sample_stage=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">raw_sample_stage</span><span class="si">!r}</span><span class="s2">&quot;</span><span class="p">,</span>
+            <span class="sa">f</span><span class="s2">&quot;detector_stage=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">raw_detector_stage</span><span class="si">!r}</span><span class="s2">&quot;</span><span class="p">,</span>
+        <span class="p">]</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">(</span><span class="si">{</span><span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">body</span><span class="p">)</span><span class="si">}</span><span class="s2">)&quot;</span></div>
+
+
+<div class="viewcode-block" id="Chewacla.addReflection">
+<a class="viewcode-back" href="../../autoapi/chewacla/adhoc/index.html#chewacla.adhoc.Chewacla.addReflection">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">addReflection</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reflection</span><span class="p">:</span> <span class="n">AHReflection</span><span class="p">,</span> <span class="n">force</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Add a single reflection using its own `name` attribute as the key.</span>
+
+<span class="sd">        Parameters:</span>
+
+<span class="sd">        - reflection: an already-constructed `AHReflection` instance with a valid</span>
+<span class="sd">          `name` attribute (str). The reflection&#39;s `name` will be used as the key</span>
+<span class="sd">          when storing it in the manager.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">reflection</span><span class="p">,</span> <span class="n">AHReflection</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;reflection must be an AHReflection instance&quot;</span><span class="p">)</span>
+        <span class="n">name</span> <span class="o">=</span> <span class="n">reflection</span><span class="o">.</span><span class="n">name</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;reflection.name must be a str&quot;</span><span class="p">)</span>
+
+        <span class="c1"># validate against instrument axes (raises ValueError on mismatch)</span>
+        <span class="n">reflection</span><span class="o">.</span><span class="n">validate_against</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">real_axis_names</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">pseudo_axis_names</span><span class="p">)</span>
+
+        <span class="c1"># prevent accidental overwrites unless explicitly forced</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_reflections</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">force</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Reflection </span><span class="si">{</span><span class="n">name</span><span class="si">!r}</span><span class="s2"> already exists; pass force=True to replace&quot;</span><span class="p">)</span>
+
+        <span class="c1"># finally store/replace the reflection in the dict</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_reflections</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">reflection</span></div>
+
+
+<div class="viewcode-block" id="Chewacla.make_reflection">
+<a class="viewcode-back" href="../../autoapi/chewacla/adhoc/index.html#chewacla.adhoc.Chewacla.make_reflection">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">make_reflection</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">pseudos</span><span class="p">:</span> <span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">float</span><span class="p">],</span> <span class="n">reals</span><span class="p">:</span> <span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">float</span><span class="p">],</span> <span class="n">wavelength</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">AHReflection</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Factory: construct and validate an AHReflection using this instrument&#39;s axes.</span>
+
+<span class="sd">        The returned AHReflection has already been validated against the Chewacla</span>
+<span class="sd">        `real_axis_names` and `pseudo_axis_names`.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">wl</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">wavelength</span> <span class="k">if</span> <span class="n">wavelength</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="nb">float</span><span class="p">(</span><span class="n">wavelength</span><span class="p">)</span>
+        <span class="n">r</span> <span class="o">=</span> <span class="n">AHReflection</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">pseudos</span><span class="p">,</span> <span class="n">reals</span><span class="p">,</span> <span class="n">wl</span><span class="p">)</span>
+        <span class="n">r</span><span class="o">.</span><span class="n">validate_against</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">real_axis_names</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">pseudo_axis_names</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">r</span></div>
+
+
+<div class="viewcode-block" id="Chewacla.calc_UB_BL67">
+<a class="viewcode-back" href="../../autoapi/chewacla/adhoc/index.html#chewacla.adhoc.Chewacla.calc_UB_BL67">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">calc_UB_BL67</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Calculate the U &amp; UB matrices from the given reflections.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">reflections</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">&quot;Busing &amp; Levy method requires exactly two reflections to compute&quot;</span>
+                <span class="sa">f</span><span class="s2">&quot; UB matrix. </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">reflections</span><span class="p">)</span><span class="si">}</span><span class="s2"> reflection(s) are defined.&quot;</span>
+            <span class="p">)</span>
+        <span class="c1"># TODO: proceed</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">UB</span></div>
+
+
+<div class="viewcode-block" id="Chewacla.forward">
+<a class="viewcode-back" href="../../autoapi/chewacla/adhoc/index.html#chewacla.adhoc.Chewacla.forward">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pseudos</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">float</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">float</span><span class="p">]]:</span>
+        <span class="k">return</span> <span class="p">[{}]</span>  <span class="c1"># TODO:</span></div>
+
+
+<div class="viewcode-block" id="Chewacla.inverse">
+<a class="viewcode-back" href="../../autoapi/chewacla/adhoc/index.html#chewacla.adhoc.Chewacla.inverse">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">inverse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reals</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">float</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">float</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="p">{}</span>  <span class="c1"># TODO:</span></div>
+
+
+    <span class="c1"># TODO: mode property getter &amp; setter</span>
+
+    <span class="c1"># -------------- getter/setter property methods</span>
+
+    <span class="nd">@property</span>
+<div class="viewcode-block" id="Chewacla.detector_stage">
+<a class="viewcode-back" href="../../autoapi/chewacla/adhoc/index.html#chewacla.adhoc.Chewacla.detector_stage">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">detector_stage</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">DirectionMap</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Describes the detector stage stack of rotations.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_detector_stage</span></div>
+
+
+    <span class="nd">@detector_stage</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">detector_stage</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">DirectionMapInput</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Accept mapping-like; minimal conversion here.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">raw_detector_stage</span> <span class="o">=</span> <span class="n">value</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_detector_stage</span> <span class="o">=</span> <span class="n">expand_direction_map</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_ds</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+<div class="viewcode-block" id="Chewacla.incident_beam">
+<a class="viewcode-back" href="../../autoapi/chewacla/adhoc/index.html#chewacla.adhoc.Chewacla.incident_beam">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">incident_beam</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">DirectionVector</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Unit vector describing the direction of the incident beam.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_incident_beam</span></div>
+
+
+    <span class="nd">@incident_beam</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">incident_beam</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">raw</span><span class="p">:</span> <span class="n">DirectionVectorInput</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Define the direction of the incident beam.&quot;&quot;&quot;</span>
+        <span class="n">value</span> <span class="o">=</span> <span class="n">raw</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">raw_incident_beam</span> <span class="o">=</span> <span class="n">raw</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ds</span><span class="o">.</span><span class="n">vector</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="p">(</span><span class="n">Sequence</span> <span class="o">|</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_incident_beam</span> <span class="o">=</span> <span class="n">value</span>
+            <span class="k">return</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_incident_beam</span> <span class="o">=</span> <span class="n">unit_vector</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+<div class="viewcode-block" id="Chewacla.lattice">
+<a class="viewcode-back" href="../../autoapi/chewacla/adhoc/index.html#chewacla.adhoc.Chewacla.lattice">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">lattice</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">_AHLattice</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the Lattice object.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_lattice</span></div>
+
+
+    <span class="nd">@lattice</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">lattice</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lattice_constants</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set the crystal lattice parameters.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_lattice</span> <span class="o">=</span> <span class="n">_AHLattice</span><span class="p">(</span><span class="o">*</span><span class="n">lattice_constants</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+<div class="viewcode-block" id="Chewacla.pseudo_axis_names">
+<a class="viewcode-back" href="../../autoapi/chewacla/adhoc/index.html#chewacla.adhoc.Chewacla.pseudo_axis_names">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">pseudo_axis_names</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;List of the pseudo axis names.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="s2">&quot;h k l&quot;</span><span class="o">.</span><span class="n">split</span><span class="p">()</span></div>
+
+
+    <span class="nd">@property</span>
+<div class="viewcode-block" id="Chewacla.real_axis_names">
+<a class="viewcode-back" href="../../autoapi/chewacla/adhoc/index.html#chewacla.adhoc.Chewacla.real_axis_names">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">real_axis_names</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;List of the real axis names.&quot;&quot;&quot;</span>
+        <span class="n">keys</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sample_stage</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">detector_stage</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">k</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">keys</span><span class="p">:</span>
+                <span class="n">keys</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">k</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">keys</span></div>
+
+
+    <span class="nd">@property</span>
+<div class="viewcode-block" id="Chewacla.reflections">
+<a class="viewcode-back" href="../../autoapi/chewacla/adhoc/index.html#chewacla.adhoc.Chewacla.reflections">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">reflections</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the reflection mapping (name -&gt; AHReflection).&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_reflections</span></div>
+
+
+    <span class="nd">@reflections</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">reflections</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">AHReflection</span><span class="p">]])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Define the orienting reflections.</span>
+
+<span class="sd">        Behaviour:</span>
+<span class="sd">        - None (or {}) clears the current reflections.</span>
+<span class="sd">        - Any Mapping or iterable of pairs of reflections (name -&gt; AHReflection) is converted is accepted (copied).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_reflections</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+            <span class="k">return</span>
+
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">Mapping</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_reflections</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+            <span class="k">return</span>
+
+        <span class="c1"># accept iterable of (name, reflection) pairs</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">items</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>  <span class="c1"># will raise if not iterable of pairs</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;reflections must be a dict or iterable of (name, reflection) pairs&quot;</span><span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">exc</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_reflections</span> <span class="o">=</span> <span class="n">items</span>
+
+    <span class="nd">@property</span>
+<div class="viewcode-block" id="Chewacla.sample_stage">
+<a class="viewcode-back" href="../../autoapi/chewacla/adhoc/index.html#chewacla.adhoc.Chewacla.sample_stage">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">sample_stage</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">DirectionMap</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Describes the sample stage stack of rotations.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sample_stage</span></div>
+
+
+    <span class="nd">@sample_stage</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">sample_stage</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">DirectionMapInput</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Accept mapping-like; minimal conversion here.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">raw_sample_stage</span> <span class="o">=</span> <span class="n">value</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_sample_stage</span> <span class="o">=</span> <span class="n">expand_direction_map</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_ds</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+<div class="viewcode-block" id="Chewacla.wavelength">
+<a class="viewcode-back" href="../../autoapi/chewacla/adhoc/index.html#chewacla.adhoc.Chewacla.wavelength">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">wavelength</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_wavelength</span></div>
+
+
+    <span class="nd">@wavelength</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">wavelength</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">v</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">v</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Wavelength must be positive&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_wavelength</span> <span class="o">=</span> <span class="n">v</span></div>
+
+</pre></div>
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
+<script defer src="../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2025, Pete R. Jemian.
+      <br/>
+    
+  </p>
+</div>
+      
+        <div class="footer-item">
+
+  <p class="sphinx-version">
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.1.3.
+    <br/>
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+<p class="theme-version">
+  <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.16.1.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>

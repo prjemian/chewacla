@@ -40,7 +40,7 @@
   <link rel="preload" as="script" href="../../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
 <link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
 
-    <script src="../../../_static/documentation_options.js?v=026654df"></script>
+    <script src="../../../_static/documentation_options.js?v=43f72869"></script>
     <script src="../../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../_static/design-tabs.js?v=f930bc37"></script>
@@ -48,7 +48,7 @@
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
     <link rel="next" title="chewacla.shorthand" href="../shorthand/index.html" />
-    <link rel="prev" title="chewacla._version" href="../_version/index.html" />
+    <link rel="prev" title="chewacla" href="../index.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="0.1" />
@@ -335,7 +335,6 @@
   <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
   <div class="bd-toc-item navbar-nav"><ul class="current nav bd-sidenav">
 <li class="toctree-l1 current active has-children"><a class="reference internal" href="../index.html">chewacla</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="../_version/index.html">chewacla._version</a></li>
 <li class="toctree-l2 current active"><a class="current reference internal" href="#">chewacla.adhoc</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../shorthand/index.html">chewacla.shorthand</a></li>
 </ul>
@@ -405,35 +404,95 @@
                   
   <section id="module-chewacla.adhoc">
 <span id="chewacla-adhoc"></span><h1>chewacla.adhoc<a class="headerlink" href="#module-chewacla.adhoc" title="Link to this heading">#</a></h1>
-<p>Chewacla: <em>ad hoc</em> diffractometer with stages as described by a dictionary.</p>
+<p>Chewacla: <em>ad hoc</em> diffractometer with rotation stages described by the caller.</p>
+<p>This module provides a lightweight, dictionary-driven representation of a
+diffractometer and supporting types used for small, interactive workflows.</p>
+<section id="key-classes">
+<h2>Key classes<a class="headerlink" href="#key-classes" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p><a class="reference internal" href="#chewacla.adhoc.Chewacla" title="chewacla.adhoc.Chewacla"><code class="xref py py-class docutils literal notranslate"><span class="pre">Chewacla</span></code></a>: <em>ad hoc</em> diffractometer.</p></li>
+<li><p><a class="reference internal" href="#chewacla.adhoc.AHReflection" title="chewacla.adhoc.AHReflection"><code class="xref py py-class docutils literal notranslate"><span class="pre">AHReflection</span></code></a>: orienting reflection: (h,k,l) &amp; angles (&amp; optional wavelength).</p></li>
+</ul>
+<p class="rubric">Example</p>
+<p>Construct a simple <em>Chewacla</em> diffractometer and add a reflection:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos">1</span><span class="kn">from</span><span class="w"> </span><span class="nn">chewacla.adhoc</span><span class="w"> </span><span class="kn">import</span> <span class="n">Chewacla</span><span class="p">,</span> <span class="n">AHReflection</span>
+<span class="linenos">2</span>
+<span class="linenos">3</span><span class="n">c</span> <span class="o">=</span> <span class="n">Chewacla</span><span class="p">({</span><span class="s2">&quot;s&quot;</span><span class="p">:</span> <span class="s2">&quot;y+&quot;</span><span class="p">},</span> <span class="p">{</span><span class="s2">&quot;d&quot;</span><span class="p">:</span> <span class="s2">&quot;y+&quot;</span><span class="p">})</span>
+<span class="linenos">4</span><span class="n">c</span><span class="o">.</span><span class="n">lattice</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">90</span><span class="p">,</span> <span class="mi">90</span><span class="p">,</span> <span class="mi">90</span>
+<span class="linenos">5</span><span class="n">r</span> <span class="o">=</span> <span class="n">AHReflection</span><span class="p">(</span><span class="s2">&quot;one&quot;</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;h&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;k&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;l&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">},</span> <span class="p">{</span><span class="s2">&quot;s&quot;</span><span class="p">:</span> <span class="mf">14.4</span><span class="p">,</span> <span class="s2">&quot;d&quot;</span><span class="p">:</span> <span class="mf">28.8</span><span class="p">})</span>
+<span class="linenos">6</span><span class="n">c</span><span class="o">.</span><span class="n">addReflection</span><span class="p">(</span><span class="n">r</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="utilities">
+<h2>Utilities<a class="headerlink" href="#utilities" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">expand_direction_map</span></code>: expand shorthand direction codes (<code class="docutils literal notranslate"><span class="pre">'x+'</span></code>, <code class="docutils literal notranslate"><span class="pre">'y-'</span></code>)</dt><dd><p>into unit vectors using the <cite>DirectionShorthand</cite> vocabulary.</p>
+</dd>
+</dl>
+</li>
+</ul>
+</section>
 <section id="module-contents">
 <h2>Module Contents<a class="headerlink" href="#module-contents" title="Link to this heading">#</a></h2>
 <dl class="py data">
 <dt class="sig sig-object py" id="chewacla.adhoc.TAU">
-<span class="sig-prename descclassname"><span class="pre">chewacla.adhoc.</span></span><span class="sig-name descname"><span class="pre">TAU</span></span><a class="headerlink" href="#chewacla.adhoc.TAU" title="Link to this definition">#</a></dt>
+<span class="sig-prename descclassname"><span class="pre">chewacla.adhoc.</span></span><span class="sig-name descname"><span class="pre">TAU</span></span><a class="reference internal" href="../../../_modules/chewacla/adhoc.html#TAU"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chewacla.adhoc.TAU" title="Link to this definition">#</a></dt>
 <dd><p>Prefactor, either 1 or 2 pi</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="chewacla.adhoc.DEFAULT_WAVELENGTH">
+<span class="sig-prename descclassname"><span class="pre">chewacla.adhoc.</span></span><span class="sig-name descname"><span class="pre">DEFAULT_WAVELENGTH</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">1.54</span></em><a class="reference internal" href="../../../_modules/chewacla/adhoc.html#DEFAULT_WAVELENGTH"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chewacla.adhoc.DEFAULT_WAVELENGTH" title="Link to this definition">#</a></dt>
+<dd><p>Approximately copper K-alpha in angstroms.</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="chewacla.adhoc.DEFAULT_LATTICE_PARAMS">
+<span class="sig-prename descclassname"><span class="pre">chewacla.adhoc.</span></span><span class="sig-name descname"><span class="pre">DEFAULT_LATTICE_PARAMS</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">(1,</span> <span class="pre">1,</span> <span class="pre">1,</span> <span class="pre">90,</span> <span class="pre">90,</span> <span class="pre">90)</span></em><a class="reference internal" href="../../../_modules/chewacla/adhoc.html#DEFAULT_LATTICE_PARAMS"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chewacla.adhoc.DEFAULT_LATTICE_PARAMS" title="Link to this definition">#</a></dt>
+<dd><p>Trivial cubic crystal.</p>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="chewacla.adhoc._validate_length">
-<span class="sig-prename descclassname"><span class="pre">chewacla.adhoc.</span></span><span class="sig-name descname"><span class="pre">_validate_length</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">val</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#chewacla.adhoc._validate_length" title="Link to this definition">#</a></dt>
+<span class="sig-prename descclassname"><span class="pre">chewacla.adhoc.</span></span><span class="sig-name descname"><span class="pre">_validate_length</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">val</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../../../_modules/chewacla/adhoc.html#_validate_length"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chewacla.adhoc._validate_length" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="chewacla.adhoc._validate_angle">
-<span class="sig-prename descclassname"><span class="pre">chewacla.adhoc.</span></span><span class="sig-name descname"><span class="pre">_validate_angle</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">val</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#chewacla.adhoc._validate_angle" title="Link to this definition">#</a></dt>
+<span class="sig-prename descclassname"><span class="pre">chewacla.adhoc.</span></span><span class="sig-name descname"><span class="pre">_validate_angle</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">val</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../../../_modules/chewacla/adhoc.html#_validate_angle"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chewacla.adhoc._validate_angle" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="chewacla.adhoc._validated_setter">
-<span class="sig-prename descclassname"><span class="pre">chewacla.adhoc.</span></span><span class="sig-name descname"><span class="pre">_validated_setter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">attr_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">validator</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#chewacla.adhoc._validated_setter" title="Link to this definition">#</a></dt>
+<span class="sig-prename descclassname"><span class="pre">chewacla.adhoc.</span></span><span class="sig-name descname"><span class="pre">_validated_setter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">attr_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">validator</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/chewacla/adhoc.html#_validated_setter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chewacla.adhoc._validated_setter" title="Link to this definition">#</a></dt>
 <dd><p>Decorator for property setters: convert to float, validate, set internal
 _&lt;attr_name&gt;, and invalidate cached self._B.</p>
 </dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="chewacla.adhoc._compare_axis_sets">
+<span class="sig-prename descclassname"><span class="pre">chewacla.adhoc.</span></span><span class="sig-name descname"><span class="pre">_compare_axis_sets</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">kind</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reflection_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">defined</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">set</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">given</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">set</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../../../_modules/chewacla/adhoc.html#_compare_axis_sets"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chewacla.adhoc._compare_axis_sets" title="Link to this definition">#</a></dt>
+<dd><p>Compare two sets of axis/key names and raise ValueError on mismatch.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>kind</strong> – ‘real’ or ‘pseudo’ — selects wording for the error message.</p></li>
+<li><p><strong>reflection_name</strong> – Name of the reflection for error context.</p></li>
+<li><p><strong>defined</strong> – The canonical set of names expected by the instrument.</p></li>
+<li><p><strong>given</strong> – The set of names provided by the reflection.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>ValueError</strong> – If the given set does not exactly match the defined set.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="chewacla.adhoc.expand_direction_map">
-<span class="sig-prename descclassname"><span class="pre">chewacla.adhoc.</span></span><span class="sig-name descname"><span class="pre">expand_direction_map</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ds</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../shorthand/index.html#chewacla.shorthand.DirectionShorthand" title="chewacla.shorthand.DirectionShorthand"><span class="pre">chewacla.shorthand.DirectionShorthand</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">stage_map</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">chewacla.shorthand.DirectionMapInput</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">numpy.ndarray</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#chewacla.adhoc.expand_direction_map" title="Link to this definition">#</a></dt>
+<span class="sig-prename descclassname"><span class="pre">chewacla.adhoc.</span></span><span class="sig-name descname"><span class="pre">expand_direction_map</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ds</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../shorthand/index.html#chewacla.shorthand.DirectionShorthand" title="chewacla.shorthand.DirectionShorthand"><span class="pre">chewacla.shorthand.DirectionShorthand</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">stage_map</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">chewacla.shorthand.DirectionMapInput</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">numpy.ndarray</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../../../_modules/chewacla/adhoc.html#expand_direction_map"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chewacla.adhoc.expand_direction_map" title="Link to this definition">#</a></dt>
 <dd><p>Return dict: {axis name: direction} where shorthand is direction, a unit vector.</p>
 <p>Example:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">ds</span> <span class="o">=</span> <span class="n">DirectionShorthand</span><span class="p">()</span>
@@ -446,53 +505,53 @@ _&lt;attr_name&gt;, and invalidate cached self._B.</p>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="chewacla.adhoc._AHLattice">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">chewacla.adhoc.</span></span><span class="sig-name descname"><span class="pre">_AHLattice</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">a</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">numbers.Real</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">b</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">numbers.Real</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">c</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">numbers.Real</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alpha</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">numbers.Real</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">beta</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">numbers.Real</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gamma</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">numbers.Real</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#chewacla.adhoc._AHLattice" title="Link to this definition">#</a></dt>
-<dd><p>Crystal lattice of sample on the AdHocDiffractometer.</p>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">chewacla.adhoc.</span></span><span class="sig-name descname"><span class="pre">_AHLattice</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">a</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">numbers.Real</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">b</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">numbers.Real</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">c</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">numbers.Real</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alpha</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">numbers.Real</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">beta</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">numbers.Real</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gamma</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">numbers.Real</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/chewacla/adhoc.html#_AHLattice"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chewacla.adhoc._AHLattice" title="Link to this definition">#</a></dt>
+<dd><p>Internal container for lattice parameters and B-matrix computation.</p>
 <dl class="py property">
 <dt class="sig sig-object py" id="chewacla.adhoc._AHLattice.a">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">a</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><a class="headerlink" href="#chewacla.adhoc._AHLattice.a" title="Link to this definition">#</a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">a</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><a class="reference internal" href="../../../_modules/chewacla/adhoc.html#_AHLattice.a"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chewacla.adhoc._AHLattice.a" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="chewacla.adhoc._AHLattice.b">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">b</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><a class="headerlink" href="#chewacla.adhoc._AHLattice.b" title="Link to this definition">#</a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">b</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><a class="reference internal" href="../../../_modules/chewacla/adhoc.html#_AHLattice.b"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chewacla.adhoc._AHLattice.b" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="chewacla.adhoc._AHLattice.c">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">c</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><a class="headerlink" href="#chewacla.adhoc._AHLattice.c" title="Link to this definition">#</a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">c</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><a class="reference internal" href="../../../_modules/chewacla/adhoc.html#_AHLattice.c"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chewacla.adhoc._AHLattice.c" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="chewacla.adhoc._AHLattice.alpha">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">alpha</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><a class="headerlink" href="#chewacla.adhoc._AHLattice.alpha" title="Link to this definition">#</a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">alpha</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><a class="reference internal" href="../../../_modules/chewacla/adhoc.html#_AHLattice.alpha"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chewacla.adhoc._AHLattice.alpha" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="chewacla.adhoc._AHLattice.beta">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">beta</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><a class="headerlink" href="#chewacla.adhoc._AHLattice.beta" title="Link to this definition">#</a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">beta</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><a class="reference internal" href="../../../_modules/chewacla/adhoc.html#_AHLattice.beta"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chewacla.adhoc._AHLattice.beta" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="chewacla.adhoc._AHLattice.gamma">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">gamma</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><a class="headerlink" href="#chewacla.adhoc._AHLattice.gamma" title="Link to this definition">#</a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">gamma</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><a class="reference internal" href="../../../_modules/chewacla/adhoc.html#_AHLattice.gamma"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chewacla.adhoc._AHLattice.gamma" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="chewacla.adhoc._AHLattice._B">
-<span class="sig-name descname"><span class="pre">_B</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">numpy.ndarray</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#chewacla.adhoc._AHLattice._B" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">_B</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">numpy.ndarray</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><a class="reference internal" href="../../../_modules/chewacla/adhoc.html#_AHLattice._B"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chewacla.adhoc._AHLattice._B" title="Link to this definition">#</a></dt>
 <dd><p>Crystalline sample orientation matrix.</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="chewacla.adhoc._AHLattice.digits">
-<span class="sig-name descname"><span class="pre">digits</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#chewacla.adhoc._AHLattice.digits" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">digits</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="reference internal" href="../../../_modules/chewacla/adhoc.html#_AHLattice.digits"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chewacla.adhoc._AHLattice.digits" title="Link to this definition">#</a></dt>
 <dd><p>Display precision (number of digits), default is full precision.</p>
 </dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="chewacla.adhoc._AHLattice.B">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">B</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">numpy.ndarray</span></em><a class="headerlink" href="#chewacla.adhoc._AHLattice.B" title="Link to this definition">#</a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">B</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">numpy.ndarray</span></em><a class="reference internal" href="../../../_modules/chewacla/adhoc.html#_AHLattice.B"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chewacla.adhoc._AHLattice.B" title="Link to this definition">#</a></dt>
 <dd><p>Return the lattice B matrix (3x3 ndarray) [per BL67].</p>
 <ul class="simple">
 <li><p>BL67: Busing&amp;Levy Acta Cyst. 22, 457 (1967)</p></li>
@@ -525,7 +584,7 @@ factor 2π (TAU) so that G = B &#64; h has units of Å⁻¹.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="chewacla.adhoc._AHLattice.to_dict">
-<span class="sig-name descname"><span class="pre">to_dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">digits</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#chewacla.adhoc._AHLattice.to_dict" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">to_dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">digits</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../../../_modules/chewacla/adhoc.html#_AHLattice.to_dict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chewacla.adhoc._AHLattice.to_dict" title="Link to this definition">#</a></dt>
 <dd><p>Return lattice constants as a dict.</p>
 <p>If <cite>digits</cite> is an int, numeric values are rounded to that many decimal places.
 If <cite>digits</cite> is None (default), full precision floats are returned.</p>
@@ -533,319 +592,303 @@ If <cite>digits</cite> is None (default), full precision floats are returned.</p
 
 <dl class="py method">
 <dt class="sig sig-object py" id="chewacla.adhoc._AHLattice.__repr__">
-<span class="sig-name descname"><span class="pre">__repr__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#chewacla.adhoc._AHLattice.__repr__" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">__repr__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="../../../_modules/chewacla/adhoc.html#_AHLattice.__repr__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chewacla.adhoc._AHLattice.__repr__" title="Link to this definition">#</a></dt>
 <dd><p>Nice text representation.</p>
 </dd></dl>
 
 </dd></dl>
 
 <dl class="py class">
-<dt class="sig sig-object py" id="chewacla.adhoc._AHReflection">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">chewacla.adhoc.</span></span><span class="sig-name descname"><span class="pre">_AHReflection</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pseudos</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">collections.abc.Mapping</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reals</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">collections.abc.Mapping</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">wavelength</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1.0</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#chewacla.adhoc._AHReflection" title="Link to this definition">#</a></dt>
-<dd><p>Orienting reflection used only by the AdHocDiffractometer.</p>
+<dt class="sig sig-object py" id="chewacla.adhoc.AHReflection">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">chewacla.adhoc.</span></span><span class="sig-name descname"><span class="pre">AHReflection</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pseudos</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">collections.abc.Mapping</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reals</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">collections.abc.Mapping</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">wavelength</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/chewacla/adhoc.html#AHReflection"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chewacla.adhoc.AHReflection" title="Link to this definition">#</a></dt>
+<dd><p>Orienting reflection used by the AdHocDiffractometer.</p>
 <dl class="py attribute">
-<dt class="sig sig-object py" id="chewacla.adhoc._AHReflection._pseudos">
-<span class="sig-name descname"><span class="pre">_pseudos</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#chewacla.adhoc._AHReflection._pseudos" title="Link to this definition">#</a></dt>
+<dt class="sig sig-object py" id="chewacla.adhoc.AHReflection._name">
+<span class="sig-name descname"><span class="pre">_name</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="reference internal" href="../../../_modules/chewacla/adhoc.html#AHReflection._name"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chewacla.adhoc.AHReflection._name" title="Link to this definition">#</a></dt>
+<dd><p>(internal) name given to this reflection by the caller.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="chewacla.adhoc.AHReflection._pseudos">
+<span class="sig-name descname"><span class="pre">_pseudos</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></em><a class="reference internal" href="../../../_modules/chewacla/adhoc.html#AHReflection._pseudos"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chewacla.adhoc.AHReflection._pseudos" title="Link to this definition">#</a></dt>
 <dd><p>(internal) dict of pseudo-axis names to float values (e.g., h,k,l).</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="chewacla.adhoc._AHReflection._reals">
-<span class="sig-name descname"><span class="pre">_reals</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#chewacla.adhoc._AHReflection._reals" title="Link to this definition">#</a></dt>
+<dt class="sig sig-object py" id="chewacla.adhoc.AHReflection._reals">
+<span class="sig-name descname"><span class="pre">_reals</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></em><a class="reference internal" href="../../../_modules/chewacla/adhoc.html#AHReflection._reals"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chewacla.adhoc.AHReflection._reals" title="Link to this definition">#</a></dt>
 <dd><p>(internal) dict of real-axis names to float values (diffractometer angles).</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="chewacla.adhoc._AHReflection._wavelength">
-<span class="sig-name descname"><span class="pre">_wavelength</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><a class="headerlink" href="#chewacla.adhoc._AHReflection._wavelength" title="Link to this definition">#</a></dt>
+<dt class="sig sig-object py" id="chewacla.adhoc.AHReflection._wavelength">
+<span class="sig-name descname"><span class="pre">_wavelength</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><a class="reference internal" href="../../../_modules/chewacla/adhoc.html#AHReflection._wavelength"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chewacla.adhoc.AHReflection._wavelength" title="Link to this definition">#</a></dt>
 <dd><p>(internal) Wavelength associated with this reflection (in length units, typically Å).</p>
 </dd></dl>
 
 <dl class="py property">
-<dt class="sig sig-object py" id="chewacla.adhoc._AHReflection.pseudos">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">pseudos</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">collections.abc.Mapping</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#chewacla.adhoc._AHReflection.pseudos" title="Link to this definition">#</a></dt>
+<dt class="sig sig-object py" id="chewacla.adhoc.AHReflection.pseudos">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">pseudos</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">collections.abc.Mapping</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></em><a class="reference internal" href="../../../_modules/chewacla/adhoc.html#AHReflection.pseudos"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chewacla.adhoc.AHReflection.pseudos" title="Link to this definition">#</a></dt>
 <dd><p>Read-only view of pseudos (hkl) mapping.</p>
 </dd></dl>
 
 <dl class="py property">
-<dt class="sig sig-object py" id="chewacla.adhoc._AHReflection.reals">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">reals</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">collections.abc.Mapping</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#chewacla.adhoc._AHReflection.reals" title="Link to this definition">#</a></dt>
+<dt class="sig sig-object py" id="chewacla.adhoc.AHReflection.reals">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">reals</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">collections.abc.Mapping</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></em><a class="reference internal" href="../../../_modules/chewacla/adhoc.html#AHReflection.reals"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chewacla.adhoc.AHReflection.reals" title="Link to this definition">#</a></dt>
 <dd><p>Read-only view of reals mapping.</p>
 </dd></dl>
 
 <dl class="py property">
-<dt class="sig sig-object py" id="chewacla.adhoc._AHReflection.wavelength">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">wavelength</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><a class="headerlink" href="#chewacla.adhoc._AHReflection.wavelength" title="Link to this definition">#</a></dt>
+<dt class="sig sig-object py" id="chewacla.adhoc.AHReflection.wavelength">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">wavelength</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><a class="reference internal" href="../../../_modules/chewacla/adhoc.html#AHReflection.wavelength"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chewacla.adhoc.AHReflection.wavelength" title="Link to this definition">#</a></dt>
 <dd><p>Wavelength (float).</p>
 </dd></dl>
 
+<dl class="py property">
+<dt class="sig sig-object py" id="chewacla.adhoc.AHReflection.name">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">name</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="reference internal" href="../../../_modules/chewacla/adhoc.html#AHReflection.name"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chewacla.adhoc.AHReflection.name" title="Link to this definition">#</a></dt>
+<dd><p>Name given to this reflection (read-only).</p>
+</dd></dl>
+
 <dl class="py method">
-<dt class="sig sig-object py" id="chewacla.adhoc._AHReflection.set_pseudo">
-<span class="sig-name descname"><span class="pre">set_pseudo</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#chewacla.adhoc._AHReflection.set_pseudo" title="Link to this definition">#</a></dt>
+<dt class="sig sig-object py" id="chewacla.adhoc.AHReflection.set_pseudo">
+<span class="sig-name descname"><span class="pre">set_pseudo</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../../../_modules/chewacla/adhoc.html#AHReflection.set_pseudo"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chewacla.adhoc.AHReflection.set_pseudo" title="Link to this definition">#</a></dt>
 <dd><p>Set a single pseudo value.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="chewacla.adhoc._AHReflection.get_pseudo">
-<span class="sig-name descname"><span class="pre">get_pseudo</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">default</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></span><a class="headerlink" href="#chewacla.adhoc._AHReflection.get_pseudo" title="Link to this definition">#</a></dt>
+<dt class="sig sig-object py" id="chewacla.adhoc.AHReflection.get_pseudo">
+<span class="sig-name descname"><span class="pre">get_pseudo</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">default</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></span><a class="reference internal" href="../../../_modules/chewacla/adhoc.html#AHReflection.get_pseudo"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chewacla.adhoc.AHReflection.get_pseudo" title="Link to this definition">#</a></dt>
 <dd><p>Get a single pseudo value or default if missing.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="chewacla.adhoc._AHReflection.remove_pseudo">
-<span class="sig-name descname"><span class="pre">remove_pseudo</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#chewacla.adhoc._AHReflection.remove_pseudo" title="Link to this definition">#</a></dt>
+<dt class="sig sig-object py" id="chewacla.adhoc.AHReflection.remove_pseudo">
+<span class="sig-name descname"><span class="pre">remove_pseudo</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../../../_modules/chewacla/adhoc.html#AHReflection.remove_pseudo"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chewacla.adhoc.AHReflection.remove_pseudo" title="Link to this definition">#</a></dt>
 <dd><p>Remove a pseudo entry; KeyError if absent.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="chewacla.adhoc._AHReflection.set_real">
-<span class="sig-name descname"><span class="pre">set_real</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#chewacla.adhoc._AHReflection.set_real" title="Link to this definition">#</a></dt>
+<dt class="sig sig-object py" id="chewacla.adhoc.AHReflection.set_real">
+<span class="sig-name descname"><span class="pre">set_real</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../../../_modules/chewacla/adhoc.html#AHReflection.set_real"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chewacla.adhoc.AHReflection.set_real" title="Link to this definition">#</a></dt>
 <dd><p>Set a single real value.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="chewacla.adhoc._AHReflection.get_real">
-<span class="sig-name descname"><span class="pre">get_real</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">default</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></span><a class="headerlink" href="#chewacla.adhoc._AHReflection.get_real" title="Link to this definition">#</a></dt>
+<dt class="sig sig-object py" id="chewacla.adhoc.AHReflection.get_real">
+<span class="sig-name descname"><span class="pre">get_real</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">default</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></span><a class="reference internal" href="../../../_modules/chewacla/adhoc.html#AHReflection.get_real"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chewacla.adhoc.AHReflection.get_real" title="Link to this definition">#</a></dt>
 <dd><p>Get a single real value or default if missing.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="chewacla.adhoc._AHReflection.remove_real">
-<span class="sig-name descname"><span class="pre">remove_real</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#chewacla.adhoc._AHReflection.remove_real" title="Link to this definition">#</a></dt>
+<dt class="sig sig-object py" id="chewacla.adhoc.AHReflection.remove_real">
+<span class="sig-name descname"><span class="pre">remove_real</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../../../_modules/chewacla/adhoc.html#AHReflection.remove_real"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chewacla.adhoc.AHReflection.remove_real" title="Link to this definition">#</a></dt>
 <dd><p>Remove a real entry; KeyError if absent.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="chewacla.adhoc._AHReflection.__repr__">
-<span class="sig-name descname"><span class="pre">__repr__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#chewacla.adhoc._AHReflection.__repr__" title="Link to this definition">#</a></dt>
+<dt class="sig sig-object py" id="chewacla.adhoc.AHReflection.__repr__">
+<span class="sig-name descname"><span class="pre">__repr__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="../../../_modules/chewacla/adhoc.html#AHReflection.__repr__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chewacla.adhoc.AHReflection.__repr__" title="Link to this definition">#</a></dt>
 <dd><p>Nice, truncated text representation for long dicts.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="chewacla.adhoc._AHReflection.__eq__">
-<span class="sig-name descname"><span class="pre">__eq__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">object</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#chewacla.adhoc._AHReflection.__eq__" title="Link to this definition">#</a></dt>
+<dt class="sig sig-object py" id="chewacla.adhoc.AHReflection.__eq__">
+<span class="sig-name descname"><span class="pre">__eq__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">object</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="../../../_modules/chewacla/adhoc.html#AHReflection.__eq__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chewacla.adhoc.AHReflection.__eq__" title="Link to this definition">#</a></dt>
 <dd><p>Compare with ‘other’ reflection for equality with numeric tolerance.</p>
 </dd></dl>
 
-</dd></dl>
-
-<dl class="py class">
-<dt class="sig sig-object py" id="chewacla.adhoc._AHReflectionList">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">chewacla.adhoc.</span></span><span class="sig-name descname"><span class="pre">_AHReflectionList</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">initial</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">collections.abc.Mapping</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="#chewacla.adhoc._AHReflection" title="chewacla.adhoc._AHReflection"><span class="pre">_AHReflection</span></a><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#chewacla.adhoc._AHReflectionList" title="Link to this definition">#</a></dt>
-<dd><p>Manage orienting reflections as named _AHReflection objects.</p>
-<p>Behaviors:
-- Stores reflections in an internal dict.
-- Supports get/set by key, deletion, iteration, length, clear.
-- Provides a concise, readable repr that truncates long contents.</p>
 <dl class="py method">
-<dt class="sig sig-object py" id="chewacla.adhoc._AHReflectionList.get">
-<span class="sig-name descname"><span class="pre">get</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#chewacla.adhoc._AHReflection" title="chewacla.adhoc._AHReflection"><span class="pre">_AHReflection</span></a></span></span><a class="headerlink" href="#chewacla.adhoc._AHReflectionList.get" title="Link to this definition">#</a></dt>
-<dd><p>Return the reflection for name or raise KeyError if missing.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="chewacla.adhoc._AHReflectionList.set">
-<span class="sig-name descname"><span class="pre">set</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reflection</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#chewacla.adhoc._AHReflection" title="chewacla.adhoc._AHReflection"><span class="pre">_AHReflection</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#chewacla.adhoc._AHReflectionList.set" title="Link to this definition">#</a></dt>
-<dd><p>Set a reflection by name.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="chewacla.adhoc._AHReflectionList.pop">
-<span class="sig-name descname"><span class="pre">pop</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#chewacla.adhoc._AHReflection" title="chewacla.adhoc._AHReflection"><span class="pre">_AHReflection</span></a></span></span><a class="headerlink" href="#chewacla.adhoc._AHReflectionList.pop" title="Link to this definition">#</a></dt>
-<dd><p>Remove and return the reflection for name; raises KeyError if absent.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="chewacla.adhoc._AHReflectionList.clear">
-<span class="sig-name descname"><span class="pre">clear</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#chewacla.adhoc._AHReflectionList.clear" title="Link to this definition">#</a></dt>
-<dd><p>Remove all stored reflections.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="chewacla.adhoc._AHReflectionList.__contains__">
-<span class="sig-name descname"><span class="pre">__contains__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">object</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#chewacla.adhoc._AHReflectionList.__contains__" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="chewacla.adhoc._AHReflectionList.__len__">
-<span class="sig-name descname"><span class="pre">__len__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="headerlink" href="#chewacla.adhoc._AHReflectionList.__len__" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="chewacla.adhoc._AHReflectionList.__iter__">
-<span class="sig-name descname"><span class="pre">__iter__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Iterator</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#chewacla.adhoc._AHReflectionList.__iter__" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="chewacla.adhoc._AHReflectionList.items">
-<span class="sig-name descname"><span class="pre">items</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Iterator</span><span class="p"><span class="pre">[</span></span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="#chewacla.adhoc._AHReflection" title="chewacla.adhoc._AHReflection"><span class="pre">_AHReflection</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#chewacla.adhoc._AHReflectionList.items" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="chewacla.adhoc._AHReflectionList.names">
-<span class="sig-name descname"><span class="pre">names</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Iterator</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#chewacla.adhoc._AHReflectionList.names" title="Link to this definition">#</a></dt>
-<dd><p>Just the names of the reflections.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="chewacla.adhoc._AHReflectionList.values">
-<span class="sig-name descname"><span class="pre">values</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Iterator</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#chewacla.adhoc._AHReflection" title="chewacla.adhoc._AHReflection"><span class="pre">_AHReflection</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#chewacla.adhoc._AHReflectionList.values" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="chewacla.adhoc._AHReflectionList.__repr__">
-<span class="sig-name descname"><span class="pre">__repr__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#chewacla.adhoc._AHReflectionList.__repr__" title="Link to this definition">#</a></dt>
-<dd><p>Nice text representation.</p>
+<dt class="sig sig-object py" id="chewacla.adhoc.AHReflection.validate_against">
+<span class="sig-name descname"><span class="pre">validate_against</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">expected_reals</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">collections.abc.Sequence</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">expected_pseudos</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">collections.abc.Sequence</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../../../_modules/chewacla/adhoc.html#AHReflection.validate_against"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chewacla.adhoc.AHReflection.validate_against" title="Link to this definition">#</a></dt>
+<dd><p>Validate this reflection’s keys against expected instrument axes.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>expected_reals</strong> – Sequence of real-axis names expected by the instrument (e.g. sample/detector axes).</p></li>
+<li><p><strong>expected_pseudos</strong> – Sequence of pseudo-axis keys expected (usually ‘h’,’k’,’l’).</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>ValueError</strong> – If the reflection’s keys do not exactly match the expected sets.</p>
+</dd>
+</dl>
 </dd></dl>
 
 </dd></dl>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="chewacla.adhoc.Chewacla">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">chewacla.adhoc.</span></span><span class="sig-name descname"><span class="pre">Chewacla</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sample_stage</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">chewacla.shorthand.DirectionMapInput</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">detector_stage</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">chewacla.shorthand.DirectionMapInput</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">wavelength</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">incident_beam</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">chewacla.shorthand.DirectionVectorInput</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">direction_map</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">chewacla.shorthand.DirectionMapInput</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#chewacla.adhoc.Chewacla" title="Link to this definition">#</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">chewacla.adhoc.</span></span><span class="sig-name descname"><span class="pre">Chewacla</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sample_stage</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">chewacla.shorthand.DirectionMapInput</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">detector_stage</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">chewacla.shorthand.DirectionMapInput</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">wavelength</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">incident_beam</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">chewacla.shorthand.DirectionVectorInput</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">direction_map</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">chewacla.shorthand.DirectionMapInput</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/chewacla/adhoc.html#Chewacla"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chewacla.adhoc.Chewacla" title="Link to this definition">#</a></dt>
 <dd><p>The <em>ad hoc</em> diffractometer with stages as described by a dictionary.</p>
+<p class="rubric">Notes</p>
+<ul class="simple">
+<li><dl class="simple">
+<dt>Reflections are managed by name. Use <a class="reference internal" href="#chewacla.adhoc.Chewacla.addReflection" title="chewacla.adhoc.Chewacla.addReflection"><code class="xref py py-meth docutils literal notranslate"><span class="pre">addReflection()</span></code></a> to add an</dt><dd><p><a class="reference internal" href="#chewacla.adhoc.AHReflection" title="chewacla.adhoc.AHReflection"><code class="xref py py-class docutils literal notranslate"><span class="pre">AHReflection</span></code></a> to the instrument. By default adding a reflection
+with a name that already exists raises <code class="docutils literal notranslate"><span class="pre">ValueError</span></code> to prevent
+accidental overwrites; pass <code class="docutils literal notranslate"><span class="pre">force=True</span></code> to replace an existing
+reflection deliberately.</p>
+</dd>
+</dl>
+</li>
+</ul>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="chewacla.adhoc.Chewacla._incident_beam">
-<span class="sig-name descname"><span class="pre">_incident_beam</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">chewacla.shorthand.DirectionVector</span></em><a class="headerlink" href="#chewacla.adhoc.Chewacla._incident_beam" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">_incident_beam</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">chewacla.shorthand.DirectionVector</span></em><a class="reference internal" href="../../../_modules/chewacla/adhoc.html#Chewacla._incident_beam"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chewacla.adhoc.Chewacla._incident_beam" title="Link to this definition">#</a></dt>
 <dd><p>Unit vector describing the direction of the incident beam.</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="chewacla.adhoc.Chewacla._sample_stage">
-<span class="sig-name descname"><span class="pre">_sample_stage</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">chewacla.shorthand.DirectionMap</span></em><a class="headerlink" href="#chewacla.adhoc.Chewacla._sample_stage" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">_sample_stage</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">chewacla.shorthand.DirectionMap</span></em><a class="reference internal" href="../../../_modules/chewacla/adhoc.html#Chewacla._sample_stage"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chewacla.adhoc.Chewacla._sample_stage" title="Link to this definition">#</a></dt>
 <dd><p>names and unit vectors for sample stage rotations</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="chewacla.adhoc.Chewacla._detector_stage">
-<span class="sig-name descname"><span class="pre">_detector_stage</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">chewacla.shorthand.DirectionMap</span></em><a class="headerlink" href="#chewacla.adhoc.Chewacla._detector_stage" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">_detector_stage</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">chewacla.shorthand.DirectionMap</span></em><a class="reference internal" href="../../../_modules/chewacla/adhoc.html#Chewacla._detector_stage"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chewacla.adhoc.Chewacla._detector_stage" title="Link to this definition">#</a></dt>
 <dd><p>names and unit vectors for detector stage rotations</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="chewacla.adhoc.Chewacla._lattice">
-<span class="sig-name descname"><span class="pre">_lattice</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#chewacla.adhoc._AHLattice" title="chewacla.adhoc._AHLattice"><span class="pre">_AHLattice</span></a></em><a class="headerlink" href="#chewacla.adhoc.Chewacla._lattice" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">_lattice</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#chewacla.adhoc._AHLattice" title="chewacla.adhoc._AHLattice"><span class="pre">_AHLattice</span></a></em><a class="reference internal" href="../../../_modules/chewacla/adhoc.html#Chewacla._lattice"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chewacla.adhoc.Chewacla._lattice" title="Link to this definition">#</a></dt>
 <dd><p>crystal lattice parameters (angstroms and degrees)</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="chewacla.adhoc.Chewacla._wavelength">
-<span class="sig-name descname"><span class="pre">_wavelength</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><a class="headerlink" href="#chewacla.adhoc.Chewacla._wavelength" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">_wavelength</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><a class="reference internal" href="../../../_modules/chewacla/adhoc.html#Chewacla._wavelength"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chewacla.adhoc.Chewacla._wavelength" title="Link to this definition">#</a></dt>
 <dd><p>Wavelength of incident beam (angstroms)</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="chewacla.adhoc.Chewacla._reflections">
-<span class="sig-name descname"><span class="pre">_reflections</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#chewacla.adhoc._AHReflectionList" title="chewacla.adhoc._AHReflectionList"><span class="pre">_AHReflectionList</span></a></em><a class="headerlink" href="#chewacla.adhoc.Chewacla._reflections" title="Link to this definition">#</a></dt>
-<dd><p>Orienting reflections to be used in computation of UB matrix.</p>
+<span class="sig-name descname"><span class="pre">_reflections</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="#chewacla.adhoc.AHReflection" title="chewacla.adhoc.AHReflection"><span class="pre">AHReflection</span></a><span class="p"><span class="pre">]</span></span></em><a class="reference internal" href="../../../_modules/chewacla/adhoc.html#Chewacla._reflections"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chewacla.adhoc.Chewacla._reflections" title="Link to this definition">#</a></dt>
+<dd><p>Orienting reflections (name -&gt; AHReflection) to be used in computation of UB matrix.</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="chewacla.adhoc.Chewacla.U">
-<span class="sig-name descname"><span class="pre">U</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">numpy.ndarray</span></em><a class="headerlink" href="#chewacla.adhoc.Chewacla.U" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">U</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">numpy.ndarray</span></em><a class="reference internal" href="../../../_modules/chewacla/adhoc.html#Chewacla.U"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chewacla.adhoc.Chewacla.U" title="Link to this definition">#</a></dt>
 <dd><p>Goniometer orientation matrix</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="chewacla.adhoc.Chewacla.UB">
-<span class="sig-name descname"><span class="pre">UB</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">numpy.ndarray</span></em><a class="headerlink" href="#chewacla.adhoc.Chewacla.UB" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">UB</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">numpy.ndarray</span></em><a class="reference internal" href="../../../_modules/chewacla/adhoc.html#Chewacla.UB"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chewacla.adhoc.Chewacla.UB" title="Link to this definition">#</a></dt>
 <dd><p>Crystal orientation matrix</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="chewacla.adhoc.Chewacla._ds">
-<span class="sig-name descname"><span class="pre">_ds</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="../shorthand/index.html#chewacla.shorthand.DirectionShorthand" title="chewacla.shorthand.DirectionShorthand"><span class="pre">chewacla.shorthand.DirectionShorthand</span></a></em><a class="headerlink" href="#chewacla.adhoc.Chewacla._ds" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">_ds</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="../shorthand/index.html#chewacla.shorthand.DirectionShorthand" title="chewacla.shorthand.DirectionShorthand"><span class="pre">chewacla.shorthand.DirectionShorthand</span></a></em><a class="reference internal" href="../../../_modules/chewacla/adhoc.html#Chewacla._ds"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chewacla.adhoc.Chewacla._ds" title="Link to this definition">#</a></dt>
 <dd><p>(internal) DirectionShorthand object</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="chewacla.adhoc.Chewacla.raw_incident_beam">
-<span class="sig-name descname"><span class="pre">raw_incident_beam</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#chewacla.adhoc.Chewacla.raw_incident_beam" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">raw_incident_beam</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="reference internal" href="../../../_modules/chewacla/adhoc.html#Chewacla.raw_incident_beam"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chewacla.adhoc.Chewacla.raw_incident_beam" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="chewacla.adhoc.Chewacla.raw_sample_stage">
-<span class="sig-name descname"><span class="pre">raw_sample_stage</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#chewacla.adhoc.Chewacla.raw_sample_stage" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">raw_sample_stage</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="reference internal" href="../../../_modules/chewacla/adhoc.html#Chewacla.raw_sample_stage"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chewacla.adhoc.Chewacla.raw_sample_stage" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="chewacla.adhoc.Chewacla.raw_detector_stage">
-<span class="sig-name descname"><span class="pre">raw_detector_stage</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#chewacla.adhoc.Chewacla.raw_detector_stage" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">raw_detector_stage</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="reference internal" href="../../../_modules/chewacla/adhoc.html#Chewacla.raw_detector_stage"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chewacla.adhoc.Chewacla.raw_detector_stage" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="chewacla.adhoc.Chewacla.incident_beam">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">incident_beam</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">chewacla.shorthand.DirectionVector</span></em><a class="headerlink" href="#chewacla.adhoc.Chewacla.incident_beam" title="Link to this definition">#</a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">incident_beam</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">chewacla.shorthand.DirectionVector</span></em><a class="reference internal" href="../../../_modules/chewacla/adhoc.html#Chewacla.incident_beam"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chewacla.adhoc.Chewacla.incident_beam" title="Link to this definition">#</a></dt>
 <dd><p>Unit vector describing the direction of the incident beam.</p>
 </dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="chewacla.adhoc.Chewacla.sample_stage">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">sample_stage</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">chewacla.shorthand.DirectionMap</span></em><a class="headerlink" href="#chewacla.adhoc.Chewacla.sample_stage" title="Link to this definition">#</a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">sample_stage</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">chewacla.shorthand.DirectionMap</span></em><a class="reference internal" href="../../../_modules/chewacla/adhoc.html#Chewacla.sample_stage"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chewacla.adhoc.Chewacla.sample_stage" title="Link to this definition">#</a></dt>
 <dd><p>Describes the sample stage stack of rotations.</p>
 </dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="chewacla.adhoc.Chewacla.detector_stage">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">detector_stage</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">chewacla.shorthand.DirectionMap</span></em><a class="headerlink" href="#chewacla.adhoc.Chewacla.detector_stage" title="Link to this definition">#</a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">detector_stage</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">chewacla.shorthand.DirectionMap</span></em><a class="reference internal" href="../../../_modules/chewacla/adhoc.html#Chewacla.detector_stage"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chewacla.adhoc.Chewacla.detector_stage" title="Link to this definition">#</a></dt>
 <dd><p>Describes the detector stage stack of rotations.</p>
 </dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="chewacla.adhoc.Chewacla.wavelength">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">wavelength</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><a class="headerlink" href="#chewacla.adhoc.Chewacla.wavelength" title="Link to this definition">#</a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">wavelength</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><a class="reference internal" href="../../../_modules/chewacla/adhoc.html#Chewacla.wavelength"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chewacla.adhoc.Chewacla.wavelength" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="chewacla.adhoc.Chewacla.lattice">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">lattice</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#chewacla.adhoc._AHLattice" title="chewacla.adhoc._AHLattice"><span class="pre">_AHLattice</span></a></em><a class="headerlink" href="#chewacla.adhoc.Chewacla.lattice" title="Link to this definition">#</a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">lattice</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#chewacla.adhoc._AHLattice" title="chewacla.adhoc._AHLattice"><span class="pre">_AHLattice</span></a></em><a class="reference internal" href="../../../_modules/chewacla/adhoc.html#Chewacla.lattice"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chewacla.adhoc.Chewacla.lattice" title="Link to this definition">#</a></dt>
 <dd><p>Return the Lattice object.</p>
-</dd></dl>
-
-<dl class="py property">
-<dt class="sig sig-object py" id="chewacla.adhoc.Chewacla.reflections">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">reflections</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#chewacla.adhoc._AHReflectionList" title="chewacla.adhoc._AHReflectionList"><span class="pre">_AHReflectionList</span></a></em><a class="headerlink" href="#chewacla.adhoc.Chewacla.reflections" title="Link to this definition">#</a></dt>
-<dd><p>Return the reflection manager for name-&gt;_AHReflection access.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="chewacla.adhoc.Chewacla.__repr__">
-<span class="sig-name descname"><span class="pre">__repr__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#chewacla.adhoc.Chewacla.__repr__" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">__repr__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="../../../_modules/chewacla/adhoc.html#Chewacla.__repr__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chewacla.adhoc.Chewacla.__repr__" title="Link to this definition">#</a></dt>
 <dd><p>Nice text representation.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="chewacla.adhoc.Chewacla.addReflection">
-<span class="sig-name descname"><span class="pre">addReflection</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reflection</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#chewacla.adhoc._AHReflection" title="chewacla.adhoc._AHReflection"><span class="pre">_AHReflection</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">collections.abc.Mapping</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">collections.abc.Sequence</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#chewacla.adhoc.Chewacla.addReflection" title="Link to this definition">#</a></dt>
-<dd><p>Add a single reflection by name.</p>
-<p>Parameters
-- name: str, reflection name
-- reflection: either an _AHReflection instance, or one of:</p>
-<blockquote>
-<div><ul class="simple">
-<li><p>(pseudos, reals)</p></li>
-<li><p>(pseudos, reals, wavelength)</p></li>
-<li><p>mapping with keys ‘pseudos’ and ‘reals’ and optional ‘wavelength’</p></li>
+<span class="sig-name descname"><span class="pre">addReflection</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">reflection</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#chewacla.adhoc.AHReflection" title="chewacla.adhoc.AHReflection"><span class="pre">AHReflection</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">force</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../../../_modules/chewacla/adhoc.html#Chewacla.addReflection"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chewacla.adhoc.Chewacla.addReflection" title="Link to this definition">#</a></dt>
+<dd><p>Add a single reflection using its own <cite>name</cite> attribute as the key.</p>
+<p>Parameters:</p>
+<ul class="simple">
+<li><p>reflection: an already-constructed <cite>AHReflection</cite> instance with a valid
+<cite>name</cite> attribute (str). The reflection’s <cite>name</cite> will be used as the key
+when storing it in the manager.</p></li>
 </ul>
-</div></blockquote>
-<p>Constructs an _AHReflection when callers supply raw parameters.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="chewacla.adhoc.Chewacla.make_reflection">
+<span class="sig-name descname"><span class="pre">make_reflection</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pseudos</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">collections.abc.Mapping</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reals</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">collections.abc.Mapping</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">wavelength</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#chewacla.adhoc.AHReflection" title="chewacla.adhoc.AHReflection"><span class="pre">AHReflection</span></a></span></span><a class="reference internal" href="../../../_modules/chewacla/adhoc.html#Chewacla.make_reflection"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chewacla.adhoc.Chewacla.make_reflection" title="Link to this definition">#</a></dt>
+<dd><p>Factory: construct and validate an AHReflection using this instrument’s axes.</p>
+<p>The returned AHReflection has already been validated against the Chewacla
+<cite>real_axis_names</cite> and <cite>pseudo_axis_names</cite>.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="chewacla.adhoc.Chewacla.calc_UB_BL67">
-<span class="sig-name descname"><span class="pre">calc_UB_BL67</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">numpy.ndarray</span></span></span><a class="headerlink" href="#chewacla.adhoc.Chewacla.calc_UB_BL67" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">calc_UB_BL67</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">numpy.ndarray</span></span></span><a class="reference internal" href="../../../_modules/chewacla/adhoc.html#Chewacla.calc_UB_BL67"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chewacla.adhoc.Chewacla.calc_UB_BL67" title="Link to this definition">#</a></dt>
 <dd><p>Calculate the U &amp; UB matrices from the given reflections.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="chewacla.adhoc.Chewacla.forward">
-<span class="sig-name descname"><span class="pre">forward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pseudos</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">collections.abc.Sequence</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#chewacla.adhoc.Chewacla.forward" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">forward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pseudos</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">collections.abc.Sequence</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../../../_modules/chewacla/adhoc.html#Chewacla.forward"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chewacla.adhoc.Chewacla.forward" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="chewacla.adhoc.Chewacla.inverse">
-<span class="sig-name descname"><span class="pre">inverse</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">reals</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#chewacla.adhoc.Chewacla.inverse" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">inverse</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">reals</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../../../_modules/chewacla/adhoc.html#Chewacla.inverse"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chewacla.adhoc.Chewacla.inverse" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="chewacla.adhoc.Chewacla.pseudo_axis_names">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">pseudo_axis_names</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><a class="reference internal" href="../../../_modules/chewacla/adhoc.html#Chewacla.pseudo_axis_names"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chewacla.adhoc.Chewacla.pseudo_axis_names" title="Link to this definition">#</a></dt>
+<dd><p>List of the pseudo axis names.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="chewacla.adhoc.Chewacla.real_axis_names">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">real_axis_names</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><a class="reference internal" href="../../../_modules/chewacla/adhoc.html#Chewacla.real_axis_names"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chewacla.adhoc.Chewacla.real_axis_names" title="Link to this definition">#</a></dt>
+<dd><p>List of the real axis names.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="chewacla.adhoc.Chewacla.reflections">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">reflections</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">dict</span></em><a class="reference internal" href="../../../_modules/chewacla/adhoc.html#Chewacla.reflections"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chewacla.adhoc.Chewacla.reflections" title="Link to this definition">#</a></dt>
+<dd><p>Return the reflection mapping (name -&gt; AHReflection).</p>
+</dd></dl>
 
 </dd></dl>
 
@@ -863,12 +906,12 @@ If <cite>digits</cite> is None (default), full precision floats are returned.</p
                   
 <div class="prev-next-area">
     <a class="left-prev"
-       href="../_version/index.html"
+       href="../index.html"
        title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">chewacla._version</p>
+        <p class="prev-next-title">chewacla</p>
       </div>
     </a>
     <a class="right-next"
@@ -899,11 +942,16 @@ If <cite>digits</cite> is None (default), full precision floats are returned.</p
   </div>
   <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
     <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#key-classes">Key classes</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#utilities">Utilities</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-contents">Module Contents</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#chewacla.adhoc.TAU"><code class="docutils literal notranslate"><span class="pre">TAU</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#chewacla.adhoc.DEFAULT_WAVELENGTH"><code class="docutils literal notranslate"><span class="pre">DEFAULT_WAVELENGTH</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#chewacla.adhoc.DEFAULT_LATTICE_PARAMS"><code class="docutils literal notranslate"><span class="pre">DEFAULT_LATTICE_PARAMS</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#chewacla.adhoc._validate_length"><code class="docutils literal notranslate"><span class="pre">_validate_length()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#chewacla.adhoc._validate_angle"><code class="docutils literal notranslate"><span class="pre">_validate_angle()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#chewacla.adhoc._validated_setter"><code class="docutils literal notranslate"><span class="pre">_validated_setter()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#chewacla.adhoc._compare_axis_sets"><code class="docutils literal notranslate"><span class="pre">_compare_axis_sets()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#chewacla.adhoc.expand_direction_map"><code class="docutils literal notranslate"><span class="pre">expand_direction_map()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#chewacla.adhoc._AHLattice"><code class="docutils literal notranslate"><span class="pre">_AHLattice</span></code></a><ul class="nav section-nav flex-column">
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#chewacla.adhoc._AHLattice.a"><code class="docutils literal notranslate"><span class="pre">_AHLattice.a</span></code></a></li>
@@ -919,35 +967,24 @@ If <cite>digits</cite> is None (default), full precision floats are returned.</p
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#chewacla.adhoc._AHLattice.__repr__"><code class="docutils literal notranslate"><span class="pre">_AHLattice.__repr__()</span></code></a></li>
 </ul>
 </li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#chewacla.adhoc._AHReflection"><code class="docutils literal notranslate"><span class="pre">_AHReflection</span></code></a><ul class="nav section-nav flex-column">
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#chewacla.adhoc._AHReflection._pseudos"><code class="docutils literal notranslate"><span class="pre">_AHReflection._pseudos</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#chewacla.adhoc._AHReflection._reals"><code class="docutils literal notranslate"><span class="pre">_AHReflection._reals</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#chewacla.adhoc._AHReflection._wavelength"><code class="docutils literal notranslate"><span class="pre">_AHReflection._wavelength</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#chewacla.adhoc._AHReflection.pseudos"><code class="docutils literal notranslate"><span class="pre">_AHReflection.pseudos</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#chewacla.adhoc._AHReflection.reals"><code class="docutils literal notranslate"><span class="pre">_AHReflection.reals</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#chewacla.adhoc._AHReflection.wavelength"><code class="docutils literal notranslate"><span class="pre">_AHReflection.wavelength</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#chewacla.adhoc._AHReflection.set_pseudo"><code class="docutils literal notranslate"><span class="pre">_AHReflection.set_pseudo()</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#chewacla.adhoc._AHReflection.get_pseudo"><code class="docutils literal notranslate"><span class="pre">_AHReflection.get_pseudo()</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#chewacla.adhoc._AHReflection.remove_pseudo"><code class="docutils literal notranslate"><span class="pre">_AHReflection.remove_pseudo()</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#chewacla.adhoc._AHReflection.set_real"><code class="docutils literal notranslate"><span class="pre">_AHReflection.set_real()</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#chewacla.adhoc._AHReflection.get_real"><code class="docutils literal notranslate"><span class="pre">_AHReflection.get_real()</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#chewacla.adhoc._AHReflection.remove_real"><code class="docutils literal notranslate"><span class="pre">_AHReflection.remove_real()</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#chewacla.adhoc._AHReflection.__repr__"><code class="docutils literal notranslate"><span class="pre">_AHReflection.__repr__()</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#chewacla.adhoc._AHReflection.__eq__"><code class="docutils literal notranslate"><span class="pre">_AHReflection.__eq__()</span></code></a></li>
-</ul>
-</li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#chewacla.adhoc._AHReflectionList"><code class="docutils literal notranslate"><span class="pre">_AHReflectionList</span></code></a><ul class="nav section-nav flex-column">
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#chewacla.adhoc._AHReflectionList.get"><code class="docutils literal notranslate"><span class="pre">_AHReflectionList.get()</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#chewacla.adhoc._AHReflectionList.set"><code class="docutils literal notranslate"><span class="pre">_AHReflectionList.set()</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#chewacla.adhoc._AHReflectionList.pop"><code class="docutils literal notranslate"><span class="pre">_AHReflectionList.pop()</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#chewacla.adhoc._AHReflectionList.clear"><code class="docutils literal notranslate"><span class="pre">_AHReflectionList.clear()</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#chewacla.adhoc._AHReflectionList.__contains__"><code class="docutils literal notranslate"><span class="pre">_AHReflectionList.__contains__()</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#chewacla.adhoc._AHReflectionList.__len__"><code class="docutils literal notranslate"><span class="pre">_AHReflectionList.__len__()</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#chewacla.adhoc._AHReflectionList.__iter__"><code class="docutils literal notranslate"><span class="pre">_AHReflectionList.__iter__()</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#chewacla.adhoc._AHReflectionList.items"><code class="docutils literal notranslate"><span class="pre">_AHReflectionList.items()</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#chewacla.adhoc._AHReflectionList.names"><code class="docutils literal notranslate"><span class="pre">_AHReflectionList.names()</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#chewacla.adhoc._AHReflectionList.values"><code class="docutils literal notranslate"><span class="pre">_AHReflectionList.values()</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#chewacla.adhoc._AHReflectionList.__repr__"><code class="docutils literal notranslate"><span class="pre">_AHReflectionList.__repr__()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#chewacla.adhoc.AHReflection"><code class="docutils literal notranslate"><span class="pre">AHReflection</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#chewacla.adhoc.AHReflection._name"><code class="docutils literal notranslate"><span class="pre">AHReflection._name</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#chewacla.adhoc.AHReflection._pseudos"><code class="docutils literal notranslate"><span class="pre">AHReflection._pseudos</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#chewacla.adhoc.AHReflection._reals"><code class="docutils literal notranslate"><span class="pre">AHReflection._reals</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#chewacla.adhoc.AHReflection._wavelength"><code class="docutils literal notranslate"><span class="pre">AHReflection._wavelength</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#chewacla.adhoc.AHReflection.pseudos"><code class="docutils literal notranslate"><span class="pre">AHReflection.pseudos</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#chewacla.adhoc.AHReflection.reals"><code class="docutils literal notranslate"><span class="pre">AHReflection.reals</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#chewacla.adhoc.AHReflection.wavelength"><code class="docutils literal notranslate"><span class="pre">AHReflection.wavelength</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#chewacla.adhoc.AHReflection.name"><code class="docutils literal notranslate"><span class="pre">AHReflection.name</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#chewacla.adhoc.AHReflection.set_pseudo"><code class="docutils literal notranslate"><span class="pre">AHReflection.set_pseudo()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#chewacla.adhoc.AHReflection.get_pseudo"><code class="docutils literal notranslate"><span class="pre">AHReflection.get_pseudo()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#chewacla.adhoc.AHReflection.remove_pseudo"><code class="docutils literal notranslate"><span class="pre">AHReflection.remove_pseudo()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#chewacla.adhoc.AHReflection.set_real"><code class="docutils literal notranslate"><span class="pre">AHReflection.set_real()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#chewacla.adhoc.AHReflection.get_real"><code class="docutils literal notranslate"><span class="pre">AHReflection.get_real()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#chewacla.adhoc.AHReflection.remove_real"><code class="docutils literal notranslate"><span class="pre">AHReflection.remove_real()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#chewacla.adhoc.AHReflection.__repr__"><code class="docutils literal notranslate"><span class="pre">AHReflection.__repr__()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#chewacla.adhoc.AHReflection.__eq__"><code class="docutils literal notranslate"><span class="pre">AHReflection.__eq__()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#chewacla.adhoc.AHReflection.validate_against"><code class="docutils literal notranslate"><span class="pre">AHReflection.validate_against()</span></code></a></li>
 </ul>
 </li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#chewacla.adhoc.Chewacla"><code class="docutils literal notranslate"><span class="pre">Chewacla</span></code></a><ul class="nav section-nav flex-column">
@@ -968,12 +1005,15 @@ If <cite>digits</cite> is None (default), full precision floats are returned.</p
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#chewacla.adhoc.Chewacla.detector_stage"><code class="docutils literal notranslate"><span class="pre">Chewacla.detector_stage</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#chewacla.adhoc.Chewacla.wavelength"><code class="docutils literal notranslate"><span class="pre">Chewacla.wavelength</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#chewacla.adhoc.Chewacla.lattice"><code class="docutils literal notranslate"><span class="pre">Chewacla.lattice</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#chewacla.adhoc.Chewacla.reflections"><code class="docutils literal notranslate"><span class="pre">Chewacla.reflections</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#chewacla.adhoc.Chewacla.__repr__"><code class="docutils literal notranslate"><span class="pre">Chewacla.__repr__()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#chewacla.adhoc.Chewacla.addReflection"><code class="docutils literal notranslate"><span class="pre">Chewacla.addReflection()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#chewacla.adhoc.Chewacla.make_reflection"><code class="docutils literal notranslate"><span class="pre">Chewacla.make_reflection()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#chewacla.adhoc.Chewacla.calc_UB_BL67"><code class="docutils literal notranslate"><span class="pre">Chewacla.calc_UB_BL67()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#chewacla.adhoc.Chewacla.forward"><code class="docutils literal notranslate"><span class="pre">Chewacla.forward()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#chewacla.adhoc.Chewacla.inverse"><code class="docutils literal notranslate"><span class="pre">Chewacla.inverse()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#chewacla.adhoc.Chewacla.pseudo_axis_names"><code class="docutils literal notranslate"><span class="pre">Chewacla.pseudo_axis_names</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#chewacla.adhoc.Chewacla.real_axis_names"><code class="docutils literal notranslate"><span class="pre">Chewacla.real_axis_names</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#chewacla.adhoc.Chewacla.reflections"><code class="docutils literal notranslate"><span class="pre">Chewacla.reflections</span></code></a></li>
 </ul>
 </li>
 </ul>

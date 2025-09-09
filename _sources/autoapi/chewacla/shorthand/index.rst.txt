@@ -5,7 +5,29 @@ chewacla.shorthand
 
 .. autoapi-nested-parse::
 
-   Describe diffraction vectors with a shorthand vocabulary.
+   Describe a shorthand vocabulary for diffraction vectors.
+
+   .. rubric:: Examples
+
+   Default vocabulary
+       The default `DirectionShorthand()` provides the three Cartesian axes
+       mapped to unit basis vectors. Use short codes like ``'x+'`` or ``'+x'``
+       to request +x, and ``'y-'`` or ``'-y'`` for -y.
+
+   Custom vocabulary
+       You can supply a custom mapping from single-letter keys to 3-element
+       sequences (or arrays). For example::
+
+           import numpy as np
+           from chewacla.shorthand import DirectionShorthand
+
+           ds = DirectionShorthand({'x': (1,0,0),
+                                    'k': (0, np.cos(np.deg2rad(50)), np.sin(np.deg2rad(50)))})
+           ds.vector('k+')   # unit vector for the k axis
+           ds.vector('-x')   # negative x unit vector
+
+       Keys must be single letters and values three-element sequences; the
+       `vocabulary` setter validates shapes and normalizes keys to lower-case.
 
    .. autosummary::
 
@@ -38,21 +60,6 @@ Module Contents
 .. py:data:: DirectionMapInput
 
    Allowed variations for user input.
-
-.. py:data:: x_hat
-   :type:  DirectionVector
-
-   Basis vector, $\hat{x}$
-
-.. py:data:: y_hat
-   :type:  DirectionVector
-
-   Basis vector, $\hat{y}$
-
-.. py:data:: z_hat
-   :type:  DirectionVector
-
-   Basis vector, $\hat{z}$
 
 .. py:function:: unit_vector(v: numpy.ndarray) -> numpy.ndarray
 

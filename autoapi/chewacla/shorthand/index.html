@@ -40,7 +40,7 @@
   <link rel="preload" as="script" href="../../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
 <link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
 
-    <script src="../../../_static/documentation_options.js?v=026654df"></script>
+    <script src="../../../_static/documentation_options.js?v=43f72869"></script>
     <script src="../../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../_static/design-tabs.js?v=f930bc37"></script>
@@ -334,7 +334,6 @@
   <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
   <div class="bd-toc-item navbar-nav"><ul class="current nav bd-sidenav">
 <li class="toctree-l1 current active has-children"><a class="reference internal" href="../index.html">chewacla</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="../_version/index.html">chewacla._version</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../adhoc/index.html">chewacla.adhoc</a></li>
 <li class="toctree-l2 current active"><a class="current reference internal" href="#">chewacla.shorthand</a></li>
 </ul>
@@ -404,10 +403,31 @@
                   
   <section id="module-chewacla.shorthand">
 <span id="chewacla-shorthand"></span><h1>chewacla.shorthand<a class="headerlink" href="#module-chewacla.shorthand" title="Link to this heading">#</a></h1>
-<p>Describe diffraction vectors with a shorthand vocabulary.</p>
+<p>Describe a shorthand vocabulary for diffraction vectors.</p>
+<p class="rubric">Examples</p>
+<dl>
+<dt>Default vocabulary</dt><dd><p>The default <cite>DirectionShorthand()</cite> provides the three Cartesian axes
+mapped to unit basis vectors. Use short codes like <code class="docutils literal notranslate"><span class="pre">'x+'</span></code> or <code class="docutils literal notranslate"><span class="pre">'+x'</span></code>
+to request +x, and <code class="docutils literal notranslate"><span class="pre">'y-'</span></code> or <code class="docutils literal notranslate"><span class="pre">'-y'</span></code> for -y.</p>
+</dd>
+<dt>Custom vocabulary</dt><dd><p>You can supply a custom mapping from single-letter keys to 3-element
+sequences (or arrays). For example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">chewacla.shorthand</span><span class="w"> </span><span class="kn">import</span> <span class="n">DirectionShorthand</span>
+
+<span class="n">ds</span> <span class="o">=</span> <span class="n">DirectionShorthand</span><span class="p">({</span><span class="s1">&#39;x&#39;</span><span class="p">:</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span>
+                         <span class="s1">&#39;k&#39;</span><span class="p">:</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">deg2rad</span><span class="p">(</span><span class="mi">50</span><span class="p">)),</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">deg2rad</span><span class="p">(</span><span class="mi">50</span><span class="p">)))})</span>
+<span class="n">ds</span><span class="o">.</span><span class="n">vector</span><span class="p">(</span><span class="s1">&#39;k+&#39;</span><span class="p">)</span>   <span class="c1"># unit vector for the k axis</span>
+<span class="n">ds</span><span class="o">.</span><span class="n">vector</span><span class="p">(</span><span class="s1">&#39;-x&#39;</span><span class="p">)</span>   <span class="c1"># negative x unit vector</span>
+</pre></div>
+</div>
+<p>Keys must be single letters and values three-element sequences; the
+<cite>vocabulary</cite> setter validates shapes and normalizes keys to lower-case.</p>
+</dd>
+</dl>
 <div class="pst-scrollable-table-container"><table class="autosummary longtable table autosummary">
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#chewacla.shorthand.DirectionShorthand" title="chewacla.shorthand.DirectionShorthand"><code class="xref py py-obj docutils literal notranslate"><span class="pre">DirectionShorthand</span></code></a>(vocabulary, ...)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#chewacla.shorthand.DirectionShorthand" title="chewacla.shorthand.DirectionShorthand"><code class="xref py py-obj docutils literal notranslate"><span class="pre">DirectionShorthand</span></code></a>([vocabulary])</p></td>
 <td><p>Describe vectors with shorthand from xrayutilities.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#chewacla.shorthand.unit_vector" title="chewacla.shorthand.unit_vector"><code class="xref py py-obj docutils literal notranslate"><span class="pre">unit_vector</span></code></a>(v)</p></td>
@@ -420,49 +440,31 @@
 <h2>Module Contents<a class="headerlink" href="#module-contents" title="Link to this heading">#</a></h2>
 <dl class="py data">
 <dt class="sig sig-object py" id="chewacla.shorthand.DirectionVector">
-<span class="sig-prename descclassname"><span class="pre">chewacla.shorthand.</span></span><span class="sig-name descname"><span class="pre">DirectionVector</span></span><a class="headerlink" href="#chewacla.shorthand.DirectionVector" title="Link to this definition">#</a></dt>
+<span class="sig-prename descclassname"><span class="pre">chewacla.shorthand.</span></span><span class="sig-name descname"><span class="pre">DirectionVector</span></span><a class="reference internal" href="../../../_modules/chewacla/shorthand.html#DirectionVector"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chewacla.shorthand.DirectionVector" title="Link to this definition">#</a></dt>
 <dd><p>Unit vector description of a direction.</p>
 </dd></dl>
 
 <dl class="py data">
 <dt class="sig sig-object py" id="chewacla.shorthand.DirectionVectorInput">
-<span class="sig-prename descclassname"><span class="pre">chewacla.shorthand.</span></span><span class="sig-name descname"><span class="pre">DirectionVectorInput</span></span><a class="headerlink" href="#chewacla.shorthand.DirectionVectorInput" title="Link to this definition">#</a></dt>
+<span class="sig-prename descclassname"><span class="pre">chewacla.shorthand.</span></span><span class="sig-name descname"><span class="pre">DirectionVectorInput</span></span><a class="reference internal" href="../../../_modules/chewacla/shorthand.html#DirectionVectorInput"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chewacla.shorthand.DirectionVectorInput" title="Link to this definition">#</a></dt>
 <dd><p>Allowed variations for user input.</p>
 </dd></dl>
 
 <dl class="py data">
 <dt class="sig sig-object py" id="chewacla.shorthand.DirectionMap">
-<span class="sig-prename descclassname"><span class="pre">chewacla.shorthand.</span></span><span class="sig-name descname"><span class="pre">DirectionMap</span></span><a class="headerlink" href="#chewacla.shorthand.DirectionMap" title="Link to this definition">#</a></dt>
+<span class="sig-prename descclassname"><span class="pre">chewacla.shorthand.</span></span><span class="sig-name descname"><span class="pre">DirectionMap</span></span><a class="reference internal" href="../../../_modules/chewacla/shorthand.html#DirectionMap"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chewacla.shorthand.DirectionMap" title="Link to this definition">#</a></dt>
 <dd><p>Ordered dictionary of DirectionVectors, keyed by rotational axis names.</p>
 </dd></dl>
 
 <dl class="py data">
 <dt class="sig sig-object py" id="chewacla.shorthand.DirectionMapInput">
-<span class="sig-prename descclassname"><span class="pre">chewacla.shorthand.</span></span><span class="sig-name descname"><span class="pre">DirectionMapInput</span></span><a class="headerlink" href="#chewacla.shorthand.DirectionMapInput" title="Link to this definition">#</a></dt>
+<span class="sig-prename descclassname"><span class="pre">chewacla.shorthand.</span></span><span class="sig-name descname"><span class="pre">DirectionMapInput</span></span><a class="reference internal" href="../../../_modules/chewacla/shorthand.html#DirectionMapInput"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chewacla.shorthand.DirectionMapInput" title="Link to this definition">#</a></dt>
 <dd><p>Allowed variations for user input.</p>
-</dd></dl>
-
-<dl class="py data">
-<dt class="sig sig-object py" id="chewacla.shorthand.x_hat">
-<span class="sig-prename descclassname"><span class="pre">chewacla.shorthand.</span></span><span class="sig-name descname"><span class="pre">x_hat</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">DirectionVector</span></em><a class="headerlink" href="#chewacla.shorthand.x_hat" title="Link to this definition">#</a></dt>
-<dd><p>Basis vector, $hat{x}$</p>
-</dd></dl>
-
-<dl class="py data">
-<dt class="sig sig-object py" id="chewacla.shorthand.y_hat">
-<span class="sig-prename descclassname"><span class="pre">chewacla.shorthand.</span></span><span class="sig-name descname"><span class="pre">y_hat</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">DirectionVector</span></em><a class="headerlink" href="#chewacla.shorthand.y_hat" title="Link to this definition">#</a></dt>
-<dd><p>Basis vector, $hat{y}$</p>
-</dd></dl>
-
-<dl class="py data">
-<dt class="sig sig-object py" id="chewacla.shorthand.z_hat">
-<span class="sig-prename descclassname"><span class="pre">chewacla.shorthand.</span></span><span class="sig-name descname"><span class="pre">z_hat</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">DirectionVector</span></em><a class="headerlink" href="#chewacla.shorthand.z_hat" title="Link to this definition">#</a></dt>
-<dd><p>Basis vector, $hat{z}$</p>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="chewacla.shorthand.unit_vector">
-<span class="sig-prename descclassname"><span class="pre">chewacla.shorthand.</span></span><span class="sig-name descname"><span class="pre">unit_vector</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">v</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">numpy.ndarray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">numpy.ndarray</span></span></span><a class="headerlink" href="#chewacla.shorthand.unit_vector" title="Link to this definition">#</a></dt>
+<span class="sig-prename descclassname"><span class="pre">chewacla.shorthand.</span></span><span class="sig-name descname"><span class="pre">unit_vector</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">v</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">numpy.ndarray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">numpy.ndarray</span></span></span><a class="reference internal" href="../../../_modules/chewacla/shorthand.html#unit_vector"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chewacla.shorthand.unit_vector" title="Link to this definition">#</a></dt>
 <dd><p>Return a unit vector from a length-3 ndarray.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -485,7 +487,7 @@
 
 <dl class="py class">
 <dt class="sig sig-object py" id="chewacla.shorthand.DirectionShorthand">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">chewacla.shorthand.</span></span><span class="sig-name descname"><span class="pre">DirectionShorthand</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vocabulary</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DirectionMap</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">collections.abc.Mapping</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">collections.abc.Sequence</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#chewacla.shorthand.DirectionShorthand" title="Link to this definition">#</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">chewacla.shorthand.</span></span><span class="sig-name descname"><span class="pre">DirectionShorthand</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vocabulary</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DirectionMap</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">collections.abc.Mapping</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">collections.abc.Sequence</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/chewacla/shorthand.html#DirectionShorthand"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chewacla.shorthand.DirectionShorthand" title="Link to this definition">#</a></dt>
 <dd><p>Describe vectors with shorthand from xrayutilities.</p>
 <div class="pst-scrollable-table-container"><table class="autosummary longtable table autosummary">
 <tbody>
@@ -506,12 +508,12 @@
 </div>
 <dl class="py property">
 <dt class="sig sig-object py" id="chewacla.shorthand.DirectionShorthand.vocabulary">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">vocabulary</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">DirectionMap</span></em><a class="headerlink" href="#chewacla.shorthand.DirectionShorthand.vocabulary" title="Link to this definition">#</a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">vocabulary</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">DirectionMap</span></em><a class="reference internal" href="../../../_modules/chewacla/shorthand.html#DirectionShorthand.vocabulary"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chewacla.shorthand.DirectionShorthand.vocabulary" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="chewacla.shorthand.DirectionShorthand.vector">
-<span class="sig-name descname"><span class="pre">vector</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">symbol</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">numpy.ndarray</span></span></span><a class="headerlink" href="#chewacla.shorthand.DirectionShorthand.vector" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">vector</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">symbol</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">numpy.ndarray</span></span></span><a class="reference internal" href="../../../_modules/chewacla/shorthand.html#DirectionShorthand.vector"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chewacla.shorthand.DirectionShorthand.vector" title="Link to this definition">#</a></dt>
 <dd><p>Convert a symbol like ‘x+’ or ‘+x’ to a numpy array (copy).</p>
 <p>Behavior:
 - Accepts ‘x+’ (letter then sign) or ‘+x’ (sign then letter).
@@ -521,7 +523,7 @@
 
 <dl class="py method">
 <dt class="sig sig-object py" id="chewacla.shorthand.DirectionShorthand.__repr__">
-<span class="sig-name descname"><span class="pre">__repr__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#chewacla.shorthand.DirectionShorthand.__repr__" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">__repr__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="../../../_modules/chewacla/shorthand.html#DirectionShorthand.__repr__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chewacla.shorthand.DirectionShorthand.__repr__" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -572,9 +574,6 @@
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#chewacla.shorthand.DirectionVectorInput"><code class="docutils literal notranslate"><span class="pre">DirectionVectorInput</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#chewacla.shorthand.DirectionMap"><code class="docutils literal notranslate"><span class="pre">DirectionMap</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#chewacla.shorthand.DirectionMapInput"><code class="docutils literal notranslate"><span class="pre">DirectionMapInput</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#chewacla.shorthand.x_hat"><code class="docutils literal notranslate"><span class="pre">x_hat</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#chewacla.shorthand.y_hat"><code class="docutils literal notranslate"><span class="pre">y_hat</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#chewacla.shorthand.z_hat"><code class="docutils literal notranslate"><span class="pre">z_hat</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#chewacla.shorthand.unit_vector"><code class="docutils literal notranslate"><span class="pre">unit_vector()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#chewacla.shorthand.DirectionShorthand"><code class="docutils literal notranslate"><span class="pre">DirectionShorthand</span></code></a><ul class="nav section-nav flex-column">
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#chewacla.shorthand.DirectionShorthand.vocabulary"><code class="docutils literal notranslate"><span class="pre">DirectionShorthand.vocabulary</span></code></a></li>
