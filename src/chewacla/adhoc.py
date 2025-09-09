@@ -28,6 +28,7 @@ from typing import Tuple
 
 import numpy as np
 from hklpy2.misc import IDENTITY_MATRIX_3X3
+import warnings
 
 from chewacla.shorthand import DirectionMap
 from chewacla.shorthand import DirectionMapInput
@@ -73,6 +74,42 @@ def _validated_setter(attr_name: str, validator):
     return decorator
 
 
+def _compare_axis_sets(kind: str, reflection_name: str, defined: set, given: set) -> None:
+    """Compare two sets of axis/key names and raise ValueError on mismatch.
+
+    Parameters
+    ----------
+    kind:
+        'real' or 'pseudo' — selects wording for the error message.
+    reflection_name:
+        Name of the reflection for error context.
+    defined:
+        The canonical set of names expected by the instrument.
+    given:
+        The set of names provided by the reflection.
+
+    Raises
+    ------
+    ValueError
+        If the given set does not exactly match the defined set.
+    """
+    missing = sorted(list(defined - given))
+    extra = sorted(list(given - defined))
+    if not missing and not extra:
+        return
+    parts: list[str] = []
+    if missing:
+        parts.append(f"missing {('real axes' if kind == 'real' else 'pseudo keys')}: {missing}")
+    if extra:
+        parts.append(f"unexpected {('real axes' if kind == 'real' else 'pseudo keys')}: {extra}")
+    if kind == "real":
+        raise ValueError(
+            f"Reflection {reflection_name!r} real-axis names do not match instrument axes: " + ", ".join(parts)
+        )
+    else:
+        raise ValueError(f"Reflection {reflection_name!r} pseudos do not match expected keys: " + ", ".join(parts))
+
+
 def expand_direction_map(
     ds: DirectionShorthand,
     stage_map: DirectionMapInput,
@@ -98,7 +135,7 @@ def expand_direction_map(
 
 
 class _AHLattice:
-    """Crystal lattice of sample on the AdHocDiffractometer."""
+    """Internal container for lattice parameters and B-matrix computation."""
 
     a: float  # angstrom
     b: float  # angstrom
@@ -302,6 +339,9 @@ class _AHLattice:
 class AHReflection:  # TODO: needs to know diffractometer axes
     """Orienting reflection used by the AdHocDiffractometer."""
 
+    # allowed pseudo-axis names (immutable set) — can be referenced elsewhere
+    PSEUDOS_KEYS = frozenset({"h", "k", "l"})
+
     _name: str
     """(internal) name given to this reflection by the caller."""
     _pseudos: Dict[str, float]
@@ -345,6 +385,7 @@ class AHReflection:  # TODO: needs to know diffractometer axes
         self._wavelength = val
 
     # --- pseudos property ---------------------------------------------------
+
     @property
     def pseudos(self) -> Mapping[str, float]:
         """Read-only view of pseudos (hkl) mapping."""
@@ -577,7 +618,11 @@ class Chewacla:
         name = reflection.name
         if not isinstance(name, str):
             raise TypeError("reflection.name must be a str")
+        # _compare_axis_sets will raise ValueError on mismatch
+        _compare_axis_sets("pseudo", name, set(self.pseudo_axis_names), set(reflection.pseudos.keys()))
+        _compare_axis_sets("real", name, set(self.real_axis_names), set(reflection.reals.keys()))
 
+        # finally store the reflection
         self.reflections.set(name, reflection)
 
     def calc_UB_BL67(self) -> np.ndarray:
@@ -637,6 +682,20 @@ class Chewacla:
     def lattice(self, lattice_constants) -> None:
         """Set the crystal lattice parameters."""
         self._lattice = _AHLattice(*lattice_constants)
+
+    @property
+    def pseudo_axis_names(self) -> list[str]:
+        """List of the pseudo axis names."""
+        return "h k l".split()
+
+    @property
+    def real_axis_names(self) -> list[str]:
+        """List of the real axis names."""
+        keys = list(self.sample_stage)
+        for k in self.detector_stage:
+            if k not in keys:
+                keys.append(k)
+        return keys
 
     @property
     def reflections(self) -> _AHReflectionList:

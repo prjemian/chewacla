@@ -481,14 +481,18 @@ def test_Chewacla_calc_UB_BL67_requires_two_reflections():
 
 def test_Chewacla_addReflection_success_and_errors():
     c = Chewacla({"a": "x+"}, {"d": "y+"})
-    r = AHReflection("one", {"h": 1}, {"phi": 1.0})
+    # reflection with incorrect real-axis name should raise
+    bad = AHReflection("bad", {"h": 1, "k": 0, "l": 0}, {"phi": 1.0})
+    with pytest.raises(ValueError):
+        c.addReflection(bad)
 
-    # add by reflection (the reflection carries its own name)
-    c.addReflection(r)
+    # valid reflection: pseudos must include h,k,l and reals must match instrument axes ('a','d')
+    good = AHReflection("one", {"h": 1, "k": 0, "l": 0}, {"a": 14.4, "d": 28.8})
+    c.addReflection(good)
     assert "one" in c.reflections
 
-    # add by reflection (object holds name)
-    c.addReflection(AHReflection("two", {"h": 2}, {"phi": 2.0}))
+    # add by reflection (object holds name) — another valid one
+    c.addReflection(AHReflection("two", {"h": 2, "k": 0, "l": 0}, {"a": 14.4, "d": 28.8}))
     assert "two" in c.reflections
 
     # invalid calls
