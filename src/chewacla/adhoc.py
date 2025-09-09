@@ -1,17 +1,32 @@
 """
-Chewacla: *ad hoc* diffractometer with stages as described by a dictionary.
+Chewacla: *ad hoc* diffractometer with rotation stages described by the caller.
 
-..
-    .. autosummary::
+This module provides a lightweight, dictionary-driven representation of a
+diffractometer and supporting types used for small, interactive workflows.
 
-        ~AHReflection
-        ~Chewacla
-        ~expand_direction_map
+Key classes
+-----------
+- :class:`~chewacla.adhoc.Chewacla`: *ad hoc* diffractometer.
+- :class:`~chewacla.adhoc.AHReflection`: orienting reflection: (h,k,l) & angles (& optional wavelength).
 
-    .. rubric:: Internal use only
-    .. autosummary::
+Example
+-------
+Construct a simple *Chewacla* diffractometer and add a reflection:
 
-        ~_AHLattice
+.. code-block:: python
+    :linenos:
+
+    from chewacla.adhoc import Chewacla, AHReflection
+
+    c = Chewacla({"s": "y+"}, {"d": "y+"})
+    c.lattice = 1, 1, 1, 90, 90, 90
+    r = AHReflection("one", {"h": 1, "k": 0, "l": 0}, {"s": 14.4, "d": 28.8})
+    c.addReflection(r)
+
+Utilities
+---------
+- ``expand_direction_map``: expand shorthand direction codes (``'x+'``, ``'y-'``)
+    into unit vectors using the `DirectionShorthand` vocabulary.
 """
 
 import numbers
@@ -135,11 +150,17 @@ class _AHLattice:
     """Internal container for lattice parameters and B-matrix computation."""
 
     a: float  # angstrom
+    """Crystal unit cell length along $\hat x$ axis."""
     b: float  # angstrom
+    """Crystal unit cell length at angle gamma from $\hat x$ in $\hat x$-$\hat y$ plane."""
     c: float  # angstrom
+    """Crystal unit cell length"""
     alpha: float  # degrees
+    """Angle between c axis and $\hat x$-$\hat y$ plane."""
     beta: float  # degrees
+    """Angle between a and c axes in a-c plane."""
     gamma: float  # degrees
+    """Angle between a and b axes in $\hat x$-$\hat y$ plane."""
 
     _B: Optional[np.ndarray]
     """Crystalline sample orientation matrix."""
@@ -330,11 +351,10 @@ class _AHLattice:
         return f"{self.__class__.__name__}({body})"
 
 
-# TODO: refactor AHReflection classes into Chewacla?
-
-
-class AHReflection:  # TODO: needs to know diffractometer axes
+class AHReflection:  # TODO: refactor AHReflection class into Chewacla?
     """Orienting reflection used by the AdHocDiffractometer."""
+
+    # TODO: needs to know diffractometer axes
 
     # allowed pseudo-axis names (immutable set) — can be referenced elsewhere
     PSEUDOS_KEYS = frozenset({"h", "k", "l"})

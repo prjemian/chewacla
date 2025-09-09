@@ -1,5 +1,27 @@
 """
-Describe diffraction vectors with a shorthand vocabulary.
+Describe a shorthand vocabulary for diffraction vectors.
+
+Examples
+--------
+Default vocabulary
+    The default `DirectionShorthand()` provides the three Cartesian axes
+    mapped to unit basis vectors. Use short codes like ``'x+'`` or ``'+x'``
+    to request +x, and ``'y-'`` or ``'-y'`` for -y.
+
+Custom vocabulary
+    You can supply a custom mapping from single-letter keys to 3-element
+    sequences (or arrays). For example::
+
+        import numpy as np
+        from chewacla.shorthand import DirectionShorthand
+
+        ds = DirectionShorthand({'x': (1,0,0),
+                                 'k': (0, np.cos(np.deg2rad(50)), np.sin(np.deg2rad(50)))})
+        ds.vector('k+')   # unit vector for the k axis
+        ds.vector('-x')   # negative x unit vector
+
+    Keys must be single letters and values three-element sequences; the
+    `vocabulary` setter validates shapes and normalizes keys to lower-case.
 
 .. autosummary::
 
@@ -27,15 +49,6 @@ DirectionMap = Dict[str, DirectionVector]  # type-only alias
 
 DirectionMapInput = Dict[str, DirectionVectorInput]  # type-only alias
 """Allowed variations for user input."""
-
-x_hat: DirectionVector = np.array((1, 0, 0), dtype=float)
-r"""Basis vector, $\hat{x}$"""
-
-y_hat: DirectionVector = np.array((0, 1, 0), dtype=float)
-r"""Basis vector, $\hat{y}$"""
-
-z_hat: DirectionVector = np.array((0, 0, 1), dtype=float)
-r"""Basis vector, $\hat{z}$"""
 
 
 def unit_vector(v: np.ndarray) -> np.ndarray:
