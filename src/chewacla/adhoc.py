@@ -4,6 +4,7 @@ Chewacla: *ad hoc* diffractometer with stages as described by a dictionary.
 ..
     .. autosummary::
 
+        ~AHReflection
         ~Chewacla
         ~expand_direction_map
 
@@ -11,8 +12,6 @@ Chewacla: *ad hoc* diffractometer with stages as described by a dictionary.
     .. autosummary::
 
         ~_AHLattice
-        ~_AHReflection
-        ~_AHReflectionList
 """
 
 import numbers
@@ -22,13 +21,10 @@ from collections.abc import Sequence
 from functools import wraps
 from typing import Any
 from typing import Dict
-from typing import Iterator
 from typing import Optional
-from typing import Tuple
 
 import numpy as np
 from hklpy2.misc import IDENTITY_MATRIX_3X3
-import warnings
 
 from chewacla.shorthand import DirectionMap
 from chewacla.shorthand import DirectionMapInput
@@ -41,6 +37,7 @@ TAU = 2 * np.pi
 """Prefactor, either 1 or 2 pi"""
 
 DEFAULT_WAVELENGTH = 1.54
+DEFAULT_LATTICE_PARAMS = (1, 1, 1, 90, 90, 90)
 
 
 # --- validators and decorator -------------------------------------------------
@@ -482,70 +479,6 @@ class AHReflection:  # TODO: needs to know diffractometer axes
         return bool(np.isclose(self._wavelength, other._wavelength))
 
 
-class _AHReflectionList:
-    """Manage orienting reflections as named _AHReflection objects.
-
-    Behaviors:
-    - Stores reflections in an internal dict.
-    - Supports get/set by key, deletion, iteration, length, clear.
-    - Provides a concise, readable repr that truncates long contents.
-    """
-
-    def __init__(self, initial: Optional[Mapping[str, AHReflection]] = None) -> None:
-        if initial is None:
-            self._items: Dict[str, AHReflection] = {}
-        else:
-            # copy to prevent external mutation
-            self._items = dict(initial)
-
-    def get(self, name: str) -> AHReflection:
-        """Return the reflection for name or raise KeyError if missing."""
-        return self._items[name]
-
-    def set(self, name: str, reflection: AHReflection) -> None:
-        """Set a reflection by name."""
-        if not isinstance(name, str):
-            raise TypeError("name must be a str")
-        if not isinstance(reflection, AHReflection):
-            raise TypeError("reflection must be an _AHReflection instance")
-        self._items[name] = reflection
-
-    def pop(self, name: str) -> AHReflection:
-        """Remove and return the reflection for name; raises KeyError if absent."""
-        return self._items.pop(name)
-
-    def clear(self) -> None:
-        """Remove all stored reflections."""
-        self._items.clear()
-
-    def __contains__(self, name: object) -> bool:
-        return name in self._items
-
-    def __len__(self) -> int:
-        return len(self._items)
-
-    def __iter__(self) -> Iterator[str]:
-        return iter(self._items)
-
-    def items(self) -> Iterator[Tuple[str, AHReflection]]:
-        return iter(self._items.items())
-
-    def names(self) -> Iterator[str]:
-        """Just the names of the reflections."""
-        return iter(self._items.keys())
-
-    def values(self) -> Iterator[AHReflection]:
-        return iter(self._items.values())
-
-    def __repr__(self) -> str:
-        """Nice text representation."""
-        r = reprlib.Repr()
-        r.maxlist = 10
-        inner = ", ".join(f"{k!r}: {v!r}" for k, v in list(self._items.items())[:10])
-        more = "" if len(self._items) <= 10 else f", ... (+{len(self._items) - 10} more)"
-        return f"{self.__class__.__name__}({{{inner}{more}}})"
-
-
 class Chewacla:
     """
     The *ad hoc* diffractometer with stages as described by a dictionary.
@@ -561,8 +494,8 @@ class Chewacla:
     """crystal lattice parameters (angstroms and degrees)"""
     _wavelength: float
     """Wavelength of incident beam (angstroms)"""
-    _reflections: _AHReflectionList
-    """Orienting reflections to be used in computation of UB matrix."""
+    _reflections: Dict[str, AHReflection]
+    """Orienting reflections (name -> AHReflection) to be used in computation of UB matrix."""
     U: np.ndarray
     """Goniometer orientation matrix"""
     UB: np.ndarray
@@ -579,19 +512,25 @@ class Chewacla:
         incident_beam: Optional[DirectionVectorInput] = None,
         direction_map: Optional[DirectionMapInput] = None,
     ) -> None:
+        # Initialize internal direction shorthand
         self._ds = DirectionShorthand(direction_map)
 
+        # raw inputs preserved for repr/debug
         self.raw_incident_beam = None
         self.raw_sample_stage = None
         self.raw_detector_stage = None
 
+        # Set basic instrument descriptors. Use provided values or sensible defaults.
         self.incident_beam = "+x" if incident_beam is None else incident_beam
         self.sample_stage = sample_stage
         self.detector_stage = detector_stage
-        self.wavelength = 1.54 if wavelength is None else float(wavelength)
+        self.wavelength = DEFAULT_WAVELENGTH if wavelength is None else float(wavelength)
 
-        self.lattice = (1, 1, 1, 90, 90, 90)
-        self.reflections = _AHReflectionList()
+        # Lattice defaults and reflection storage
+        self.lattice = DEFAULT_LATTICE_PARAMS
+        self._reflections = {}  # no reflections defined yet
+
+        # Orientation matrices default to identity
         self.U = np.asarray(IDENTITY_MATRIX_3X3)
         self.UB = np.asarray(IDENTITY_MATRIX_3X3)
 
@@ -618,12 +557,13 @@ class Chewacla:
         name = reflection.name
         if not isinstance(name, str):
             raise TypeError("reflection.name must be a str")
+
         # _compare_axis_sets will raise ValueError on mismatch
         _compare_axis_sets("pseudo", name, set(self.pseudo_axis_names), set(reflection.pseudos.keys()))
         _compare_axis_sets("real", name, set(self.real_axis_names), set(reflection.reals.keys()))
 
-        # finally store the reflection
-        self.reflections.set(name, reflection)
+        # finally store the reflection in the dict
+        self._reflections[name] = reflection
 
     def calc_UB_BL67(self) -> np.ndarray:
         """Calculate the U & UB matrices from the given reflections."""
@@ -698,36 +638,32 @@ class Chewacla:
         return keys
 
     @property
-    def reflections(self) -> _AHReflectionList:
-        """Return the reflection manager for name->_AHReflection access."""
+    def reflections(self) -> dict:
+        """Return the reflection mapping (name -> AHReflection)."""
         return self._reflections
 
     @reflections.setter
     def reflections(self, value: Optional[Mapping[str, AHReflection]]) -> None:
-        """Replace reflection storage. Accepts _AHReflectionList, mapping, or None."""
+        """Define the orienting reflections.
+
+        Behaviour:
+        - None (or {}) clears the current reflections.
+        - Any Mapping or iterable of pairs of reflections (name -> AHReflection) is converted is accepted (copied).
+        """
         if value is None:
             self._reflections.clear()
             return
 
-        if isinstance(value, _AHReflectionList):
-            # copy internal dict to avoid aliasing
-            self._reflections = _AHReflectionList(dict(value._items))  # type: ignore[attr-defined]
-            return
-
         if isinstance(value, Mapping):
-            self._reflections = _AHReflectionList(value)
+            self._reflections = dict(value)
             return
 
-        # accept iterable of (_AHReflection) by requiring (name, reflection) pairs
+        # accept iterable of (name, reflection) pairs
         try:
             items = dict(value)  # will raise if not iterable of pairs
         except Exception as exc:
-            raise TypeError(
-                "reflections must be an _AHReflectionList, mapping,"
-                #
-                " or iterable of (name, reflection) pairs"
-            ) from exc
-        self._reflections = _AHReflectionList(items)
+            raise TypeError("reflections must be a dict or iterable of (name, reflection) pairs") from exc
+        self._reflections = items
 
     @property
     def sample_stage(self) -> DirectionMap:

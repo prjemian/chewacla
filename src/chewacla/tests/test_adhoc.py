@@ -18,7 +18,6 @@ import pytest
 from chewacla.adhoc import AHReflection
 from chewacla.adhoc import Chewacla
 from chewacla.adhoc import _AHLattice
-from chewacla.adhoc import _AHReflectionList
 from chewacla.adhoc import expand_direction_map
 from chewacla.shorthand import DirectionShorthand
 
@@ -344,72 +343,6 @@ def test_AHReflection_eq_param(other, expected):
     assert (a == other) is expected
 
 
-# ------------ _AHReflectionList --------------------
-
-
-def test_AHReflectionList_init_and_basic_ops():
-    # empty init
-    lst = _AHReflectionList()
-    assert len(lst) == 0
-
-    # init with mapping
-    a = AHReflection("a", {"h": 1}, {"phi": 1.0})
-    b = AHReflection("b", {"h": 2}, {"phi": 2.0})
-    m = {"first": a, "second": b}
-    lst2 = _AHReflectionList(m)
-    assert len(lst2) == 2
-    assert "first" in lst2
-    assert lst2.get("first") is a
-
-
-def test_AHReflectionList_set_pop_contains_len_iter():
-    lst = _AHReflectionList()
-    a = AHReflection("a", {"h": 1}, {"phi": 1.0})
-
-    # set with valid inputs
-    lst.set("one", a)
-    assert len(lst) == 1
-    assert lst.get("one") is a
-
-    # type errors for set
-    with pytest.raises(TypeError, match=re.escape("name must be a str")):
-        lst.set(1, a)  # type: ignore[arg-type]
-    with pytest.raises(TypeError, match=re.escape("reflection must be an _AHReflection instance")):
-        lst.set("bad", object())  # type: ignore[arg-type]
-
-    # pop behaviour
-    popped = lst.pop("one")
-    assert popped is a
-    assert len(lst) == 0
-    with pytest.raises(KeyError):
-        lst.pop("one")
-
-
-def test_AHReflectionList_items_names_values_clear_and_repr():
-    # create >10 items to exercise repr truncation
-    items = {f"r{i}": AHReflection(str(i), {"h": i}, {"phi": float(i)}) for i in range(11)}
-    lst = _AHReflectionList(items)
-    assert len(lst) == 11
-
-    # items/names/values
-    names = list(lst.names())
-    assert set(names) == set(items.keys())
-    items_list = list(lst.items())
-    assert all(isinstance(k, str) and isinstance(v, AHReflection) for k, v in items_list)
-    vals = list(lst.values())
-    assert all(isinstance(v, AHReflection) for v in vals)
-
-    # clear
-    lst.clear()
-    assert len(lst) == 0
-
-    # repr truncation: create 11 again to check '+1 more' text
-    lst = _AHReflectionList(items)
-    r = repr(lst)
-    assert lst.__class__.__name__ in r
-    assert "+1 more" in r
-
-
 # ------------ Chewacla --------------------
 
 
@@ -442,34 +375,47 @@ def test_Chewacla_init_and_properties():
     assert c.lattice.a == 2.0
 
 
-def test_Chewacla_reflections_setter_and_types():
+@pytest.mark.parametrize(
+    "value, expected_len, check, expected_exception",
+    [
+        # set with dict
+        ({"one": AHReflection("one", {"h": 1}, {"phi": 1.0})}, 1, None, does_not_raise()),
+        # set to None should clear existing entries
+        (None, 0, None, does_not_raise()),
+        # set with mapping and verify stored item
+        ({"x": AHReflection("x", {"h": 2}, {"phi": 2.0})}, 1, ("get_pseudo", "x", "h", 2.0), does_not_raise()),
+        # set with iterable of pairs
+        (
+            [("a", AHReflection("a", {"h": 3}, {"phi": 3.0})), ("b", AHReflection("b", {"h": 4}, {"phi": 4.0}))],
+            2,
+            ("keys", ("a", "b")),
+            does_not_raise(),
+        ),
+        # invalid type
+        (123, None, None, pytest.raises(TypeError)),
+    ],
+    ids=["dict", "none_clears", "mapping", "pairs", "invalid_type"],
+)
+def test_Chewacla_reflections_setter_and_types(value, expected_len, check, expected_exception):
     c = Chewacla({"a": "x+"}, {"d": "y+"})
 
-    # set with _AHReflectionList
-    r = AHReflection("one", {"h": 1}, {"phi": 1.0})
-    rl = _AHReflectionList({"one": r})
-    c.reflections = rl
-    assert len(c.reflections) == 1
+    # For the None case ensure there's something to clear
+    if value is None:
+        c.reflections = {"pre": AHReflection("pre", {"h": 0}, {"phi": 0.0})}
 
-    # set to None clears
-    c.reflections = None
-    assert len(c.reflections) == 0
+    with expected_exception:
+        c.reflections = value
 
-    # set with mapping
-    mapping = {"x": AHReflection("x", {"h": 2}, {"phi": 2.0})}
-    c.reflections = mapping
-    assert len(c.reflections) == 1
-    assert c.reflections.get("x").get_pseudo("h") == 2.0
+        if isinstance(expected_len, int):
+            assert len(c.reflections) == expected_len
 
-    # set with iterable of pairs
-    pairs = [("a", AHReflection("a", {"h": 3}, {"phi": 3.0})), ("b", AHReflection("b", {"h": 4}, {"phi": 4.0}))]
-    c.reflections = pairs
-    assert len(c.reflections) == 2
-    assert "a" in c.reflections and "b" in c.reflections
-
-    # invalid type should raise TypeError
-    with pytest.raises(TypeError, match=re.escape("reflections must be an _AHReflectionList, mapping,")):
-        c.reflections = 123  # type: ignore[assignment]
+        if check is not None:
+            if check[0] == "get_pseudo":
+                _, key, pseudo, expected_val = check
+                assert c.reflections[key].get_pseudo(pseudo) == expected_val
+            elif check[0] == "keys":
+                _, keys = check
+                assert all(k in c.reflections for k in keys)
 
 
 def test_Chewacla_calc_UB_BL67_requires_two_reflections():

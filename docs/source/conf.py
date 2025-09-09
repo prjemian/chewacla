@@ -64,7 +64,7 @@ exclude_patterns = ["dev_*", "**/dev_*"]
 # AutoAPI configuration
 autoapi_type = "python"  # Specify the type of API to document
 autoapi_dirs = ["../../src"]  # Path to the directory containing the project
-autoapi_ignore = ["dev_*", "**/dev_*", "*tests*"]
+autoapi_ignore = ["dev_*", "**/dev_*", "*tests*", "*_version*"]
 autoapi_options = [
     "members",  # Include members (functions, classes, etc.)
     "undoc-members",  # Include undocumented members
