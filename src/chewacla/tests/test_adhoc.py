@@ -20,6 +20,7 @@ from chewacla.adhoc import Chewacla
 from chewacla.adhoc import _AHLattice
 from chewacla.adhoc import expand_direction_map
 from chewacla.shorthand import DirectionShorthand
+from chewacla.utils import R_axis
 
 # ------------ expand_direction_map --------------------
 
@@ -513,3 +514,41 @@ def test_Chewacla_mode_setter(initial, set_value, expected, expected_exception):
         c.mode = set_value
         if expected is not None:
             assert c.mode == expected
+
+
+def test_sample_rotation_matrix_single_axis():
+    c = Chewacla({"s": "z+"}, {"d": "x+"})
+    R = c._sample_rotation_matrix({"s": 90})
+    x = np.array([1.0, 0.0, 0.0])
+    y = R @ x
+    assert np.allclose(y, np.array([0.0, 1.0, 0.0]), atol=1e-12)
+
+
+def test_sample_rotation_matrix_multi_axis_composition():
+    # order should follow insertion order of sample_stage
+    c = Chewacla({"a": "z+", "b": "x+"}, {"d": "y+"})
+    angles = {"a": 90, "b": 90}
+    R = c._sample_rotation_matrix(angles)
+    # expected = I @ R_axis(z,90deg) @ R_axis(x,90deg)
+    rad = np.pi / 180.0
+    R_expected = np.eye(3) @ R_axis(np.array([0.0, 0.0, 1.0]), 90 * rad) @ R_axis(np.array([1.0, 0.0, 0.0]), 90 * rad)
+    assert np.allclose(R, R_expected)
+
+
+@pytest.mark.parametrize(
+    "axes, match",
+    [
+        ({}, "missing sample axes"),
+        ({"x": 10, "y": 20}, "unexpected sample axes"),
+    ],
+)
+def test_sample_rotation_matrix_missing_or_extra_keys(axes, match):
+    c = Chewacla({"a": "x+"}, {"d": "y+"})
+    with pytest.raises(ValueError, match=match):
+        c._sample_rotation_matrix(axes)
+
+
+def test_sample_rotation_matrix_non_numeric_angle():
+    c = Chewacla({"s": "z+"}, {"d": "x+"})
+    with pytest.raises(TypeError, match="must be numeric"):
+        c._sample_rotation_matrix({"s": "not-a-number"})

@@ -47,6 +47,7 @@ from chewacla.shorthand import DirectionShorthand
 from chewacla.shorthand import DirectionVector
 from chewacla.shorthand import DirectionVectorInput
 from chewacla.shorthand import unit_vector
+from chewacla.utils import stage_rotation_matrix
 
 TAU = 2 * np.pi
 """Prefactor, either 1 or 2 pi"""
@@ -646,6 +647,35 @@ class Chewacla:
 
     def inverse(self, reals: Dict[str, float]) -> Dict[str, float]:
         return {}  # TODO:
+
+    # -------------- internal methods
+
+    def _sample_rotation_matrix(self, axes: Mapping[str, float]) -> np.ndarray:
+        """Rotation of the sample motors into the lab coordinates.
+        
+        Parameters
+        ----------
+
+        axes:
+            Dictionary of sample stage axis names to angles in degrees.
+        """
+        # Validate keys (tests expect a specific message wording)
+        if not isinstance(axes, Mapping):
+            raise TypeError("axes must be a mapping of axis-name -> angle_degrees")
+        defined = set(self.sample_stage.keys())
+        given = set(axes.keys())
+        missing = sorted(list(defined - given))
+        extra = sorted(list(given - defined))
+        if missing or extra:
+            parts: list[str] = []
+            if missing:
+                parts.append(f"missing sample axes: {missing}")
+            if extra:
+                parts.append(f"unexpected sample axes: {extra}")
+            raise ValueError("; ".join(parts))
+
+        # Delegate to the shared utility implementation
+        return stage_rotation_matrix(self.sample_stage, axes)
 
     # -------------- getter/setter property methods
 
