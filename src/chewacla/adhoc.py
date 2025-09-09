@@ -39,6 +39,8 @@ from chewacla.shorthand import unit_vector
 TAU = 2 * np.pi
 """Prefactor, either 1 or 2 pi"""
 
+DEFAULT_WAVELENGTH = 1.54
+
 
 # --- validators and decorator -------------------------------------------------
 def _validate_length(name: str, val: float) -> None:
@@ -104,7 +106,6 @@ class _AHLattice:
     alpha: float  # degrees
     beta: float  # degrees
     gamma: float  # degrees
-    # TODO: B should update if any lattice parameters change
 
     _B: Optional[np.ndarray]
     """Crystalline sample orientation matrix."""
@@ -294,11 +295,15 @@ class _AHLattice:
         body = ", ".join(f"{k}={v}" for k, v in vals.items())
         return f"{self.__class__.__name__}({body})"
 
-# TODO: refactor _AHReflection classes into Chewacla?
 
-class _AHReflection:  # TODO: needs to know diffractometer axes
-    """Orienting reflection used only by the AdHocDiffractometer."""
+# TODO: refactor AHReflection classes into Chewacla?
 
+
+class AHReflection:  # TODO: needs to know diffractometer axes
+    """Orienting reflection used by the AdHocDiffractometer."""
+
+    _name: str
+    """(internal) name given to this reflection by the caller."""
     _pseudos: Dict[str, float]
     """(internal) dict of pseudo-axis names to float values (e.g., h,k,l)."""
     _reals: Dict[str, float]
@@ -308,14 +313,23 @@ class _AHReflection:  # TODO: needs to know diffractometer axes
 
     def __init__(
         self,
+        name: str,
         pseudos: Mapping[str, float],
         reals: Mapping[str, float],
-        wavelength: float = 1.0,
+        wavelength: float = DEFAULT_WAVELENGTH,
     ) -> None:
-        # store internal copies (mutable dict) to avoid external modification surprises
+        # store name and internal copies (mutable dict) to avoid external modification surprises
+        if not isinstance(name, str):
+            raise TypeError("name must be a str")
+        self._name = name
         self.pseudos = dict(pseudos)
         self.reals = dict(reals)
         self.wavelength = float(wavelength)
+
+    @property
+    def name(self) -> str:
+        """Name given to this reflection (read-only)."""
+        return self._name
 
     # --- wavelength property -------------------------------------------------
     @property
@@ -397,13 +411,17 @@ class _AHReflection:  # TODO: needs to know diffractometer axes
         """Nice, truncated text representation for long dicts."""
         r = reprlib.Repr()
         r.maxlist = 10
-        pseudos_r = r.repr(self._pseudos)
-        reals_r = r.repr(self._reals)
-        return f"{self.__class__.__name__}(pseudos={pseudos_r}, reals={reals_r}, wavelength={self._wavelength!r})"
+        body = [
+            f"name={self._name!r}",
+            f"pseudos={r.repr(self._pseudos)}",
+            f"reals={r.repr(self._reals)}",
+            f"wavelength={self._wavelength!r}",
+        ]
+        return f"{self.__class__.__name__}({body})"
 
     def __eq__(self, other: object) -> bool:
         """Compare with 'other' reflection for equality with numeric tolerance."""
-        if not isinstance(other, _AHReflection):
+        if not isinstance(other, AHReflection):
             return NotImplemented
 
         # compare keys
@@ -432,26 +450,26 @@ class _AHReflectionList:
     - Provides a concise, readable repr that truncates long contents.
     """
 
-    def __init__(self, initial: Optional[Mapping[str, _AHReflection]] = None) -> None:
+    def __init__(self, initial: Optional[Mapping[str, AHReflection]] = None) -> None:
         if initial is None:
-            self._items: Dict[str, _AHReflection] = {}
+            self._items: Dict[str, AHReflection] = {}
         else:
             # copy to prevent external mutation
             self._items = dict(initial)
 
-    def get(self, name: str) -> _AHReflection:
+    def get(self, name: str) -> AHReflection:
         """Return the reflection for name or raise KeyError if missing."""
         return self._items[name]
 
-    def set(self, name: str, reflection: _AHReflection) -> None:
+    def set(self, name: str, reflection: AHReflection) -> None:
         """Set a reflection by name."""
         if not isinstance(name, str):
             raise TypeError("name must be a str")
-        if not isinstance(reflection, _AHReflection):
+        if not isinstance(reflection, AHReflection):
             raise TypeError("reflection must be an _AHReflection instance")
         self._items[name] = reflection
 
-    def pop(self, name: str) -> _AHReflection:
+    def pop(self, name: str) -> AHReflection:
         """Remove and return the reflection for name; raises KeyError if absent."""
         return self._items.pop(name)
 
@@ -468,14 +486,14 @@ class _AHReflectionList:
     def __iter__(self) -> Iterator[str]:
         return iter(self._items)
 
-    def items(self) -> Iterator[Tuple[str, _AHReflection]]:
+    def items(self) -> Iterator[Tuple[str, AHReflection]]:
         return iter(self._items.items())
 
     def names(self) -> Iterator[str]:
         """Just the names of the reflections."""
         return iter(self._items.keys())
 
-    def values(self) -> Iterator[_AHReflection]:
+    def values(self) -> Iterator[AHReflection]:
         return iter(self._items.values())
 
     def __repr__(self) -> str:
@@ -545,45 +563,22 @@ class Chewacla:
         ]
         return f"{self.__class__.__name__}({', '.join(body)})"
 
-    def addReflection(self, name: str, reflection: _AHReflection | Mapping[str, Any] | Sequence[Any]) -> None:
-        """Add a single reflection by name.
+    def addReflection(self, reflection: AHReflection) -> None:
+        """Add a single reflection using its own `name` attribute as the key.
 
-        Parameters
-        - name: str, reflection name
-        - reflection: either an _AHReflection instance, or one of:
-            * (pseudos, reals)
-            * (pseudos, reals, wavelength)
-            * mapping with keys 'pseudos' and 'reals' and optional 'wavelength'
+        Parameters:
 
-        Constructs an _AHReflection when callers supply raw parameters.
+        - reflection: an already-constructed `AHReflection` instance with a valid
+          `name` attribute (str). The reflection's `name` will be used as the key
+          when storing it in the manager.
         """
+        if not isinstance(reflection, AHReflection):
+            raise TypeError("reflection must be an AHReflection instance")
+        name = reflection.name
         if not isinstance(name, str):
-            raise TypeError("name must be a str")
+            raise TypeError("reflection.name must be a str")
 
-        # already a reflection object
-        if isinstance(reflection, _AHReflection):
-            refl = reflection
-        # mapping with explicit keys
-        elif isinstance(reflection, Mapping):
-            if "pseudos" in reflection and "reals" in reflection:
-                pseudos = reflection["pseudos"]
-                reals = reflection["reals"]
-                wavelength = float(reflection.get("wavelength", 1.0))
-                refl = _AHReflection(pseudos, reals, wavelength)
-            else:
-                raise TypeError("mapping reflection must contain 'pseudos' and 'reals' keys")
-        # tuple/list of params
-        elif isinstance(reflection, (tuple, list)) and len(reflection) in (2, 3):
-            pseudos = reflection[0]
-            reals = reflection[1]
-            wavelength = float(reflection[2]) if len(reflection) == 3 else 1.0
-            refl = _AHReflection(pseudos, reals, wavelength)
-        else:
-            raise TypeError(
-                "reflection must be an _AHReflection or (pseudos, reals[, wavelength]) or mapping with 'pseudos' and 'reals'"
-            )
-
-        self.reflections.set(name, refl)
+        self.reflections.set(name, reflection)
 
     def calc_UB_BL67(self) -> np.ndarray:
         """Calculate the U & UB matrices from the given reflections."""
@@ -597,7 +592,6 @@ class Chewacla:
 
     def forward(self, pseudos: Dict[str, float]) -> Sequence[Dict[str, float]]:
         return [{}]  # TODO:
-
 
     def inverse(self, reals: Dict[str, float]) -> Dict[str, float]:
         return {}  # TODO:
@@ -650,7 +644,7 @@ class Chewacla:
         return self._reflections
 
     @reflections.setter
-    def reflections(self, value: Optional[Mapping[str, _AHReflection]]) -> None:
+    def reflections(self, value: Optional[Mapping[str, AHReflection]]) -> None:
         """Replace reflection storage. Accepts _AHReflectionList, mapping, or None."""
         if value is None:
             self._reflections.clear()
@@ -693,5 +687,7 @@ class Chewacla:
 
     @wavelength.setter
     def wavelength(self, value: Any) -> None:
-        # TODO: rule: must be a positive number
-        self._wavelength = float(value)
+        v = float(value)
+        if v <= 0:
+            raise ValueError("Wavelength must be positive")
+        self._wavelength = v
