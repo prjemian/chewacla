@@ -150,17 +150,17 @@ class _AHLattice:
     """Internal container for lattice parameters and B-matrix computation."""
 
     a: float  # angstrom
-    """Crystal unit cell length along $\hat x$ axis."""
+    r"""Crystal unit cell length along $\hat x$ axis."""
     b: float  # angstrom
-    """Crystal unit cell length at angle gamma from $\hat x$ in $\hat x$-$\hat y$ plane."""
+    r"""Crystal unit cell length at angle gamma from $\hat x$ in $\hat x$-$\hat y$ plane."""
     c: float  # angstrom
     """Crystal unit cell length"""
     alpha: float  # degrees
-    """Angle between c axis and $\hat x$-$\hat y$ plane."""
+    r"""Angle between c axis and $\hat x$-$\hat y$ plane."""
     beta: float  # degrees
     """Angle between a and c axes in a-c plane."""
     gamma: float  # degrees
-    """Angle between a and b axes in $\hat x$-$\hat y$ plane."""
+    r"""Angle between a and b axes in $\hat x$-$\hat y$ plane."""
 
     _B: Optional[np.ndarray]
     """Crystalline sample orientation matrix."""
@@ -354,8 +354,6 @@ class _AHLattice:
 class AHReflection:  # TODO: refactor AHReflection class into Chewacla?
     """Orienting reflection used by the AdHocDiffractometer."""
 
-    # TODO: needs to know diffractometer axes
-
     # allowed pseudo-axis names (immutable set) — can be referenced elsewhere
     PSEUDOS_KEYS = frozenset({"h", "k", "l"})
 
@@ -471,8 +469,8 @@ class AHReflection:  # TODO: refactor AHReflection class into Chewacla?
         r.maxlist = 10
         body = [
             f"name={self._name!r}",
-            f"pseudos={r.repr(self._pseudos)}",
-            f"reals={r.repr(self._reals)}",
+            f"pseudos={r.repr(self.pseudos)}",
+            f"reals={r.repr(self.reals)}",
             f"wavelength={self._wavelength!r}",
         ]
         return f"{self.__class__.__name__}({body})"
@@ -482,21 +480,45 @@ class AHReflection:  # TODO: refactor AHReflection class into Chewacla?
         if not isinstance(other, AHReflection):
             return NotImplemented
 
-        # compare keys
-        if set(self._pseudos.keys()) != set(other._pseudos.keys()):
+        # compare keys using public properties
+        if set(self.pseudos) != set(other.pseudos):
             return False
-        if set(self._reals.keys()) != set(other._reals.keys()):
+        if set(self.reals) != set(other.reals):
             return False
 
         # compare values with tolerance
-        for k in self._pseudos:
-            if not np.isclose(self._pseudos[k], other._pseudos[k]):
+        for k in self.pseudos:
+            if not np.isclose(self.pseudos[k], other.pseudos[k]):
                 return False
-        for k in self._reals:
-            if not np.isclose(self._reals[k], other._reals[k]):
+        for k in self.reals:
+            if not np.isclose(self.reals[k], other.reals[k]):
                 return False
 
         return bool(np.isclose(self._wavelength, other._wavelength))
+
+    def validate_against(self, expected_reals: Optional[Sequence[str]] = None, expected_pseudos: Optional[Sequence[str]] = None) -> None:
+        """Validate this reflection's keys against expected instrument axes.
+
+        Parameters
+        ----------
+        expected_reals:
+            Sequence of real-axis names expected by the instrument (e.g. sample/detector axes).
+        expected_pseudos:
+            Sequence of pseudo-axis keys expected (usually 'h','k','l').
+
+        Raises
+        ------
+        ValueError
+            If the reflection's keys do not exactly match the expected sets.
+        """
+        # Use the public properties rather than internal attributes to preserve
+        # encapsulation. `self.pseudos` and `self.reals` return dict copies,
+        # so converting them to sets yields the key sets expected by
+        # `_compare_axis_sets`.
+        if expected_pseudos is not None:
+            _compare_axis_sets("pseudo", self.name, set(expected_pseudos), set(self.pseudos))
+        if expected_reals is not None:
+            _compare_axis_sets("real", self.name, set(expected_reals), set(self.reals))
 
 
 class Chewacla:
@@ -563,7 +585,7 @@ class Chewacla:
         ]
         return f"{self.__class__.__name__}({', '.join(body)})"
 
-    def addReflection(self, reflection: AHReflection) -> None:
+    def addReflection(self, reflection: AHReflection, force: bool = False) -> None:
         """Add a single reflection using its own `name` attribute as the key.
 
         Parameters:
@@ -578,12 +600,26 @@ class Chewacla:
         if not isinstance(name, str):
             raise TypeError("reflection.name must be a str")
 
-        # _compare_axis_sets will raise ValueError on mismatch
-        _compare_axis_sets("pseudo", name, set(self.pseudo_axis_names), set(reflection.pseudos.keys()))
-        _compare_axis_sets("real", name, set(self.real_axis_names), set(reflection.reals.keys()))
+        # validate against instrument axes (raises ValueError on mismatch)
+        reflection.validate_against(self.real_axis_names, self.pseudo_axis_names)
 
-        # finally store the reflection in the dict
+        # prevent accidental overwrites unless explicitly forced
+        if (name in self._reflections) and not force:
+            raise ValueError(f"Reflection {name!r} already exists; pass force=True to replace")
+
+        # finally store/replace the reflection in the dict
         self._reflections[name] = reflection
+
+    def make_reflection(self, name: str, pseudos: Mapping[str, float], reals: Mapping[str, float], wavelength: Optional[float] = None) -> AHReflection:
+        """Factory: construct and validate an AHReflection using this instrument's axes.
+
+        The returned AHReflection has already been validated against the Chewacla
+        `real_axis_names` and `pseudo_axis_names`.
+        """
+        wl = self.wavelength if wavelength is None else float(wavelength)
+        r = AHReflection(name, pseudos, reals, wl)
+        r.validate_against(self.real_axis_names, self.pseudo_axis_names)
+        return r
 
     def calc_UB_BL67(self) -> np.ndarray:
         """Calculate the U & UB matrices from the given reflections."""

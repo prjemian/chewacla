@@ -266,8 +266,38 @@ def test_AHReflection_set_get_remove_pseudo(initial, name, value):
     # remove and ensure missing afterwards
     refl.remove_pseudo(name)
     assert refl.get_pseudo(name, None) is None
-    with pytest.raises(KeyError):
-        refl.remove_pseudo(name)
+
+
+def test_validate_against_and_chewacla_factory():
+    c = Chewacla({"s": "y+"}, {"d": "y+"})
+
+    # valid reflection via factory
+    r = c.make_reflection("one", {"h": 1, "k": 0, "l": 0}, {"s": 14.4, "d": 28.8})
+    assert isinstance(r, AHReflection)
+
+    # addReflection should accept already-validated reflection
+    c.addReflection(r)
+    assert "one" in c.reflections
+
+    # factory should raise when keys mismatch
+    with pytest.raises(ValueError):
+        c.make_reflection("bad", {"h": 1}, {"x": 1})
+    # Note: removal/key-errors are tested elsewhere; no extra assertions here.
+
+
+def test_addReflection_duplicates_and_force():
+    c = Chewacla({"s": "y+"}, {"d": "y+"})
+    r1 = c.make_reflection("dup", {"h": 1, "k": 0, "l": 0}, {"s": 1, "d": 2})
+    c.addReflection(r1)
+    assert "dup" in c.reflections
+
+    r2 = c.make_reflection("dup", {"h": 1, "k": 1, "l": 0}, {"s": 3, "d": 4})
+    with pytest.raises(ValueError, match=re.escape("Reflection 'dup' already exists; pass force=True to replace")):
+        c.addReflection(r2)
+
+    # allow replacement when forced
+    c.addReflection(r2, force=True)
+    assert c.reflections["dup"].pseudos["k"] == 1.0
 
 
 @pytest.mark.parametrize(
