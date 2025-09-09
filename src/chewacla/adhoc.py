@@ -576,6 +576,7 @@ class Chewacla:
         self.detector_stage = detector_stage
         self.wavelength = DEFAULT_WAVELENGTH if wavelength is None else float(wavelength)
 
+        self.mode = self.modes[0]  # first one is the default diffractometer mode
         # Lattice defaults and reflection storage
         self.lattice = DEFAULT_LATTICE_PARAMS
         self._reflections = {}  # no reflections defined yet
@@ -590,6 +591,7 @@ class Chewacla:
             f"incident_beam={self.raw_incident_beam!r}",
             f"sample_stage={self.raw_sample_stage!r}",
             f"detector_stage={self.raw_detector_stage!r}",
+            f"mode={self.mode!r}",
         ]
         return f"{self.__class__.__name__}({', '.join(body)})"
 
@@ -645,8 +647,6 @@ class Chewacla:
     def inverse(self, reals: Dict[str, float]) -> Dict[str, float]:
         return {}  # TODO:
 
-    # TODO: mode property getter & setter
-
     # -------------- getter/setter property methods
 
     @property
@@ -686,6 +686,23 @@ class Chewacla:
     def lattice(self, lattice_constants) -> None:
         """Set the crystal lattice parameters."""
         self._lattice = _AHLattice(*lattice_constants)
+
+    @property
+    def modes(self) -> list[str]:
+        """List of the supported diffractometer forward calculation modes."""
+        return ["default"]  # TODO: expand
+
+    @property
+    def mode(self) -> list[str]:
+        """List of the supported diffractometer forward calculation modes."""
+        return self._mode
+
+    @mode.setter
+    def mode(self, value: str) -> None:
+        """Set the current diffractometer forward calculation mode."""
+        if value not in self.modes:
+            raise ValueError(f"Invalid mode: {value}. Supported modes are: {self.modes}")
+        self._mode = value
 
     @property
     def pseudo_axis_names(self) -> list[str]:
