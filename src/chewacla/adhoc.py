@@ -52,7 +52,9 @@ TAU = 2 * np.pi
 """Prefactor, either 1 or 2 pi"""
 
 DEFAULT_WAVELENGTH = 1.54
+"""Approximately copper K-alpha in angstroms."""
 DEFAULT_LATTICE_PARAMS = (1, 1, 1, 90, 90, 90)
+"""Trivial cubic crystal."""
 
 
 # --- validators and decorator -------------------------------------------------
@@ -351,11 +353,8 @@ class _AHLattice:
         return f"{self.__class__.__name__}({body})"
 
 
-class AHReflection:  # TODO: refactor AHReflection class into Chewacla?
+class AHReflection:
     """Orienting reflection used by the AdHocDiffractometer."""
-
-    # allowed pseudo-axis names (immutable set) — can be referenced elsewhere
-    PSEUDOS_KEYS = frozenset({"h", "k", "l"})
 
     _name: str
     """(internal) name given to this reflection by the caller."""
@@ -371,15 +370,16 @@ class AHReflection:  # TODO: refactor AHReflection class into Chewacla?
         name: str,
         pseudos: Mapping[str, float],
         reals: Mapping[str, float],
-        wavelength: float = DEFAULT_WAVELENGTH,
+        wavelength: Optional[float] = None,
     ) -> None:
-        # store name and internal copies (mutable dict) to avoid external modification surprises
         if not isinstance(name, str):
             raise TypeError("name must be a str")
         self._name = name
-        self.pseudos = dict(pseudos)
-        self.reals = dict(reals)
-        self.wavelength = float(wavelength)
+
+        # use the public setters to validate and store the mappings
+        self.pseudos = pseudos
+        self.reals = reals
+        self.wavelength = DEFAULT_WAVELENGTH if wavelength is None else float(wavelength)
 
     @property
     def name(self) -> str:
@@ -524,6 +524,14 @@ class AHReflection:  # TODO: refactor AHReflection class into Chewacla?
 class Chewacla:
     """
     The *ad hoc* diffractometer with stages as described by a dictionary.
+
+    Notes
+    -----
+    - Reflections are managed by name. Use :meth:`addReflection` to add an
+        :class:`AHReflection` to the instrument. By default adding a reflection
+        with a name that already exists raises ``ValueError`` to prevent
+        accidental overwrites; pass ``force=True`` to replace an existing
+        reflection deliberately.
     """
 
     _incident_beam: DirectionVector
