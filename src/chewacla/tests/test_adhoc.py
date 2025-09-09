@@ -481,3 +481,35 @@ def test_Chewacla_addReflection_success_and_errors():
     c.reflections = {"one": AHReflection("one", {"h": 1}, {"phi": 1.0})}
     with pytest.raises(ValueError, match="requires exactly two reflections"):
         c.calc_UB_BL67()
+
+
+@pytest.mark.parametrize(
+    "modes_expected",
+    [
+        (['default']),
+    ],
+    ids=["default_list"],
+)
+def test_Chewacla_modes_property(modes_expected):
+    c = Chewacla({"a": "x+"}, {"d": "y+"})
+    assert isinstance(c.modes, list)
+    assert c.modes == modes_expected
+
+
+@pytest.mark.parametrize(
+    "initial, set_value, expected, expected_exception",
+    [
+        # valid set to supported mode
+        (None, 'default', 'default', does_not_raise()),
+        # invalid mode value
+        (None, 'invalid_mode', None, pytest.raises(ValueError, match=re.escape("Invalid mode: invalid_mode"))),
+    ],
+)
+def test_Chewacla_mode_setter(initial, set_value, expected, expected_exception):
+    c = Chewacla({"a": "x+"}, {"d": "y+"})
+    if initial is not None:
+        c.mode = initial
+    with expected_exception:
+        c.mode = set_value
+        if expected is not None:
+            assert c.mode == expected
