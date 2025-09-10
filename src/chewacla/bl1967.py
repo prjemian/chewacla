@@ -30,6 +30,7 @@ Notes and cautions:
 """
 
 from typing import Sequence
+
 import numpy as np
 
 np.set_printoptions(precision=4, floatmode="maxprec", suppress=True)
