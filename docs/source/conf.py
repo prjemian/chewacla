@@ -64,6 +64,7 @@ exclude_patterns = ["dev_*", "**/dev_*"]
 # AutoAPI configuration
 autoapi_type = "python"  # Specify the type of API to document
 autoapi_dirs = ["../../src"]  # Path to the directory containing the project
+autoapi_generate_api_docs = True
 autoapi_ignore = ["dev_*", "**/dev_*", "*tests*", "*_version*"]
 autoapi_options = [
     "members",  # Include members (functions, classes, etc.)
@@ -71,6 +72,7 @@ autoapi_options = [
     "private-members",  # Include private members
     "special-members",  # Include special members (e.g., __init__)
     "inherited-members",  # Include inherited members
+    "imported-members",  # Include members imported from other modules
     "show-inheritance",  # Show inheritance diagrams
 ]
 
