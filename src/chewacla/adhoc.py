@@ -47,6 +47,7 @@ from chewacla.shorthand import DirectionShorthand
 from chewacla.shorthand import DirectionVector
 from chewacla.shorthand import DirectionVectorInput
 from chewacla.shorthand import unit_vector
+
 # from chewacla.utils import is_colinear
 # from chewacla.utils import matrix_from_2_vectors
 # from chewacla.utils import scattering_vector_lab
