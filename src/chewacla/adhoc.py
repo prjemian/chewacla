@@ -532,6 +532,11 @@ class Chewacla:
     """
     The *ad hoc* diffractometer with stages as described by a dictionary.
 
+    Examples
+    --------
+
+    TODO: an example would be helpful here
+
     Notes
     -----
     - Reflections are managed by name. Use :meth:`addReflection` to add an
