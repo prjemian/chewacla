@@ -4,10 +4,16 @@ Copied from dev_stash utilities: normalize, is_colinear, matrix_from_2_vectors,
 polar_decompose_rotation, and R_axis.
 """
 
-from typing import Iterable, Sequence
 from collections.abc import Mapping
+from typing import Iterable
+from typing import Sequence
 
 import numpy as np
+
+from chewacla.shorthand import DirectionVector
+
+# TODO: use/substitute from dev_u5.py
+# normalize, axes_rotation_matrix, rodrigues_rotation, compute_UB
 
 
 def is_colinear(v1: Iterable[float], v2: Iterable[float], *, tol: float = 1e-8) -> bool:
@@ -60,16 +66,73 @@ def matrix_from_2_vectors(v1: Sequence[float], v2: Sequence[float], eps: float =
 
 
 def normalize(v: Iterable[float], *, tol: float = 1e-12) -> np.ndarray:
+    """
+    Normalize a vector to have unit norm.
+
+    Parameters
+    ----------
+    v : Iterable[float]
+        The input vector to normalize.
+    tol : float, optional
+        Tolerance below which the norm is considered too small to normalize (default is 1e-12).
+
+    Returns
+    -------
+    np.ndarray
+        The normalized vector as a NumPy array of floats.
+
+    Raises
+    ------
+    ValueError
+        If the vector contains non-finite values or if its norm is below the specified tolerance.
+
+    Examples
+    --------
+    >>> normalize([3, 4])
+    array([0.6, 0.8])
+    """
     arr = np.asarray(v, dtype=float)
-    norm = np.linalg.norm(arr)
-    if not np.isfinite(norm):
+    if not np.all(np.isfinite(arr)):
         raise ValueError("vector contains non-finite values")
+    norm = np.linalg.norm(arr)
     if norm <= tol:
-        raise ValueError(f"vector norm ({norm}) is below tolerance ({tol}); cannot normalize")
+        raise ValueError(
+            f"vector norm ({norm}) is below tolerance ({tol});"
+            #
+            f" cannot normalize vector of shape {arr.shape}"
+        )
     return arr / norm
 
 
 def polar_decompose_rotation(M):
+    """
+    Compute the closest proper rotation matrix to a given 3x3 matrix using polar decomposition.
+
+    This function takes a 3x3 matrix `M` and returns the nearest
+    rotation matrix `R` (i.e., an orthogonal matrix with determinant +1)
+    using the polar decomposition via Singular Value Decomposition
+    (SVD).
+
+    Parameters
+    ----------
+    M : array_like, shape (3, 3)
+        Input matrix to decompose. Must be a 3x3 matrix with finite values.
+
+    Returns
+    -------
+    R : ndarray, shape (3, 3)
+        The closest proper rotation matrix to `M`.
+
+    Raises
+    ------
+    ValueError
+        If `M` is not of shape (3, 3) or contains non-finite values.
+
+    Notes
+    -----
+    If the resulting matrix from SVD has a negative determinant, the
+    function corrects it to ensure a proper rotation (determinant +1).
+    """
     M = np.asarray(M, dtype=float)
     if M.shape != (3, 3):
         raise ValueError(f"M must be shape (3,3), got {M.shape}")
@@ -86,6 +149,34 @@ def polar_decompose_rotation(M):
 
 
 def R_axis(axis: Iterable[float], angle_rad: float, *, tol: float = 1e-12) -> np.ndarray:
+    """
+    Compute the 3x3 rotation matrix for a rotation about an arbitrary axis.
+
+    Parameters
+    ----------
+    axis : Iterable[float]
+        An iterable of three numeric components representing the axis of rotation.
+    angle_rad : float
+        The rotation angle in radians.
+    tol : float, optional
+        Tolerance for the norm of the axis vector. If the norm is less than or equal to this value,
+        a ValueError is raised. Default is 1e-12.
+
+    Returns
+    -------
+    np.ndarray
+        A 3x3 NumPy array representing the rotation matrix.
+
+    Raises
+    ------
+    ValueError
+        If the axis does not have exactly three components, contains non-finite values,
+        or its norm is at or below the specified tolerance.
+
+    Notes
+    -----
+    This function uses the Rodrigues' rotation formula to compute the rotation matrix.
+    """
     a = np.asarray(axis, dtype=float)
     if a.shape != (3,):
         raise ValueError("axis must be an iterable of three numeric components")
@@ -104,6 +195,44 @@ def R_axis(axis: Iterable[float], angle_rad: float, *, tol: float = 1e-12) -> np
     )
     I = np.eye(3, dtype=float)
     return I * c + (1.0 - c) * np.outer(k, k) + s * K
+
+
+def scattering_vector_lab(
+    stage: Mapping[str, DirectionVector],
+    angles: Mapping[str, float],
+    B: np.ndarray,
+    hkl: np.ndarray,
+) -> np.ndarray:
+    """
+    Transform hkl to Cartesian reciprocal vector in lab/sample frame.
+
+    Parameters
+    ----------
+    stage: Mapping[str, DirectionVector]
+        The sample stage description: axis -> unit vector.
+    angles: Mapping[str, float]
+        The rotation angles for each stage axis: axis -> angle_degrees.
+    B: np.ndarray
+        The crystal's reciprocal lattice matrix.
+    hkl: np.ndarray
+        The Miller indices (h, k, l) to transform.
+
+    Returns
+    -------
+    np.ndarray
+        The transformed reciprocal vector in the lab frame.
+    """
+    B = np.asarray(B, dtype=float)
+    hkl = np.asarray(hkl, dtype=float)
+    if B.shape != (3, 3):
+        raise ValueError(f"B must be shape (3,3), got {B.shape}")
+
+    # diffractometer sample stage geometry
+    R_sample = stage_rotation_matrix(stage, angles)
+
+    R_crystal = B @ hkl  # orient hkl to Cartesian sample
+    R_lab = R_sample @ R_crystal  # rotate sample to lab
+    return R_lab
 
 
 def stage_rotation_matrix(stage: Mapping[str, np.ndarray], axes: Mapping[str, float]) -> np.ndarray:
@@ -141,10 +270,10 @@ def stage_rotation_matrix(stage: Mapping[str, np.ndarray], axes: Mapping[str, fl
 
     R = np.eye(3, dtype=float)
     for axis, uvec in stage.items():
-        angle_deg = axes[axis]
+        degrees = axes[axis]
         try:
-            angle_rad = float(angle_deg) * (np.pi / 180.0)
+            radians = np.deg2rad(degrees)
         except Exception as exc:
             raise TypeError(f"angle for axis {axis!r} must be numeric") from exc
-        R = R @ R_axis(uvec, angle_rad)
+        R = R @ R_axis(uvec, radians)
     return R

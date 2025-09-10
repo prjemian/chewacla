@@ -47,6 +47,9 @@ from chewacla.shorthand import DirectionShorthand
 from chewacla.shorthand import DirectionVector
 from chewacla.shorthand import DirectionVectorInput
 from chewacla.shorthand import unit_vector
+from chewacla.utils import is_colinear
+from chewacla.utils import matrix_from_2_vectors
+from chewacla.utils import scattering_vector_lab
 from chewacla.utils import stage_rotation_matrix
 
 TAU = 2 * np.pi
@@ -497,7 +500,9 @@ class AHReflection:
 
         return bool(np.isclose(self._wavelength, other._wavelength))
 
-    def validate_against(self, expected_reals: Optional[Sequence[str]] = None, expected_pseudos: Optional[Sequence[str]] = None) -> None:
+    def validate_against(
+        self, expected_reals: Optional[Sequence[str]] = None, expected_pseudos: Optional[Sequence[str]] = None
+    ) -> None:
         """Validate this reflection's keys against expected instrument axes.
 
         Parameters
@@ -621,7 +626,126 @@ class Chewacla:
         # finally store/replace the reflection in the dict
         self._reflections[name] = reflection
 
-    def make_reflection(self, name: str, pseudos: Mapping[str, float], reals: Mapping[str, float], wavelength: Optional[float] = None) -> AHReflection:
+    def calc_UB(self, r1: AHReflection, r2: AHReflection) -> np.ndarray:
+        """
+        Return (U) and (UB) matrices from two given reflections.
+
+        U: diffractometer orientation matrix
+        UB: diffractometer crystal orientation matrix
+
+        References
+        ----------
+
+        * Busing, W. R. and Levy, H. A., 1967. "Orientation Matrix for a Crystal."
+          Acta Crystallographica, 22(4), pp.457–464. doi:10.1107/S0365110X67001185.
+
+        Parameters
+        ----------
+        r1 : AHReflection
+            The first reflection, containing Miller indices (hkl), corresponding motor angles, and wavelength.
+        r2 : AHReflection
+            The second reflection, containing Miller indices (hkl), corresponding motor angles, and wavelength.
+
+        Returns
+        -------
+        np.ndarray
+            The UB matrix as a NumPy array.
+
+        Raises
+        ------
+        ValueError
+            If the provided reflections are colinear and cannot be used to compute the UB matrix.
+
+        Notes
+        -----
+        This method extracts the hkl values and motor angles from the provided reflections, checks for colinearity,
+        and computes the UB matrix using the sample's lattice parameters and the measured directions in the laboratory frame.
+        """
+        from chewacla.bl1967 import compute_UB
+
+        hkl1 = np.asarray(list(r1.pseudos.values()), dtype=float)
+        hkl2 = np.asarray(list(r2.pseudos.values()), dtype=float)
+        stages, angles1, angles2 = [], [], []
+        for axis, uvec in self.sample_stage.items():
+            stages.append(uvec)
+            angles1.append(r1.reals[axis])
+            angles2.append(r2.reals[axis])
+
+        self.U, self.UB = compute_UB(stages, hkl1, angles1, hkl2, angles2, self.lattice.B)
+        return self.UB
+
+    # def calc_UB_BL67(self, r1: AHReflection, r2: AHReflection) -> np.ndarray:
+    #     r"""
+    #     Calculate the orientation (U) and orientation-lattice (UB) matrices from two given reflections.
+
+    #     References
+    #     ----------
+
+    #     * Busing, W. R. and Levy, H. A., 1967. "Orientation Matrix for a Crystal."
+    #       Acta Crystallographica, 22(4), pp.457–464. doi:10.1107/S0365110X67001185.
+
+    #     Parameters
+    #     ----------
+    #     r1 : AHReflection
+    #         The first reflection, containing Miller indices (hkl), corresponding motor angles, and wavelength.
+    #     r2 : AHReflection
+    #         The second reflection, containing Miller indices (hkl), corresponding motor angles, and wavelength.
+
+    #     Returns
+    #     -------
+    #     np.ndarray
+    #         The UB matrix as a NumPy array.
+
+    #     Raises
+    #     ------
+    #     ValueError
+    #         If the provided reflections are colinear and cannot be used to compute the UB matrix.
+
+    #     Notes
+    #     -----
+    #     This method extracts the hkl values and motor angles from the provided reflections, checks for colinearity,
+    #     and computes the UB matrix using the sample's lattice parameters and the measured directions in the laboratory frame.
+    #     """
+    #     # Extract hkl and motor angles
+    #     hkl1 = np.asarray(list(r1.pseudos.values()), dtype=float)
+    #     angles1 = {k: float(r1.reals[k]) for k in self.sample_stage}
+
+    #     hkl2 = np.asarray(list(r2.pseudos.values()), dtype=float)
+    #     angles2 = {k: float(r2.reals[k]) for k in self.sample_stage}
+
+    #     if is_colinear(np.asarray(hkl1), np.asarray(hkl2)):
+    #         raise ValueError("Reflections are colinear; cannot compute UB")
+
+    #     # Build Tc from B*hkl (Cartesian reciprocal-lattice vectors)
+    #     B = self.lattice.B
+    #     r1_cart = B @ hkl1
+    #     r2_cart = B @ hkl2
+    #     Tc = matrix_from_2_vectors(r1_cart, r2_cart)
+
+    #     # Describe each hkl vector in the Cartesian lab frame.
+    #     hkl1_cb = scattering_vector_lab(self.sample_stage, angles1, B, hkl1)
+    #     hkl2_cb = scattering_vector_lab(self.sample_stage, angles2, B, hkl2)
+
+    #     # U from measured/sample-space directions (columns)
+    #     self.U = matrix_from_2_vectors(hkl1_cb, hkl2_cb)
+    #     self.UB = self.U @ Tc.T
+    #     return self.UB
+
+    def forward(self, pseudos: Dict[str, float]) -> Sequence[Dict[str, float]]:
+        # """Given pseudos (hkl), return list of possible real-axis dicts (angles)."""
+        return [{}]  # TODO:
+
+    def inverse(self, reals: Dict[str, float]) -> Dict[str, float]:
+        # """Given real-axis dict (angles), return pseudos (hkl)."""
+        return {}  # TODO:
+
+    def make_reflection(
+        self,
+        name: str,
+        pseudos: Mapping[str, float],
+        reals: Mapping[str, float],
+        wavelength: Optional[float] = None,
+    ) -> AHReflection:
         """Factory: construct and validate an AHReflection using this instrument's axes.
 
         The returned AHReflection has already been validated against the Chewacla
@@ -632,32 +756,16 @@ class Chewacla:
         r.validate_against(self.real_axis_names, self.pseudo_axis_names)
         return r
 
-    def calc_UB_BL67(self) -> np.ndarray:
-        """Calculate the U & UB matrices from the given reflections."""
-        if len(self.reflections) != 2:
-            raise ValueError(
-                "Busing & Levy method requires exactly two reflections to compute"
-                f" UB matrix. {len(self.reflections)} reflection(s) are defined."
-            )
-        # TODO: proceed
-        return self.UB
-
-    def forward(self, pseudos: Dict[str, float]) -> Sequence[Dict[str, float]]:
-        return [{}]  # TODO:
-
-    def inverse(self, reals: Dict[str, float]) -> Dict[str, float]:
-        return {}  # TODO:
-
     # -------------- internal methods
 
     def _sample_rotation_matrix(self, axes: Mapping[str, float]) -> np.ndarray:
         """Rotation of the sample motors into the lab coordinates.
-        
+
         Parameters
         ----------
 
         axes:
-            Dictionary of sample stage axis names to angles in degrees.
+            Dictionary of sample stage axis names -> angles in degrees.
         """
         # Validate keys (tests expect a specific message wording)
         if not isinstance(axes, Mapping):
@@ -748,6 +856,8 @@ class Chewacla:
                 keys.append(k)
         return keys
 
+    # TODO: Consider removing the reflections dict and its related features.
+    # Includes addReflection(), make_reflection(), and the reflections property methods.
     @property
     def reflections(self) -> dict:
         """Return the reflection mapping (name -> AHReflection)."""

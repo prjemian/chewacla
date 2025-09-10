@@ -1,5 +1,5 @@
-import pytest
 import numpy as np
+import pytest
 
 from chewacla.adhoc import Chewacla
 from chewacla.utils import stage_rotation_matrix

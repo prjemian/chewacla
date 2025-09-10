@@ -1,6 +1,7 @@
 """Test the shorthand module."""
 
 import math
+import re
 from contextlib import nullcontext as does_not_raise
 
 import numpy as np
@@ -76,16 +77,22 @@ def test_vector_symbols_various(ds_default, symbol, expected, ctx):
 
 
 @pytest.mark.parametrize(
-    "input_value,ctx",
+    "input_value,exc_type,match_text",
     [
-        (123, pytest.raises(TypeError)),  # non-string symbol
-        (None, pytest.raises(TypeError)),
-        (b"x+", pytest.raises(TypeError)),
+        (123, TypeError, None),  # non-string symbol
+        (None, TypeError, None),
+        (b"x+", TypeError, None),
+        ("+k", ValueError, "Unknown axis 'k'."),  # k not in default vocabulary
+        ("x", ValueError, "Expected 2-character string like 'x+' or '+x'."),
     ],
 )
-def test_vector_non_string_types_raise(ds_default, input_value, ctx):
-    with ctx:
-        ds_default.vector(input_value)
+def test_vector_invalid_inputs(ds_default, input_value, exc_type, match_text):
+    if match_text is None:
+        with pytest.raises(exc_type):
+            ds_default.vector(input_value)
+    else:
+        with pytest.raises(exc_type, match=re.escape(match_text)):
+            ds_default.vector(input_value)
 
 
 def test_vector_unknown_axis_raises(ds_default):

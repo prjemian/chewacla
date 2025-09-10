@@ -3,7 +3,11 @@ import math
 import numpy as np
 import pytest
 
-from chewacla.utils import R_axis, is_colinear, normalize, polar_decompose_rotation, matrix_from_2_vectors
+from chewacla.utils import R_axis
+from chewacla.utils import is_colinear
+from chewacla.utils import matrix_from_2_vectors
+from chewacla.utils import normalize
+from chewacla.utils import polar_decompose_rotation
 
 
 def test_R_axis_z_90_degrees():
