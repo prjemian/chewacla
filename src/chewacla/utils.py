@@ -215,20 +215,21 @@ def rodrigues_rotation(
     tol: float = 1e-12,
 ) -> np.ndarray:
     """
-    Compute the 3x3 rotation matrix for a rotation about an arbitrary axis.
+    Compute 3x3 rotation matrix for rotation about arbitrary axis.
 
-    Return 3x3 rotation matrix for rotation by `angle` radians about `axis` (unit vector).
-    Uses Rodrigues' rotation formula.
+    Return 3x3 rotation matrix (using Rodrigues' rotation formula) for rotation
+    by ``angle`` radians about ``axis`` (unit vector).
 
     Parameters
     ----------
     axis : Iterable[float]
-        An iterable of three numeric components representing the axis of rotation.
+        An iterable of three numeric components representing the unit vector of
+        the rotation axis.
     angle : float
         The rotation angle in radians.
     tol : float, optional
-        Tolerance for the norm of the axis vector. If the norm is less than or equal to this value,
-        a ValueError is raised. Default is 1e-12.
+        Tolerance for the norm of the axis vector. If the norm is less than or
+        equal to this value, a ValueError is raised. Default is 1e-12.
     """
     arr = np.asarray(axis, dtype=float)
     if arr.shape != (3,):
@@ -291,8 +292,11 @@ def scattering_vector_lab(
     return R_lab
 
 
-def stage_rotation_matrix(stage: Mapping[str, np.ndarray], axes: Mapping[str, float]) -> np.ndarray:
-    """Build rotation matrix from a stage description and an axes->angle dict.
+def stage_rotation_matrix(
+    stage: Mapping[str, np.ndarray],
+    axes: Mapping[str, float],
+) -> np.ndarray:
+    """Build rotation matrix from *ad hoc* stage description and an axes->angle dict.
 
     Parameters
     ----------
