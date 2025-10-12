@@ -3,14 +3,14 @@ import math
 import numpy as np
 import pytest
 
-from chewacla.utils import R_axis
 from chewacla.utils import is_colinear
 from chewacla.utils import normalize
+from chewacla.utils import rodrigues_rotation
 
 
-def test_R_axis_z_90_degrees():
+def test_rodrigues_rotation_z_90_degrees():
     z = np.array([0.0, 0.0, 1.0])
-    R = R_axis(z, math.pi / 2)
+    R = rodrigues_rotation(z, math.pi / 2)
     # Rotate x_hat -> y_hat
     x = np.array([1.0, 0.0, 0.0])
     y = R @ x

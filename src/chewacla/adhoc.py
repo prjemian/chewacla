@@ -46,7 +46,6 @@ from chewacla.shorthand import DirectionShorthand
 from chewacla.shorthand import DirectionVector
 from chewacla.shorthand import DirectionVectorInput
 from chewacla.shorthand import unit_vector
-
 from chewacla.utils import stage_rotation_matrix
 
 TAU = 2 * np.pi

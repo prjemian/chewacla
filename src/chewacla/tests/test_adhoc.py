@@ -11,7 +11,7 @@ from chewacla.adhoc import Chewacla
 from chewacla.adhoc import _AHLattice
 from chewacla.adhoc import expand_direction_map
 from chewacla.shorthand import DirectionShorthand
-from chewacla.utils import R_axis
+from chewacla.utils import rodrigues_rotation
 
 # ------------ expand_direction_map --------------------
 
@@ -490,10 +490,9 @@ def test_Chewacla_init_and_properties():
                 wavelength=1.54,
             ),
             dict(
-                U = [[1,0,0],[0,1,0],[0,0,1]],  # TODO: odd that this is I?
-                UB=[[1.157, 0, 0], [0, 1.157, 0], [0, 0, 1.157]]
+                U=[[1, 0, 0], [0, 1, 0], [0, 0, 1]],  # TODO: odd that this is I?
+                UB=[[1.157, 0, 0], [0, 1.157, 0], [0, 0, 1.157]],
             ),
-            
             1e-3,
             does_not_raise(),
             id="four-circle",
@@ -561,10 +560,12 @@ def test_sample_rotation_matrix_multi_axis_composition():
     c = Chewacla({"a": "z+", "b": "x+"}, {"d": "y+"})
     angles = {"a": 90, "b": 90}
     R = c._sample_rotation_matrix(angles)
-    # expected = I @ R_axis(z,90deg) @ R_axis(x,90deg)
+    # expected = I @ rodrigues_rotation(z,90deg) @ rodrigues_rotation(x,90deg)
     rad = np.pi / 180.0
     R_expected = (
-        np.eye(3) @ R_axis(np.array([0.0, 0.0, 1.0]), 90 * rad) @ R_axis(np.array([1.0, 0.0, 0.0]), 90 * rad)
+        np.eye(3)
+        @ rodrigues_rotation(np.array([0.0, 0.0, 1.0]), 90 * rad)
+        @ rodrigues_rotation(np.array([1.0, 0.0, 0.0]), 90 * rad)
     )
     assert np.allclose(R, R_expected)
 

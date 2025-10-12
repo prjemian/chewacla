@@ -1,5 +1,4 @@
-"""Utility functions for Chewacla.
-"""
+"""Utility functions for Chewacla."""
 
 from collections.abc import Mapping
 from typing import Iterable
@@ -209,55 +208,6 @@ def normalize(v: Iterable[float], *, tol: float = 1e-12) -> np.ndarray:
     return arr / norm
 
 
-def R_axis(axis: Iterable[float], angle_rad: float, *, tol: float = 1e-12) -> np.ndarray:
-    """
-    Compute the 3x3 rotation matrix for a rotation about an arbitrary axis.
-
-    Parameters
-    ----------
-    axis : Iterable[float]
-        An iterable of three numeric components representing the axis of rotation.
-    angle_rad : float
-        The rotation angle in radians.
-    tol : float, optional
-        Tolerance for the norm of the axis vector. If the norm is less than or equal to this value,
-        a ValueError is raised. Default is 1e-12.
-
-    Returns
-    -------
-    np.ndarray
-        A 3x3 NumPy array representing the rotation matrix.
-
-    Raises
-    ------
-    ValueError
-        If the axis does not have exactly three components, contains non-finite values,
-        or its norm is at or below the specified tolerance.
-
-    Notes
-    -----
-    This function uses the Rodrigues' rotation formula to compute the rotation matrix.
-    """
-    a = np.asarray(axis, dtype=float)
-    if a.shape != (3,):
-        raise ValueError("axis must be an iterable of three numeric components")
-    norm = np.linalg.norm(a)
-    if not np.isfinite(norm):
-        raise ValueError("axis contains non-finite values")
-    if norm <= tol:
-        raise ValueError(f"axis norm ({norm}) is at or below tolerance ({tol})")
-    k = a / norm
-
-    c = float(np.cos(angle_rad))
-    s = float(np.sin(angle_rad))
-    K = np.array(
-        [[0.0, -k[2], k[1]], [k[2], 0.0, -k[0]], [-k[1], k[0], 0.0]],
-        dtype=float,
-    )
-    I = np.eye(3, dtype=float)
-    return I * c + (1.0 - c) * np.outer(k, k) + s * K
-
-
 def rodrigues_rotation(
     axis: Sequence[float],
     angle: float,
@@ -381,5 +331,5 @@ def stage_rotation_matrix(stage: Mapping[str, np.ndarray], axes: Mapping[str, fl
             radians = np.deg2rad(degrees)
         except Exception as exc:
             raise TypeError(f"angle for axis {axis!r} must be numeric") from exc
-        R = R @ R_axis(uvec, radians)
+        R = R @ rodrigues_rotation(uvec, radians)
     return R
