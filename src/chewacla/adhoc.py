@@ -47,9 +47,6 @@ from chewacla.shorthand import DirectionVector
 from chewacla.shorthand import DirectionVectorInput
 from chewacla.shorthand import unit_vector
 
-# from chewacla.utils import is_colinear
-# from chewacla.utils import matrix_from_2_vectors
-# from chewacla.utils import scattering_vector_lab
 from chewacla.utils import stage_rotation_matrix
 
 TAU = 2 * np.pi
@@ -648,7 +645,7 @@ class Chewacla:
         This method extracts the hkl values and motor angles from the provided reflections, checks for colinearity,
         and computes the UB matrix using the sample's lattice parameters and the measured directions in the laboratory frame.
         """
-        from chewacla.bl1967 import compute_UB
+        from chewacla.utils import compute_UB
 
         hkl1 = np.asarray(list(r1.pseudos.values()), dtype=float)
         hkl2 = np.asarray(list(r2.pseudos.values()), dtype=float)
@@ -660,63 +657,6 @@ class Chewacla:
 
         self.U, self.UB = compute_UB(stages, hkl1, angles1, hkl2, angles2, self.lattice.B)
         return self.UB
-
-    # def calc_UB_BL67(self, r1: AHReflection, r2: AHReflection) -> np.ndarray:
-    #     r"""
-    #     Calculate the orientation (U) and orientation-lattice (UB) matrices from two given reflections.
-
-    #     References
-    #     ----------
-
-    #     * Busing, W. R. and Levy, H. A., 1967. "Orientation Matrix for a Crystal."
-    #       Acta Crystallographica, 22(4), pp.457–464. doi:10.1107/S0365110X67001185.
-
-    #     Parameters
-    #     ----------
-    #     r1 : AHReflection
-    #         The first reflection, containing Miller indices (hkl), corresponding motor angles, and wavelength.
-    #     r2 : AHReflection
-    #         The second reflection, containing Miller indices (hkl), corresponding motor angles, and wavelength.
-
-    #     Returns
-    #     -------
-    #     np.ndarray
-    #         The UB matrix as a NumPy array.
-
-    #     Raises
-    #     ------
-    #     ValueError
-    #         If the provided reflections are colinear and cannot be used to compute the UB matrix.
-
-    #     Notes
-    #     -----
-    #     This method extracts the hkl values and motor angles from the provided reflections, checks for colinearity,
-    #     and computes the UB matrix using the sample's lattice parameters and the measured directions in the laboratory frame.
-    #     """
-    #     # Extract hkl and motor angles
-    #     hkl1 = np.asarray(list(r1.pseudos.values()), dtype=float)
-    #     angles1 = {k: float(r1.reals[k]) for k in self.sample_stage}
-
-    #     hkl2 = np.asarray(list(r2.pseudos.values()), dtype=float)
-    #     angles2 = {k: float(r2.reals[k]) for k in self.sample_stage}
-
-    #     if is_colinear(np.asarray(hkl1), np.asarray(hkl2)):
-    #         raise ValueError("Reflections are colinear; cannot compute UB")
-
-    #     # Build Tc from B*hkl (Cartesian reciprocal-lattice vectors)
-    #     B = self.lattice.B
-    #     r1_cart = B @ hkl1
-    #     r2_cart = B @ hkl2
-    #     Tc = matrix_from_2_vectors(r1_cart, r2_cart)
-
-    #     # Describe each hkl vector in the Cartesian lab frame.
-    #     hkl1_cb = scattering_vector_lab(self.sample_stage, angles1, B, hkl1)
-    #     hkl2_cb = scattering_vector_lab(self.sample_stage, angles2, B, hkl2)
-
-    #     # U from measured/sample-space directions (columns)
-    #     self.U = matrix_from_2_vectors(hkl1_cb, hkl2_cb)
-    #     self.UB = self.U @ Tc.T
-    #     return self.UB
 
     def forward(self, pseudos: Dict[str, float]) -> Sequence[Dict[str, float]]:
         # """Given pseudos (hkl), return list of possible real-axis dicts (angles)."""

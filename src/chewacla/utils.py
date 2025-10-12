@@ -1,7 +1,4 @@
 """Utility functions for Chewacla.
-
-Copied from dev_stash utilities: normalize, is_colinear, matrix_from_2_vectors,
-polar_decompose_rotation, and R_axis.
 """
 
 from collections.abc import Mapping
@@ -12,8 +9,143 @@ import numpy as np
 
 from chewacla.shorthand import DirectionVector
 
-# TODO: use/substitute from dev_u5.py
-# normalize, axes_rotation_matrix, rodrigues_rotation, compute_UB
+
+def axes_rotation_matrix(axes, angles):
+    """
+    Compute combined rotation matrix from crystal frame to lab frame given rotation axes and angles.
+
+    Parameters
+    ----------
+    axes:
+        list/array of shape (N,3) unit axis vectors ordered from ``lab->...->crystal``
+        (outermost to innermost)
+    angles:
+        list/array of shape (N,) angles in radians for each axis at the known configuration
+
+    Returns
+    -------
+    R_total (3x3) rotation matrix from crystal frame to lab frame.
+
+    Notes
+    -----
+    * For axes ordered ``lab->...->crystal``,
+      the combined rotation is ``R_total = R_outer @ ... @ R_inner``.
+    * Each R_i rotates the coordinate frame about the i-th axis by angle_i;
+      applying to a vector expressed in the crystal frame yields the vector in the lab frame.
+    """
+    R_total = np.eye(3)
+    for axis, angle in zip(axes, angles):
+        R = rodrigues_rotation(axis, angle)
+        R_total = R @ R_total
+    return R_total
+
+
+def compute_UB(
+    axes: Sequence[Sequence[float]],
+    hkl1: Sequence[float],
+    angles1: Sequence[float],
+    hkl2: Sequence[float],
+    angles2: Sequence[float],
+    B: np.ndarray,
+    *,
+    tol: float = 1e-8,
+) -> tuple[np.ndarray, np.ndarray]:
+    """
+    Method of Busing & Levy, 1967, for *ad hoc* rotation axes.
+
+    Compute orientation matrix U and UB = U @ B from two known reflections and
+    rotation axes/angles.
+
+    Parameters
+    ----------
+    axes:
+        ordered list (outermost -> innermost) of unit vectors for rotation axes,
+        array-like (N,3) unit vectors
+    hkl1, hkl2:
+        Miller indices of reflection, length-3 arrays (integer or floats)
+    angles1, angles2:
+        rotation angles  at which corresponding hkl is on detector,
+        array-like (N,) angles in degrees
+
+        list must be same length and order as `axes`
+    B:
+        crystal lattice B matrix (maps hkl -> G_crystal = B @ hkl), array-like (3,3)
+    tol : float, optional
+        Tolerance below which the norm is considered too small to normalize (default is 1e-12).
+
+    Raises
+    -------
+    ValueError
+        When provided reflections are colinear and cannot be used to compute the
+        UB matrix.
+
+    Returns
+    -------
+    U (3x3), UB (3x3)
+
+    References
+    ----------
+
+    * Busing, W. R. and Levy, H. A., 1967. "Orientation Matrix for a Crystal."
+      Acta Crystallographica, 22(4), pp.457-464. doi:10.1107/S0365110X67001185.
+    """
+    from chewacla.utils import is_colinear
+
+    axes = np.asarray(axes, dtype=float)
+    B = np.asarray(B, dtype=float)
+
+    hkl1 = np.asarray(hkl1, dtype=float)
+    hkl2 = np.asarray(hkl2, dtype=float)
+
+    if is_colinear(hkl1, hkl2, tol=tol):
+        raise ValueError("Reflections are colinear; cannot compute UB")
+
+    # Reciprocal vectors in crystal frame
+    Gc1 = B @ hkl1
+    Gc2 = B @ hkl2
+
+    # Combined rotation from crystal -> lab at the known angles
+    angles1 = np.deg2rad(angles1, dtype=float)
+    angles2 = np.deg2rad(angles2, dtype=float)
+    R_c1 = axes_rotation_matrix(axes, angles1)  # crystal -> lab
+    R_c2 = axes_rotation_matrix(axes, angles2)  # crystal -> lab
+
+    # Their images in lab frame via the known mechanical rotation:
+    Glab1 = R_c1 @ Gc1
+    Glab2 = R_c2 @ Gc2
+
+    # We assume that the known configuration places hkl1 on the detector
+    # and defines the mechanical R_c1; we solve for U such that U @ B
+    # maps crystalline G vectors into the lab G vectors that the
+    # experiment actually observes.
+    #
+    # Here we compute U by constructing orthonormal bases from the two
+    # vectors in crystal and lab frames. This determines U up to a
+    # possible reflection sign if the two vectors are nearly collinear;
+    # for robust determination use a third non-collinear reference if
+    # available.
+
+    def orthonormal_basis(v1, v2) -> np.ndarray:
+        """Orthonormal basis from Gc1, Gc2 in crystal frame."""
+        e1 = normalize(v1)
+        e2 = normalize(v2 - np.dot(e1, v2) * e1)
+        e3 = np.cross(e1, e2)
+        return np.column_stack((e1, e2, e3))
+
+    # Construct bases
+    Bc = orthonormal_basis(Gc1, Gc2)  # crystal basis columns
+    Bl = orthonormal_basis(Glab1, Glab2)  # lab basis columns
+
+    # U maps crystal vectors into lab vectors: Bl = U @ Bc  => U = Bl @ Bc^{-1}
+    U = Bl @ np.linalg.inv(Bc)
+
+    # Ensure U is a proper rotation (det=+1). If det(U) ~ -1, flip third column of Bl to enforce right-handedness.
+    if np.linalg.det(U) < 0:
+        Bl[:, 2] *= -1
+        U = Bl @ np.linalg.inv(Bc)
+
+    UB = U @ B
+    return U, UB
 
 
 def is_colinear(v1: Iterable[float], v2: Iterable[float], *, tol: float = 1e-8) -> bool:
@@ -34,35 +166,6 @@ def is_colinear(v1: Iterable[float], v2: Iterable[float], *, tol: float = 1e-8) 
 
     cross_norm = np.linalg.norm(np.cross(a, b))
     return bool(cross_norm <= tol * (na * nb))
-
-
-def matrix_from_2_vectors(v1: Sequence[float], v2: Sequence[float], eps: float = 1e-12) -> np.ndarray:
-    u1 = np.asarray(v1, dtype=float)
-    u2 = np.asarray(v2, dtype=float)
-    if not np.all(np.isfinite(u1)) or not np.all(np.isfinite(u2)):
-        raise ValueError("input vectors must contain finite values")
-    if u1.shape != (3,):
-        raise ValueError(f"v1 must be array of length 3, received shape {u1.shape}")
-    if u2.shape != (3,):
-        raise ValueError(f"v2 must be array of length 3, received shape {u2.shape}")
-
-    x = normalize(u1, tol=eps)
-
-    v1_cross_v2 = np.cross(x, u2)
-    cross_norm = np.linalg.norm(v1_cross_v2)
-
-    if cross_norm <= eps:
-        raise ValueError(f"{v1=} and {v2=} are ~collinear")
-
-    z = v1_cross_v2 / cross_norm
-    z_cross_v1 = np.cross(z, x)
-
-    cross_norm = np.linalg.norm(z_cross_v1)
-    if cross_norm <= eps:
-        raise ValueError("unexpected numerical failure when forming y")
-    y = z_cross_v1 / cross_norm
-
-    return np.column_stack((x, y, z))
 
 
 def normalize(v: Iterable[float], *, tol: float = 1e-12) -> np.ndarray:
@@ -88,10 +191,12 @@ def normalize(v: Iterable[float], *, tol: float = 1e-12) -> np.ndarray:
 
     Examples
     --------
-    >>> normalize([3, 4])
-    array([0.6, 0.8])
+    >>> normalize([3, 4, -5])
+    array([0.424, 0.566, -0.707])
     """
     arr = np.asarray(v, dtype=float)
+    if arr.shape != (3,):
+        raise ValueError("vector must be length-3")
     if not np.all(np.isfinite(arr)):
         raise ValueError("vector contains non-finite values")
     norm = np.linalg.norm(arr)
@@ -102,50 +207,6 @@ def normalize(v: Iterable[float], *, tol: float = 1e-12) -> np.ndarray:
             f" cannot normalize vector of shape {arr.shape}"
         )
     return arr / norm
-
-
-def polar_decompose_rotation(M):
-    """
-    Compute the closest proper rotation matrix to a given 3x3 matrix using polar decomposition.
-
-    This function takes a 3x3 matrix `M` and returns the nearest
-    rotation matrix `R` (i.e., an orthogonal matrix with determinant +1)
-    using the polar decomposition via Singular Value Decomposition
-    (SVD).
-
-    Parameters
-    ----------
-    M : array_like, shape (3, 3)
-        Input matrix to decompose. Must be a 3x3 matrix with finite values.
-
-    Returns
-    -------
-    R : ndarray, shape (3, 3)
-        The closest proper rotation matrix to `M`.
-
-    Raises
-    ------
-    ValueError
-        If `M` is not of shape (3, 3) or contains non-finite values.
-
-    Notes
-    -----
-    If the resulting matrix from SVD has a negative determinant, the
-    function corrects it to ensure a proper rotation (determinant +1).
-    """
-    M = np.asarray(M, dtype=float)
-    if M.shape != (3, 3):
-        raise ValueError(f"M must be shape (3,3), got {M.shape}")
-    if not np.all(np.isfinite(M)):
-        raise ValueError("M must contain finite values")
-
-    U, s, Vt = np.linalg.svd(M, full_matrices=False)
-    R = U @ Vt
-    if np.linalg.det(R) < 0:
-        U2 = U.copy()
-        U2[:, -1] *= -1.0
-        R = U2 @ Vt
-    return R
 
 
 def R_axis(axis: Iterable[float], angle_rad: float, *, tol: float = 1e-12) -> np.ndarray:
@@ -195,6 +256,51 @@ def R_axis(axis: Iterable[float], angle_rad: float, *, tol: float = 1e-12) -> np
     )
     I = np.eye(3, dtype=float)
     return I * c + (1.0 - c) * np.outer(k, k) + s * K
+
+
+def rodrigues_rotation(
+    axis: Sequence[float],
+    angle: float,
+    *,
+    tol: float = 1e-12,
+) -> np.ndarray:
+    """
+    Compute the 3x3 rotation matrix for a rotation about an arbitrary axis.
+
+    Return 3x3 rotation matrix for rotation by `angle` radians about `axis` (unit vector).
+    Uses Rodrigues' rotation formula.
+
+    Parameters
+    ----------
+    axis : Iterable[float]
+        An iterable of three numeric components representing the axis of rotation.
+    angle : float
+        The rotation angle in radians.
+    tol : float, optional
+        Tolerance for the norm of the axis vector. If the norm is less than or equal to this value,
+        a ValueError is raised. Default is 1e-12.
+    """
+    arr = np.asarray(axis, dtype=float)
+    if arr.shape != (3,):
+        raise ValueError("axis must be an iterable of three numeric components")
+    norm = np.linalg.norm(arr)
+    if not np.isfinite(norm):
+        raise ValueError("axis contains non-finite values")
+    if norm <= tol:
+        raise ValueError(f"axis norm ({norm}) is at or below tolerance ({tol})")
+
+    ux, uy, uz = normalize(axis)
+    c = np.cos(angle)
+    s = np.sin(angle)
+    C = 1 - c
+    R = np.array(
+        [
+            [c + ux * ux * C, ux * uy * C - uz * s, ux * uz * C + uy * s],
+            [uy * ux * C + uz * s, c + uy * uy * C, uy * uz * C - ux * s],
+            [uz * ux * C - uy * s, uz * uy * C + ux * s, c + uz * uz * C],
+        ]
+    )
+    return R
 
 
 def scattering_vector_lab(

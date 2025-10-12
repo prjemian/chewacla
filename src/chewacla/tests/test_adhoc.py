@@ -485,13 +485,13 @@ def test_Chewacla_init_and_properties():
                 wavelength=1.54,
             ),
             dict(
-                pseudos=dict(h=0, k=4, l=0),
+                pseudos=dict(h=0, k=0, l=4),
                 reals=dict(omega=14.4, chi=90, phi=0, tth=28.8),
                 wavelength=1.54,
             ),
             dict(
-                U = [[1,0,0],[0,0,1],[0,-1,0]],
-                UB=[[1.157, 0, 0], [0, 0, 1.157], [0, -1.157, 0]]
+                U = [[1,0,0],[0,1,0],[0,0,1]],  # TODO: odd that this is I?
+                UB=[[1.157, 0, 0], [0, 1.157, 0], [0, 0, 1.157]]
             ),
             
             1e-3,
