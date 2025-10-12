@@ -17,7 +17,7 @@ from chewacla.utils import R_axis
 
 
 @pytest.mark.parametrize(
-    "ds, stage_map, expected_output, expected_exception",
+    "ds, stage_map, expected_output, context",
     [
         # Valid input case
         (
@@ -62,8 +62,8 @@ from chewacla.utils import R_axis
         ),
     ],
 )
-def test_expand_direction_map(ds, stage_map, expected_output, expected_exception):
-    with expected_exception:
+def test_expand_direction_map(ds, stage_map, expected_output, context):
+    with context:
         result = expand_direction_map(ds, stage_map)
         if expected_output is not None:
             # Use np.array_equal for comparing NumPy arrays
@@ -75,73 +75,123 @@ def test_expand_direction_map(ds, stage_map, expected_output, expected_exception
 
 
 @pytest.mark.parametrize(
-    "a, b, c, alpha, beta, gamma, expected_B, eps, expected_exception",
+    "a, b, c, alpha, beta, gamma, expected_B, eps, context",
     [
         pytest.param(
-            5.0, 5.0, 5.0, 90.0, 90.0, 90.0,
+            5.0,
+            5.0,
+            5.0,
+            90.0,
+            90.0,
+            90.0,
             2 * np.pi / 5.0 * np.eye(3),
             1e-4,
             does_not_raise(),
             id="valid_cubic",
         ),
         pytest.param(
-            4.0, 5.0, 6.0, 90.0, 90.0, 90.0,
+            4.0,
+            5.0,
+            6.0,
+            90.0,
+            90.0,
+            90.0,
             [[1.5708, 0, 0], [0, 1.2566, 0], [0, 0, 1.0472]],
             1e-4,
             does_not_raise(),
             id="valid_orthorhombic",
         ),
         pytest.param(
-            4.0, 4.0, 6.0, 90.0, 90.0, 120.0,
+            4.0,
+            4.0,
+            6.0,
+            90.0,
+            90.0,
+            120.0,
             [[1.8138, 1.0472, 0], [0, 2.0944, 0], [0, 0, 1.3962]],
             1e-4,
             does_not_raise(),
             id="valid_hexagonal",
         ),
         pytest.param(
-            4.0, 5.0, 6.0, 89.0, 90.0, 120.0,
-            [[1.8142,  1.0474, -0.03656], [0, 1.6759, -0.01462], [0, 0, 1.3963]],
+            4.0,
+            5.0,
+            6.0,
+            89.0,
+            90.0,
+            120.0,
+            [[1.8142, 1.0474, -0.03656], [0, 1.6759, -0.01462], [0, 0, 1.3963]],
             1e-4,
             does_not_raise(),
             id="valid_triclinic",
         ),
         pytest.param(
-            -1.0, 5.0, 5.0, 90.0, 90.0, 90.0,
+            -1.0,
+            5.0,
+            5.0,
+            90.0,
+            90.0,
+            90.0,
             None,
             1e-4,
             pytest.raises(ValueError, match=re.escape("lattice lengths a, b, c must be positive")),
             id="invalid_lengths",
         ),
         pytest.param(
-            5.0, 5.0, 5.0, 0.0, 90.0, 90.0,
+            5.0,
+            5.0,
+            5.0,
+            0.0,
+            90.0,
+            90.0,
             None,
             1e-4,
             pytest.raises(ValueError, match=re.escape("alpha must be in (0, 180) degrees")),
             id="invalid_alpha",
         ),
         pytest.param(
-            5.0, 5.0, 5.0, 90.0, 180.0, 90.0,
+            5.0,
+            5.0,
+            5.0,
+            90.0,
+            180.0,
+            90.0,
             None,
             1e-4,
             pytest.raises(ValueError, match=re.escape("beta must be in (0, 180) degrees")),
             id="invalid_beta",
         ),
         pytest.param(
-            5.0, 5.0, 5.0, 90.0, 90.0, 180.0,
+            5.0,
+            5.0,
+            5.0,
+            90.0,
+            90.0,
+            180.0,
             None,
             1e-4,
             pytest.raises(ValueError, match=re.escape("gamma must be in (0, 180) degrees")),
             id="invalid_gamma_180",
         ),
         pytest.param(
-            5.0, 5.0, 5.0, 0.0, 90.0, 90.0,
+            5.0,
+            5.0,
+            5.0,
+            0.0,
+            90.0,
+            90.0,
             None,
             1e-4,
             pytest.raises(ValueError, match=re.escape("alpha must be in (0, 180) degrees")),
             id="degenerate_alpha",
         ),
         pytest.param(
-            5.0, 5.0, 5.0, 90.0, 90.0, 0.0,
+            5.0,
+            5.0,
+            5.0,
+            90.0,
+            90.0,
+            0.0,
             None,
             1e-4,
             pytest.raises(ValueError, match=re.escape("gamma must be in (0, 180) degrees")),
@@ -149,8 +199,8 @@ def test_expand_direction_map(ds, stage_map, expected_output, expected_exception
         ),
     ],
 )
-def test_ahlattice(a, b, c, alpha, beta, gamma, expected_B, eps, expected_exception):
-    with expected_exception:
+def test_ahlattice(a, b, c, alpha, beta, gamma, expected_B, eps, context):
+    with context:
         lattice = _AHLattice(a, b, c, alpha, beta, gamma)
         if expected_B is not None:
             B = lattice.B
@@ -161,7 +211,7 @@ def test_ahlattice(a, b, c, alpha, beta, gamma, expected_B, eps, expected_except
 @pytest.mark.parametrize(
     "a, b, c, alpha, beta, gamma, expected_dict",
     [
-        (
+        pytest.param(
             5.0,
             5.0,
             5.0,
@@ -176,8 +226,9 @@ def test_ahlattice(a, b, c, alpha, beta, gamma, expected_B, eps, expected_except
                 "beta": 90.0,
                 "gamma": 90.0,
             },
+            id="simple_cubic_5",
         ),
-        (
+        pytest.param(
             5.123456,
             5.654321,
             5.987654,
@@ -192,6 +243,7 @@ def test_ahlattice(a, b, c, alpha, beta, gamma, expected_B, eps, expected_except
                 "beta": 90.0,
                 "gamma": 90.0,
             },
+            id="precision_values",
         ),
     ],
 )
@@ -203,7 +255,16 @@ def test_ahlattice_to_dict(a, b, c, alpha, beta, gamma, expected_dict):
 @pytest.mark.parametrize(
     "a, b, c, alpha, beta, gamma, expected_repr",
     [
-        (5.0, 5.0, 5.0, 90.0, 90.0, 90.0, "_AHLattice(a=5.0, b=5.0, c=5.0, alpha=90.0, beta=90.0, gamma=90.0)"),
+        pytest.param(
+            5.0,
+            5.0,
+            5.0,
+            90.0,
+            90.0,
+            90.0,
+            "_AHLattice(a=5.0, b=5.0, c=5.0, alpha=90.0, beta=90.0, gamma=90.0)",
+            id="repr_cubic_5",
+        ),
     ],
 )
 def test_ahlattice_repr(a, b, c, alpha, beta, gamma, expected_repr):
@@ -215,28 +276,50 @@ def test_ahlattice_repr(a, b, c, alpha, beta, gamma, expected_repr):
 
 
 @pytest.mark.parametrize(
-    "input_value, expected_dict, expected_exception",
+    "input_value, expected_dict, context",
     [
-        ({"h": 1, "k": 2.0}, {"h": 1.0, "k": 2.0}, does_not_raise()),
-        ({}, {}, does_not_raise()),
-        ({"h": np.float64(2.5)}, {"h": 2.5}, does_not_raise()),
-        ([("h", 1)], None, pytest.raises(TypeError, match=re.escape("pseudos must be a Mapping[str, numeric]"))),
-        ({1: 2}, None, pytest.raises(TypeError, match=re.escape("pseudos keys must be strings"))),
-        ({"h": "a"}, None, pytest.raises(TypeError, match=re.escape("pseudos values must be numeric"))),
-    ],
-    ids=[
-        "valid_ints_floats",
-        "empty",
-        "numpy_float",
-        "non_mapping",
-        "non_str_key",
-        "non_numeric_value",
+        pytest.param(
+            {"h": 1, "k": 2.0},
+            {"h": 1.0, "k": 2.0},
+            does_not_raise(),
+            id="valid_ints_floats",
+        ),
+        pytest.param(
+            {},
+            {},
+            does_not_raise(),
+            id="empty",
+        ),
+        pytest.param(
+            {"h": np.float64(2.5)},
+            {"h": 2.5},
+            does_not_raise(),
+            id="numpy_float",
+        ),
+        pytest.param(
+            [("h", 1)],
+            None,
+            pytest.raises(TypeError, match=re.escape("pseudos must be a Mapping[str, numeric]")),
+            id="non_mapping",
+        ),
+        pytest.param(
+            {1: 2},
+            None,
+            pytest.raises(TypeError, match=re.escape("pseudos keys must be strings")),
+            id="non_str_key",
+        ),
+        pytest.param(
+            {"h": "a"},
+            None,
+            pytest.raises(TypeError, match=re.escape("pseudos values must be numeric")),
+            id="non_numeric_value",
+        ),
     ],
 )
-def test_AHReflection_pseudos_setter(input_value, expected_dict, expected_exception):
+def test_AHReflection_pseudos_setter(input_value, expected_dict, context):
     """Test _AHReflection.pseudos setter with various valid and invalid inputs."""
-    refl = AHReflection("refl", {}, {})
-    with expected_exception:
+    with context:
+        refl = AHReflection("refl", {}, {})
         refl.pseudos = input_value
         if expected_dict is not None:
             assert refl.pseudos == expected_dict
@@ -298,7 +381,7 @@ def test_addReflection_duplicates_and_force():
 
 
 @pytest.mark.parametrize(
-    "input_value, expected_dict, expected_exception",
+    "input_value, expected_dict, context",
     [
         ({"phi": 1, "chi": 2.0}, {"phi": 1.0, "chi": 2.0}, does_not_raise()),
         ({}, {}, does_not_raise()),
@@ -309,9 +392,9 @@ def test_addReflection_duplicates_and_force():
     ],
     ids=["valid_ints_floats", "empty", "numpy_float", "non_mapping", "non_str_key", "non_numeric_value"],
 )
-def test_AHReflection_reals_setter(input_value, expected_dict, expected_exception):
-    refl = AHReflection("refl", {}, {})
-    with expected_exception:
+def test_AHReflection_reals_setter(input_value, expected_dict, context):
+    with context:
+        refl = AHReflection("refl", {}, {})
         refl.reals = input_value
         if expected_dict is not None:
             assert refl.reals == expected_dict
@@ -403,7 +486,7 @@ def test_Chewacla_init_and_properties():
 
 
 @pytest.mark.parametrize(
-    "value, expected_len, check, expected_exception",
+    "value, expected_len, check, context",
     [
         # set with dict
         ({"one": AHReflection("one", {"h": 1}, {"phi": 1.0})}, 1, None, does_not_raise()),
@@ -423,14 +506,14 @@ def test_Chewacla_init_and_properties():
     ],
     ids=["dict", "none_clears", "mapping", "pairs", "invalid_type"],
 )
-def test_Chewacla_reflections_setter_and_types(value, expected_len, check, expected_exception):
-    c = Chewacla({"a": "x+"}, {"d": "y+"})
+def test_Chewacla_reflections_setter_and_types(value, expected_len, check, context):
+    with context:
+        c = Chewacla({"a": "x+"}, {"d": "y+"})
 
-    # For the None case ensure there's something to clear
-    if value is None:
-        c.reflections = {"pre": AHReflection("pre", {"h": 0}, {"phi": 0.0})}
+        # For the None case ensure there's something to clear
+        if value is None:
+            c.reflections = {"pre": AHReflection("pre", {"h": 0}, {"phi": 0.0})}
 
-    with expected_exception:
         c.reflections = value
 
         if isinstance(expected_len, int):
@@ -540,19 +623,23 @@ def test_Chewacla_modes_property(modes_expected):
 
 
 @pytest.mark.parametrize(
-    "initial, set_value, expected, expected_exception",
+    "initial, set_value, expected, context",
     [
-        # valid set to supported mode
-        (None, "default", "default", does_not_raise()),
-        # invalid mode value
-        (None, "invalid_mode", None, pytest.raises(ValueError, match=re.escape("Invalid mode: invalid_mode"))),
+        pytest.param(None, "default", "default", does_not_raise(), id="default"),
+        pytest.param(
+            None,
+            "invalid_mode",
+            None,
+            pytest.raises(ValueError, match=re.escape("Invalid mode: invalid_mode")),
+            id="invalid_mode",
+        ),
     ],
 )
-def test_Chewacla_mode_setter(initial, set_value, expected, expected_exception):
-    c = Chewacla({"a": "x+"}, {"d": "y+"})
-    if initial is not None:
-        c.mode = initial
-    with expected_exception:
+def test_Chewacla_mode_setter(initial, set_value, expected, context):
+    with context:
+        c = Chewacla({"a": "x+"}, {"d": "y+"})
+        if initial is not None:
+            c.mode = initial
         c.mode = set_value
         if expected is not None:
             assert c.mode == expected

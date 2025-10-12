@@ -77,7 +77,7 @@ def _validate_unit_cell_angle(name: str, val: float) -> None:
 
 def _validate_unit_cell_parameter(attr_name: str, validator):
     """(decorator) Validate unit cell property setters.
-    
+
     1. Convert to float
     2. validate
     3. set internal _<attr_name>
