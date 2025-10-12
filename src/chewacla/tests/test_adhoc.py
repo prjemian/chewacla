@@ -75,82 +75,87 @@ def test_expand_direction_map(ds, stage_map, expected_output, expected_exception
 
 
 @pytest.mark.parametrize(
-    "a, b, c, alpha, beta, gamma, expected_B, expected_exception",
+    "a, b, c, alpha, beta, gamma, expected_B, eps, expected_exception",
     [
-        # Valid initialization
-        (5.0, 5.0, 5.0, 90.0, 90.0, 90.0, 2 * np.pi / 5.0 * np.eye(3), does_not_raise()),
-        # Invalid lengths
-        (
-            -1.0,
-            5.0,
-            5.0,
-            90.0,
-            90.0,
-            90.0,
+        pytest.param(
+            5.0, 5.0, 5.0, 90.0, 90.0, 90.0,
+            2 * np.pi / 5.0 * np.eye(3),
+            1e-4,
+            does_not_raise(),
+            id="valid_cubic",
+        ),
+        pytest.param(
+            4.0, 5.0, 6.0, 90.0, 90.0, 90.0,
+            [[1.5708, 0, 0], [0, 1.2566, 0], [0, 0, 1.0472]],
+            1e-4,
+            does_not_raise(),
+            id="valid_orthorhombic",
+        ),
+        pytest.param(
+            4.0, 4.0, 6.0, 90.0, 90.0, 120.0,
+            [[1.8138, 1.0472, 0], [0, 2.0944, 0], [0, 0, 1.3962]],
+            1e-4,
+            does_not_raise(),
+            id="valid_hexagonal",
+        ),
+        pytest.param(
+            4.0, 5.0, 6.0, 89.0, 90.0, 120.0,
+            [[1.8142,  1.0474, -0.03656], [0, 1.6759, -0.01462], [0, 0, 1.3963]],
+            1e-4,
+            does_not_raise(),
+            id="valid_triclinic",
+        ),
+        pytest.param(
+            -1.0, 5.0, 5.0, 90.0, 90.0, 90.0,
             None,
+            1e-4,
             pytest.raises(ValueError, match=re.escape("lattice lengths a, b, c must be positive")),
+            id="invalid_lengths",
         ),
-        # Invalid angles
-        (
-            5.0,
-            5.0,
-            5.0,
-            0.0,
-            90.0,
-            90.0,
+        pytest.param(
+            5.0, 5.0, 5.0, 0.0, 90.0, 90.0,
             None,
+            1e-4,
             pytest.raises(ValueError, match=re.escape("alpha must be in (0, 180) degrees")),
+            id="invalid_alpha",
         ),
-        (
-            5.0,
-            5.0,
-            5.0,
-            90.0,
-            180.0,
-            90.0,
+        pytest.param(
+            5.0, 5.0, 5.0, 90.0, 180.0, 90.0,
             None,
+            1e-4,
             pytest.raises(ValueError, match=re.escape("beta must be in (0, 180) degrees")),
+            id="invalid_beta",
         ),
-        (
-            5.0,
-            5.0,
-            5.0,
-            90.0,
-            90.0,
-            180.0,
+        pytest.param(
+            5.0, 5.0, 5.0, 90.0, 90.0, 180.0,
             None,
+            1e-4,
             pytest.raises(ValueError, match=re.escape("gamma must be in (0, 180) degrees")),
+            id="invalid_gamma_180",
         ),
-        # Degenerate cell (invalid angles)
-        (
-            5.0,
-            5.0,
-            5.0,
-            0.0,
-            90.0,
-            90.0,
+        pytest.param(
+            5.0, 5.0, 5.0, 0.0, 90.0, 90.0,
             None,
+            1e-4,
             pytest.raises(ValueError, match=re.escape("alpha must be in (0, 180) degrees")),
+            id="degenerate_alpha",
         ),
-        (
-            5.0,
-            5.0,
-            5.0,
-            90.0,
-            90.0,
-            0.0,
+        pytest.param(
+            5.0, 5.0, 5.0, 90.0, 90.0, 0.0,
             None,
+            1e-4,
             pytest.raises(ValueError, match=re.escape("gamma must be in (0, 180) degrees")),
+            id="degenerate_gamma",
         ),
     ],
 )
-def test_ahlattice(a, b, c, alpha, beta, gamma, expected_B, expected_exception):
+def test_ahlattice(a, b, c, alpha, beta, gamma, expected_B, eps, expected_exception):
     with expected_exception:
         lattice = _AHLattice(a, b, c, alpha, beta, gamma)
         if expected_B is not None:
             B = lattice.B
             assert B.shape == (3, 3)  # Check shape
-            assert np.allclose(B, expected_B)  # Check values
+            assert np.allclose(B, expected_B, atol=eps)  # Check values
 
 
 @pytest.mark.parametrize(
