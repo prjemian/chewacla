@@ -535,7 +535,7 @@ class AHReflection:
 
 class Chewacla:
     """
-    The *ad hoc* diffractometer with stages as described by a dictionary.
+    *Ad hoc* diffractometer: stages (sets of rotary axes) described by dictionary.
 
     Example
     -------
@@ -548,11 +548,12 @@ class Chewacla:
 
         # Define sample and detector stages using shorthand directions
         c = Chewacla({"s": "y+"}, {"d": "y+"})
+
         # Set lattice parameters (a, b, c, alpha, beta, gamma)
         c.lattice = (1, 1, 1, 90, 90, 90)
-        # Create an orienting reflection (name, pseudos, reals)
+
+        # Create and add an orienting reflection (name, pseudos, reals)
         r = AHReflection("one", {"h": 1, "k": 0, "l": 0}, {"s": 14.4, "d": 28.8})
-        # Add the reflection to the instrument
         c.addReflection(r)
 
     Notes
@@ -657,18 +658,18 @@ class Chewacla:
         U: diffractometer orientation matrix
         UB: diffractometer crystal orientation matrix
 
+        Parameters
+        ----------
+
+        r1, r2 : AHReflection
+            The first and second reflections.  Each reflection defines Miller
+            indices (hkl) with corresponding wavelength and rotation axis values.
+
         References
         ----------
 
         * Busing, W. R. and Levy, H. A., 1967. "Orientation Matrix for a Crystal."
-          Acta Crystallographica, 22(4), pp.457–464. doi:10.1107/S0365110X67001185.
-
-        Parameters
-        ----------
-        r1 : AHReflection
-            The first reflection, containing Miller indices (hkl), corresponding motor angles, and wavelength.
-        r2 : AHReflection
-            The second reflection, containing Miller indices (hkl), corresponding motor angles, and wavelength.
+          Acta Crystallographica, 22(4), pp.457-464. doi:10.1107/S0365110X67001185.
 
         Returns
         -------
