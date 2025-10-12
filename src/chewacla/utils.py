@@ -148,6 +148,7 @@ def compute_UB(
 
 
 def is_colinear(v1: Iterable[float], v2: Iterable[float], *, tol: float = 1e-8) -> bool:
+    """Compare if the two vectors are colinear within tolerance."""
     a = np.asarray(v1, dtype=float)
     b = np.asarray(v2, dtype=float)
 
