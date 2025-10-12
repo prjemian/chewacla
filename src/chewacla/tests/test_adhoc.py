@@ -13,7 +13,49 @@ from chewacla.adhoc import expand_direction_map
 from chewacla.shorthand import DirectionShorthand
 from chewacla.utils import rodrigues_rotation
 
-# ------------ expand_direction_map --------------------
+APS_FOURC_GEOMETRY = dict(
+    # E4CV
+    incident_beam="z+",  # APS coordinate system
+    sample_stage=dict(omega="x-", chi="z+", phi="x+"),
+    detector_stage=dict(ttheta="x-"),
+)
+APS_PSIC_GEOMETRY = dict(
+    # psic, H. You
+    incident_beam="z+",  # APS coordinate system
+    sample_stage=dict(mu="y+", eta="x-", chi="z+", phi="x+"),
+    detector_stage=dict(nu="y+", delta="x-"),
+)
+APS_SIXC_GEOMETRY = dict(
+    # IUCr 6-circle, Lohmeier & Vlieg
+    incident_beam="z+",  # APS coordinate system
+    sample_stage=dict(alpha="y+", omega="x-", chi="z+", phi="x+"),
+    detector_stage=dict(alpha="y+", delta="x-", gamma="y+"),
+)
+E4CH_GEOMETRY = dict(
+    # https://people.debian.org/~picca/hkl/hkl.html#org800c866
+    incident_beam="x+",  # z+: anti-gravity
+    sample_stage=dict(omega="z+", chi="x+", phi="z+"),
+    detector_stage=dict(tth="z+"),
+)
+E4CV_GEOMETRY = dict(
+    # https://people.debian.org/~picca/hkl/hkl.html#org1a91260
+    incident_beam="x+",
+    sample_stage=dict(omega="y-", chi="x+", phi="y-"),
+    detector_stage=dict(tth="y-"),
+)
+E6C_GEOMETRY = dict(
+    # https://people.debian.org/~picca/hkl/hkl.html#orgf48ceba
+    incident_beam="x+",
+    sample_stage=dict(mu="z+", omega="y-", chi="x+", phi="y-"),
+    detector_stage=dict(gamma="z+", delta="y-"),
+)
+K4CV_GEOMETRY = dict(
+    # https://people.debian.org/~picca/hkl/hkl.html#org182695d
+    incident_beam="x+",
+    # kappa angle: alpha = 50 degrees
+    sample_stage=dict(komega="y-", kappa=[0.0, -0.6427876096865394, -0.766044443118978], kphi="y-"),
+    detector_stage=dict(tth="y-"),
+)
 
 
 @pytest.mark.parametrize(
@@ -468,17 +510,36 @@ def test_Chewacla_init_and_properties():
     "api, lattice, obs1, obs2, expected, eps, context",
     [
         # TODO: parallel reflections should fail
-        # TODO: psic geometry
-        # TODO: sixc geometry
-        # TODO: K4CV geometry
+        # TODO: E4CH_GEOMETRY
+        # TODO: E6C_GEOMETRY (psic)
+        # TODO: IUCr 6-circle (sixc)
+        # TODO: K4CV_GEOMETRY
+        # TODO: K6C_GEOMETRY
         pytest.param(
-            # TODO Verify with E4CV
+            APS_FOURC_GEOMETRY,
+            (5.43, 5.43, 5.43, 90, 90, 90),  # silicon
             dict(
-                sample_stage=dict(omega="x-", chi="z+", phi="x-"),
-                detector_stage=dict(tth="x-"),
+                pseudos=dict(h=4, k=0, l=0),
+                reals=dict(omega=14.4, chi=0, phi=0, ttheta=28.8),
                 wavelength=1.54,
             ),
-            (5.43, 5.43, 5.43, 90, 90, 90),  # silicon
+            dict(
+                pseudos=dict(h=0, k=0, l=4),
+                reals=dict(omega=14.4, chi=90, phi=0, ttheta=28.8),
+                wavelength=1.54,
+            ),
+            # TODO Verify with E4CV
+            dict(
+                U=[[1, 0, 0], [0, 1, 0], [0, 0, 1]],  # TODO: odd that this is I?
+                UB=[[1.157, 0, 0], [0, 1.157, 0], [0, 0, 1.157]],
+            ),
+            1e-3,
+            does_not_raise(),
+            id="four-circle",
+        ),
+        pytest.param(
+            APS_FOURC_GEOMETRY,
+            (1, 1, 1, 90, 90, 90),
             dict(
                 pseudos=dict(h=4, k=0, l=0),
                 reals=dict(omega=14.4, chi=0, phi=0, tth=28.8),
@@ -490,12 +551,18 @@ def test_Chewacla_init_and_properties():
                 wavelength=1.54,
             ),
             dict(
-                U=[[1, 0, 0], [0, 1, 0], [0, 0, 1]],  # TODO: odd that this is I?
-                UB=[[1.157, 0, 0], [0, 1.157, 0], [0, 0, 1.157]],
+                U=[[1, 0, 0], [0, 1, 0], [0, 0, 1]],
+                UB=[[1, 0, 0], [0, 1, 0], [0, 0, 1]],
             ),
             1e-3,
-            does_not_raise(),
-            id="four-circle",
+            pytest.raises(
+                ValueError,
+                match=re.escape(
+                    "Reflection 'r1' real-axis names do not match instrument axes:"
+                    " missing real axes: ['ttheta'], unexpected real axes: ['tth']"
+                ),
+            ),
+            id="wrong-axis-name-ttheta",
         ),
     ],
 )
