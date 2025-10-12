@@ -38,7 +38,6 @@ from typing import Dict
 from typing import Optional
 
 import numpy as np
-from hklpy2.misc import IDENTITY_MATRIX_3X3
 
 from chewacla.shorthand import DirectionMap
 from chewacla.shorthand import DirectionMapInput
@@ -596,8 +595,8 @@ class Chewacla:
         self.lattice = DEFAULT_LATTICE_PARAMS
 
         # Orientation matrices default to identity
-        self.U = np.asarray(IDENTITY_MATRIX_3X3)
-        self.UB = np.asarray(IDENTITY_MATRIX_3X3)
+        self.U = np.eye(3, dtype=float)
+        self.UB = np.eye(3, dtype=float)
 
     def __repr__(self) -> str:
         """Nice text representation."""

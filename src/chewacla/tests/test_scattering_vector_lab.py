@@ -13,7 +13,7 @@ from chewacla.utils import scattering_vector_lab
         (
             {"a": np.array([1.0, 0.0, 0.0])},
             {"a": 0.0},
-            np.eye(3),
+            np.eye(3, dtype=float),
             np.array([1.0, 0.0, 0.0]),
             does_not_raise(),
             None,
@@ -22,7 +22,7 @@ from chewacla.utils import scattering_vector_lab
         (
             {"a": np.array([0.0, 0.0, 1.0])},
             {"a": 90.0},
-            np.eye(3),
+            np.eye(3, dtype=float),
             np.array([1.0, 0.0, 0.0]),
             does_not_raise(),
             None,
@@ -31,7 +31,7 @@ from chewacla.utils import scattering_vector_lab
         (
             {"a": np.array([1.0, 0.0, 0.0])},
             {"a": 0.0},
-            np.eye(4),
+            np.eye(4, dtype=float),
             np.array([1.0, 0.0, 0.0]),
             pytest.raises(ValueError),
             "B must be shape (3,3)",
@@ -40,7 +40,7 @@ from chewacla.utils import scattering_vector_lab
         (
             {"a": np.array([1.0, 0.0, 0.0])},
             {},
-            np.eye(3),
+            np.eye(3, dtype=float),
             np.array([1.0, 0.0, 0.0]),
             pytest.raises(ValueError),
             "missing stage axes",
@@ -49,7 +49,7 @@ from chewacla.utils import scattering_vector_lab
         (
             {"a": np.array([1.0, 0.0, 0.0])},
             {"a": 0.0, "b": 10.0},
-            np.eye(3),
+            np.eye(3, dtype=float),
             np.array([1.0, 0.0, 0.0]),
             pytest.raises(ValueError),
             "unexpected stage axes",
@@ -58,7 +58,7 @@ from chewacla.utils import scattering_vector_lab
         (
             {"a": np.array([1.0, 0.0, 0.0])},
             {"a": "bad"},
-            np.eye(3),
+            np.eye(3, dtype=float),
             np.array([1.0, 0.0, 0.0]),
             pytest.raises(TypeError),
             "angle for axis",

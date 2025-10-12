@@ -84,7 +84,7 @@ def test_expand_direction_map(ds, stage_map, expected_output, context):
             90.0,
             90.0,
             90.0,
-            2 * np.pi / 5.0 * np.eye(3),
+            2 * np.pi / 5.0 * np.eye(3, dtype=float),
             1e-4,
             does_not_raise(),
             id="valid_cubic",
@@ -563,7 +563,7 @@ def test_sample_rotation_matrix_multi_axis_composition():
     # expected = I @ rodrigues_rotation(z,90deg) @ rodrigues_rotation(x,90deg)
     rad = np.pi / 180.0
     R_expected = (
-        np.eye(3)
+        np.eye(3, dtype=float)
         @ rodrigues_rotation(np.array([0.0, 0.0, 1.0]), 90 * rad)
         @ rodrigues_rotation(np.array([1.0, 0.0, 0.0]), 90 * rad)
     )

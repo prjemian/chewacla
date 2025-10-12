@@ -32,7 +32,7 @@ def axes_rotation_matrix(axes, angles):
     * Each R_i rotates the coordinate frame about the i-th axis by angle_i;
       applying to a vector expressed in the crystal frame yields the vector in the lab frame.
     """
-    R_total = np.eye(3)
+    R_total = np.eye(3, dtype=float)
     for axis, angle in zip(axes, angles):
         R = rodrigues_rotation(axis, angle)
         R_total = R @ R_total
