@@ -49,6 +49,12 @@ E6C_GEOMETRY = dict(
     sample_stage=dict(mu="z+", omega="y-", chi="x+", phi="y-"),
     detector_stage=dict(gamma="z+", delta="y-"),
 )
+KAPPA_6_CIRCLE_GEOMETRY = dict(
+    incident_beam="x+",
+    # kappa angle: alpha = 50 degrees
+    sample_stage=dict(mu="z+", keta="y-", kappa=[0.0, -0.6427876096865394, -0.766044443118978], kphi="y-"),
+    detector_stage=dict(nu="z+", tth="y-"),
+)
 K4CV_GEOMETRY = dict(
     # https://people.debian.org/~picca/hkl/hkl.html#org182695d
     incident_beam="x+",
