@@ -30,7 +30,7 @@ chewacla = "chewacla.solver:ChewaclaSolver"
 [project.optional-dependencies]
 dev = [
   "build",
-  "coverage",
+  "coverage<7",  # numba
   "coveralls",
   "ipython",
   "isort",
