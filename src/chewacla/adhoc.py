@@ -63,20 +63,25 @@ DEFAULT_LATTICE_PARAMS = (1, 1, 1, 90, 90, 90)
 
 
 # --- validators and decorator -------------------------------------------------
-def _validate_length(name: str, val: float) -> None:
+def _validate_unit_cell_edge_length(name: str, val: float) -> None:
+    """Unit cell edge lengths are positive numbers."""
     if val <= 0:
-        # keep the original message used in tests
         raise ValueError("lattice lengths a, b, c must be positive")
 
 
-def _validate_angle(name: str, val: float) -> None:
+def _validate_unit_cell_angle(name: str, val: float) -> None:
+    """Unit cell angles are numbers *between* zero and 180 (exclusive)."""
     if not (0.0 < val < 180.0):
         raise ValueError(f"{name} must be in (0, 180) degrees")
 
 
-def _validated_setter(attr_name: str, validator):
-    """Decorator for property setters: convert to float, validate, set internal
-    _<attr_name>, and invalidate cached self._B.
+def _validate_unit_cell_parameter(attr_name: str, validator):
+    """(decorator) Validate unit cell property setters.
+    
+    1. Convert to float
+    2. validate
+    3. set internal _<attr_name>
+    4. invalidate (which marks for recompute) self._B
     """
 
     def decorator(func):
@@ -202,7 +207,7 @@ class _AHLattice:
         return self._a
 
     @a.setter
-    @_validated_setter("a", _validate_length)
+    @_validate_unit_cell_parameter("a", _validate_unit_cell_edge_length)
     def a(self, value: numbers.Real) -> None:
         # validation and setting handled by decorator
         pass
@@ -212,7 +217,7 @@ class _AHLattice:
         return self._b
 
     @b.setter
-    @_validated_setter("b", _validate_length)
+    @_validate_unit_cell_parameter("b", _validate_unit_cell_edge_length)
     def b(self, value: numbers.Real) -> None:
         # validation and setting handled by decorator
         pass
@@ -222,7 +227,7 @@ class _AHLattice:
         return self._c
 
     @c.setter
-    @_validated_setter("c", _validate_length)
+    @_validate_unit_cell_parameter("c", _validate_unit_cell_edge_length)
     def c(self, value: numbers.Real) -> None:
         # validation and setting handled by decorator
         pass
@@ -232,7 +237,7 @@ class _AHLattice:
         return self._alpha
 
     @alpha.setter
-    @_validated_setter("alpha", _validate_angle)
+    @_validate_unit_cell_parameter("alpha", _validate_unit_cell_angle)
     def alpha(self, value: numbers.Real) -> None:
         # validation and setting handled by decorator
         pass
@@ -242,7 +247,7 @@ class _AHLattice:
         return self._beta
 
     @beta.setter
-    @_validated_setter("beta", _validate_angle)
+    @_validate_unit_cell_parameter("beta", _validate_unit_cell_angle)
     def beta(self, value: numbers.Real) -> None:
         # validation and setting handled by decorator
         pass
@@ -252,7 +257,7 @@ class _AHLattice:
         return self._gamma
 
     @gamma.setter
-    @_validated_setter("gamma", _validate_angle)
+    @_validate_unit_cell_parameter("gamma", _validate_unit_cell_angle)
     def gamma(self, value: numbers.Real) -> None:
         # validation and setting handled by decorator
         pass
@@ -532,10 +537,23 @@ class Chewacla:
     """
     The *ad hoc* diffractometer with stages as described by a dictionary.
 
-    Examples
-    --------
+    Example
+    -------
+    Construct a simple :class:`Chewacla` diffractometer and add a reflection:
 
-    TODO: an example would be helpful here
+    .. code-block:: python
+        :linenos:
+
+        from chewacla.adhoc import Chewacla, AHReflection
+
+        # Define sample and detector stages using shorthand directions
+        c = Chewacla({"s": "y+"}, {"d": "y+"})
+        # Set lattice parameters (a, b, c, alpha, beta, gamma)
+        c.lattice = (1, 1, 1, 90, 90, 90)
+        # Create an orienting reflection (name, pseudos, reals)
+        r = AHReflection("one", {"h": 1, "k": 0, "l": 0}, {"s": 14.4, "d": 28.8})
+        # Add the reflection to the instrument
+        c.addReflection(r)
 
     Notes
     -----
