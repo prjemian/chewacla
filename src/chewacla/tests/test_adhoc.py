@@ -528,19 +528,58 @@ def test_Chewacla_reflections_setter_and_types(value, expected_len, check, conte
                 assert all(k in c.reflections for k in keys)
 
 
-# def test_Chewacla_calc_UB_BL67_requires_two_reflections():
-#     c = Chewacla({"a": "x+"}, {"d": "y+"})
-#     # calling without required positional arguments should raise TypeError
-#     with pytest.raises(TypeError):
-#         c.calc_UB_BL67()
-
-#     # calling with only one reflection should also raise TypeError (missing second arg)
-#     one = AHReflection("one", {"h": 1, "k": 0, "l": 0}, {"a": 10.0, "d": 20.0})
-#     with pytest.raises(TypeError):
-#         c.calc_UB_BL67(one)
+@pytest.mark.parametrize(
+    "api, lattice, obs1, obs2, expected, eps, context",
+    [
+        # TODO: parallel reflections should fail
+        # TODO: psic geometry
+        # TODO: sixc geometry
+        # TODO: K4CV geometry
+        pytest.param(
+            # TODO Verify with E4CV
+            dict(
+                sample_stage=dict(omega="x-", chi="z+", phi="x-"),
+                detector_stage=dict(tth="x-"),
+                wavelength=1.54,
+            ),
+            (5.43, 5.43, 5.43, 90, 90, 90),  # silicon
+            dict(
+                pseudos=dict(h=4, k=0, l=0),
+                reals=dict(omega=14.4, chi=0, phi=0, tth=28.8),
+                wavelength=1.54,
+            ),
+            dict(
+                pseudos=dict(h=0, k=4, l=0),
+                reals=dict(omega=14.4, chi=90, phi=0, tth=28.8),
+                wavelength=1.54,
+            ),
+            dict(
+                U = [[1,0,0],[0,0,1],[0,-1,0]],
+                UB=[[1.157, 0, 0], [0, 0, 1.157], [0, -1.157, 0]]
+            ),
+            
+            1e-3,
+            does_not_raise(),
+            id="four-circle",
+        ),
+    ],
+)
+def test_Chewacla_calc_UB(api, lattice, obs1, obs2, expected, eps, context):
+    with context:
+        c = Chewacla(**api)
+        c.lattice = lattice
+        r1 = c.make_reflection("r1", **obs1)
+        r2 = c.make_reflection("r2", **obs2)
+        # c.addReflection(r1)  # TODO necessary?
+        # c.addReflection(r2)
+        c.calc_UB(r1, r2)
+        assert np.allclose(c.U, expected["U"], atol=eps)
+        assert np.allclose(c.UB, expected["UB"], atol=eps)
+        assert np.allclose(c.UB, c.U @ c.lattice.B, atol=eps)
 
 
 def test_Chewacla_addReflection_success_and_errors():
+    # TODO: refactor per example in AGENTS.md
     c = Chewacla({"a": "x+"}, {"d": "y+"})
     # reflection with incorrect real-axis name should raise
     bad = AHReflection("bad", {"h": 1, "k": 0, "l": 0}, {"phi": 1.0})
@@ -564,49 +603,6 @@ def test_Chewacla_addReflection_success_and_errors():
 
     # additional behavior: test colinear reflections raise and success path
     c = Chewacla({"a": "x+"}, {"d": "y+"})
-
-
-# @pytest.mark.parametrize(
-#     "r1_pseudos,r2_pseudos,r1_reals,r2_reals,sample_stage,expect_ctx,expected_ub",
-#     [
-#         # colinear reflections -> error
-#         (
-#             {"h": 1, "k": 0, "l": 0},
-#             {"h": 2, "k": 0, "l": 0},
-#             {"a": 10.0, "d": 20.0},
-#             {"a": 15.0, "d": 25.0},
-#             {"a": "x+"},
-#             pytest.raises(ValueError, match=re.escape("Reflections are colinear; cannot compute UB")),
-#             None,
-#         ),
-#         # orthonormal pseudos with identity B and zero rotations -> UB == I
-#         (
-#             {"h": 1, "k": 0, "l": 0},
-#             {"h": 0, "k": 1, "l": 0},
-#             {"a": 0.0, "d": 0.0},
-#             {"a": 0.0, "d": 0.0},
-#             {"a": "x+"},
-#             does_not_raise(),
-#             np.eye(3),
-#         ),
-#     ],
-#     ids=["colinear", "orthonormal"],
-# )
-# def test_Chewacla_calc_UB_BL67_parametrized(
-#     r1_pseudos, r2_pseudos, r1_reals, r2_reals, sample_stage, expect_ctx, expected_ub
-# ):
-#     c = Chewacla(sample_stage, {"d": "y+"})
-#     # override lattice B to identity for controlled behavior in the orthonormal test
-#     c._lattice._B = np.eye(3)
-
-#     r1 = AHReflection("r1", r1_pseudos, r1_reals)
-#     r2 = AHReflection("r2", r2_pseudos, r2_reals)
-
-#     with expect_ctx:
-#         UB = c.calc_UB_BL67(r1, r2)
-#         if expected_ub is not None:
-#             assert UB.shape == (3, 3)
-#             assert np.allclose(UB, expected_ub)
 
 
 @pytest.mark.parametrize(
