@@ -21,7 +21,6 @@ Construct a simple *Chewacla* diffractometer and add a reflection:
     c = Chewacla({"s": "y+"}, {"d": "y+"})
     c.lattice = 1, 1, 1, 90, 90, 90
     r = AHReflection("one", {"h": 1, "k": 0, "l": 0}, {"s": 14.4, "d": 28.8})
-    c.addReflection(r)
 
 Utilities
 ---------
@@ -554,15 +553,6 @@ class Chewacla:
 
         # Create and add an orienting reflection (name, pseudos, reals)
         r = AHReflection("one", {"h": 1, "k": 0, "l": 0}, {"s": 14.4, "d": 28.8})
-        c.addReflection(r)
-
-    Notes
-    -----
-    - Reflections are managed by name. Use :meth:`addReflection` to add an
-        :class:`AHReflection` to the instrument. By default adding a reflection
-        with a name that already exists raises ``ValueError`` to prevent
-        accidental overwrites; pass ``force=True`` to replace an existing
-        reflection deliberately.
     """
 
     _incident_beam: DirectionVector
@@ -575,8 +565,6 @@ class Chewacla:
     """crystal lattice parameters (angstroms and degrees)"""
     _wavelength: float
     """Wavelength of incident beam (angstroms)"""
-    _reflections: Dict[str, AHReflection]
-    """Orienting reflections (name -> AHReflection) to be used in computation of UB matrix."""
     U: np.ndarray
     """Goniometer orientation matrix"""
     UB: np.ndarray
@@ -608,9 +596,8 @@ class Chewacla:
         self.wavelength = DEFAULT_WAVELENGTH if wavelength is None else float(wavelength)
 
         self.mode = self.modes[0]  # first one is the default diffractometer mode
-        # Lattice defaults and reflection storage
+        # Lattice defaults
         self.lattice = DEFAULT_LATTICE_PARAMS
-        self._reflections = {}  # no reflections defined yet
 
         # Orientation matrices default to identity
         self.U = np.asarray(IDENTITY_MATRIX_3X3)
@@ -625,31 +612,6 @@ class Chewacla:
             f"mode={self.mode!r}",
         ]
         return f"{self.__class__.__name__}({', '.join(body)})"
-
-    def addReflection(self, reflection: AHReflection, force: bool = False) -> None:
-        """Add a single reflection using its own `name` attribute as the key.
-
-        Parameters:
-
-        - reflection: an already-constructed `AHReflection` instance with a valid
-          `name` attribute (str). The reflection's `name` will be used as the key
-          when storing it in the manager.
-        """
-        if not isinstance(reflection, AHReflection):
-            raise TypeError("reflection must be an AHReflection instance")
-        name = reflection.name
-        if not isinstance(name, str):
-            raise TypeError("reflection.name must be a str")
-
-        # validate against instrument axes (raises ValueError on mismatch)
-        reflection.validate_against(self.real_axis_names, self.pseudo_axis_names)
-
-        # prevent accidental overwrites unless explicitly forced
-        if (name in self._reflections) and not force:
-            raise ValueError(f"Reflection {name!r} already exists; pass force=True to replace")
-
-        # finally store/replace the reflection in the dict
-        self._reflections[name] = reflection
 
     def calc_UB(self, r1: AHReflection, r2: AHReflection) -> np.ndarray:
         """
@@ -880,36 +842,6 @@ class Chewacla:
             if k not in keys:
                 keys.append(k)
         return keys
-
-    # TODO: Consider removing the reflections dict and its related features.
-    # Includes addReflection(), make_reflection(), and the reflections property methods.
-    @property
-    def reflections(self) -> dict:
-        """Return the reflection mapping (name -> AHReflection)."""
-        return self._reflections
-
-    @reflections.setter
-    def reflections(self, value: Optional[Mapping[str, AHReflection]]) -> None:
-        """Define the orienting reflections.
-
-        Behaviour:
-        - None (or {}) clears the current reflections.
-        - Any Mapping or iterable of pairs of reflections (name -> AHReflection) is converted is accepted (copied).
-        """
-        if value is None:
-            self._reflections.clear()
-            return
-
-        if isinstance(value, Mapping):
-            self._reflections = dict(value)
-            return
-
-        # accept iterable of (name, reflection) pairs
-        try:
-            items = dict(value)  # will raise if not iterable of pairs
-        except Exception as exc:
-            raise TypeError("reflections must be a dict or iterable of (name, reflection) pairs") from exc
-        self._reflections = items
 
     @property
     def sample_stage(self) -> DirectionMap:

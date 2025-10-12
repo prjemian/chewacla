@@ -355,29 +355,9 @@ def test_validate_against_and_chewacla_factory():
     r = c.make_reflection("one", {"h": 1, "k": 0, "l": 0}, {"s": 14.4, "d": 28.8})
     assert isinstance(r, AHReflection)
 
-    # addReflection should accept already-validated reflection
-    c.addReflection(r)
-    assert "one" in c.reflections
-
     # factory should raise when keys mismatch
     with pytest.raises(ValueError):
         c.make_reflection("bad", {"h": 1}, {"x": 1})
-    # Note: removal/key-errors are tested elsewhere; no extra assertions here.
-
-
-def test_addReflection_duplicates_and_force():
-    c = Chewacla({"s": "y+"}, {"d": "y+"})
-    r1 = c.make_reflection("dup", {"h": 1, "k": 0, "l": 0}, {"s": 1, "d": 2})
-    c.addReflection(r1)
-    assert "dup" in c.reflections
-
-    r2 = c.make_reflection("dup", {"h": 1, "k": 1, "l": 0}, {"s": 3, "d": 4})
-    with pytest.raises(ValueError, match=re.escape("Reflection 'dup' already exists; pass force=True to replace")):
-        c.addReflection(r2)
-
-    # allow replacement when forced
-    c.addReflection(r2, force=True)
-    assert c.reflections["dup"].pseudos["k"] == 1.0
 
 
 @pytest.mark.parametrize(
@@ -470,7 +450,6 @@ def test_Chewacla_init_and_properties():
 
     # defaults
     assert c.wavelength == 1.54
-    assert len(c.reflections) == 0
 
     # incident beam default and assignment
     assert np.allclose(c.incident_beam, np.array([1.0, 0.0, 0.0]))
@@ -483,49 +462,6 @@ def test_Chewacla_init_and_properties():
     c.lattice = (2, 3, 4, 90, 90, 90)
     assert isinstance(c.lattice, _AHLattice)
     assert c.lattice.a == 2.0
-
-
-@pytest.mark.parametrize(
-    "value, expected_len, check, context",
-    [
-        # set with dict
-        ({"one": AHReflection("one", {"h": 1}, {"phi": 1.0})}, 1, None, does_not_raise()),
-        # set to None should clear existing entries
-        (None, 0, None, does_not_raise()),
-        # set with mapping and verify stored item
-        ({"x": AHReflection("x", {"h": 2}, {"phi": 2.0})}, 1, ("get_pseudo", "x", "h", 2.0), does_not_raise()),
-        # set with iterable of pairs
-        (
-            [("a", AHReflection("a", {"h": 3}, {"phi": 3.0})), ("b", AHReflection("b", {"h": 4}, {"phi": 4.0}))],
-            2,
-            ("keys", ("a", "b")),
-            does_not_raise(),
-        ),
-        # invalid type
-        (123, None, None, pytest.raises(TypeError)),
-    ],
-    ids=["dict", "none_clears", "mapping", "pairs", "invalid_type"],
-)
-def test_Chewacla_reflections_setter_and_types(value, expected_len, check, context):
-    with context:
-        c = Chewacla({"a": "x+"}, {"d": "y+"})
-
-        # For the None case ensure there's something to clear
-        if value is None:
-            c.reflections = {"pre": AHReflection("pre", {"h": 0}, {"phi": 0.0})}
-
-        c.reflections = value
-
-        if isinstance(expected_len, int):
-            assert len(c.reflections) == expected_len
-
-        if check is not None:
-            if check[0] == "get_pseudo":
-                _, key, pseudo, expected_val = check
-                assert c.reflections[key].get_pseudo(pseudo) == expected_val
-            elif check[0] == "keys":
-                _, keys = check
-                assert all(k in c.reflections for k in keys)
 
 
 @pytest.mark.parametrize(
@@ -570,39 +506,10 @@ def test_Chewacla_calc_UB(api, lattice, obs1, obs2, expected, eps, context):
         c.lattice = lattice
         r1 = c.make_reflection("r1", **obs1)
         r2 = c.make_reflection("r2", **obs2)
-        # c.addReflection(r1)  # TODO necessary?
-        # c.addReflection(r2)
         c.calc_UB(r1, r2)
         assert np.allclose(c.U, expected["U"], atol=eps)
         assert np.allclose(c.UB, expected["UB"], atol=eps)
         assert np.allclose(c.UB, c.U @ c.lattice.B, atol=eps)
-
-
-def test_Chewacla_addReflection_success_and_errors():
-    # TODO: refactor per example in AGENTS.md
-    c = Chewacla({"a": "x+"}, {"d": "y+"})
-    # reflection with incorrect real-axis name should raise
-    bad = AHReflection("bad", {"h": 1, "k": 0, "l": 0}, {"phi": 1.0})
-    with pytest.raises(ValueError):
-        c.addReflection(bad)
-
-    # valid reflection: pseudos must include h,k,l and reals must match instrument axes ('a','d')
-    good = AHReflection("one", {"h": 1, "k": 0, "l": 0}, {"a": 14.4, "d": 28.8})
-    c.addReflection(good)
-    assert "one" in c.reflections
-
-    # add by reflection (object holds name) — another valid one
-    c.addReflection(AHReflection("two", {"h": 2, "k": 0, "l": 0}, {"a": 14.4, "d": 28.8}))
-    assert "two" in c.reflections
-
-    # invalid calls
-    with pytest.raises(TypeError):
-        c.addReflection(123)  # not an AHReflection
-    with pytest.raises(TypeError):
-        c.addReflection(object())  # not an AHReflection
-
-    # additional behavior: test colinear reflections raise and success path
-    c = Chewacla({"a": "x+"}, {"d": "y+"})
 
 
 @pytest.mark.parametrize(
