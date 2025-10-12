@@ -28,7 +28,7 @@ jobs:
           - "3.11"
           - "3.12"
           - "3.13"
-          - "3.14"
+          # - "3.14"  numba<3.14
       fail-fast: false
       max-parallel: 3
 
@@ -62,7 +62,7 @@ jobs:
 
       - name: Run tests with coverage
         run: |
-          pip install coverage
+          # pip install coverage
           python -m coverage run --concurrency=thread --parallel-mode -m pytest -q
           python -m coverage combine
           python -m coverage report --precision 3 -m
