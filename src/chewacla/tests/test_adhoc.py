@@ -1,13 +1,4 @@
-"""
-Test the adhoc module.
-
-prompt> Write parametrized pytests
-        using a context manager
-        with parameter for pytest.raises(exception) or does_not_raise() for no exception
-        (from contextlib import nullcontext as does_not_raise)
-        when using pytest.raises(match=text), enclose with re.escape(text)
-        label all tests with the class name
-"""
+"""Test the adhoc module."""
 
 import re
 from contextlib import nullcontext as does_not_raise
