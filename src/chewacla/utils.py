@@ -39,6 +39,27 @@ def axes_rotation_matrix(axes, angles):
     return R_total
 
 
+def colinear_vectors(v1: Iterable[float], v2: Iterable[float], *, tol: float = 1e-8) -> bool:
+    """Compare if the two vectors are colinear within tolerance."""
+    a = np.asarray(v1, dtype=float)
+    b = np.asarray(v2, dtype=float)
+
+    if a.shape != (3,) or b.shape != (3,):
+        raise ValueError("v1 and v2 must be 3-component vectors")
+
+    if not (np.isfinite(a).all() and np.isfinite(b).all()):
+        raise ValueError("vectors must contain finite numbers")
+
+    na = np.linalg.norm(a)
+    nb = np.linalg.norm(b)
+
+    if na <= tol or nb <= tol:
+        return True
+
+    cross_norm = np.linalg.norm(np.cross(a, b))
+    return bool(cross_norm <= tol * (na * nb))
+
+
 def compute_UB(
     axes: Sequence[Sequence[float]],
     hkl1: Sequence[float],
@@ -88,7 +109,7 @@ def compute_UB(
     * Busing, W. R. and Levy, H. A., 1967. "Orientation Matrix for a Crystal."
       Acta Crystallographica, 22(4), pp.457-464. doi:10.1107/S0365110X67001185.
     """
-    from chewacla.utils import is_colinear
+    from chewacla.utils import colinear_vectors
 
     axes = np.asarray(axes, dtype=float)
     B = np.asarray(B, dtype=float)
@@ -96,7 +117,7 @@ def compute_UB(
     hkl1 = np.asarray(hkl1, dtype=float)
     hkl2 = np.asarray(hkl2, dtype=float)
 
-    if is_colinear(hkl1, hkl2, tol=tol):
+    if colinear_vectors(hkl1, hkl2, tol=tol):
         raise ValueError("Reflections are colinear; cannot compute UB")
 
     # Reciprocal vectors in crystal frame
@@ -145,27 +166,6 @@ def compute_UB(
 
     UB = U @ B
     return U, UB
-
-
-def is_colinear(v1: Iterable[float], v2: Iterable[float], *, tol: float = 1e-8) -> bool:
-    """Compare if the two vectors are colinear within tolerance."""
-    a = np.asarray(v1, dtype=float)
-    b = np.asarray(v2, dtype=float)
-
-    if a.shape != (3,) or b.shape != (3,):
-        raise ValueError("v1 and v2 must be 3-component vectors")
-
-    if not (np.isfinite(a).all() and np.isfinite(b).all()):
-        raise ValueError("vectors must contain finite numbers")
-
-    na = np.linalg.norm(a)
-    nb = np.linalg.norm(b)
-
-    if na <= tol or nb <= tol:
-        return True
-
-    cross_norm = np.linalg.norm(np.cross(a, b))
-    return bool(cross_norm <= tol * (na * nb))
 
 
 def normalize(v: Iterable[float], *, tol: float = 1e-12) -> np.ndarray:

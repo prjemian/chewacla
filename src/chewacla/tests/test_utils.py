@@ -3,7 +3,7 @@ import math
 import numpy as np
 import pytest
 
-from chewacla.utils import is_colinear
+from chewacla.utils import colinear_vectors
 from chewacla.utils import normalize
 from chewacla.utils import rodrigues_rotation
 
@@ -17,13 +17,13 @@ def test_rodrigues_rotation_z_90_degrees():
     assert np.allclose(y, np.array([0.0, 1.0, 0.0]), atol=1e-12)
 
 
-def test_is_colinear_true_and_false():
+def test_colinear_vectors_true_and_false():
     a = [1.0, 0.0, 0.0]
     b = [2.0, 0.0, 0.0]
-    assert is_colinear(a, b)
+    assert colinear_vectors(a, b)
 
     c = [0.0, 1.0, 0.0]
-    assert not is_colinear(a, c)
+    assert not colinear_vectors(a, c)
 
 
 def test_normalize_errors_and_success():
