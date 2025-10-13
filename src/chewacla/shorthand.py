@@ -138,9 +138,6 @@ class DirectionShorthand:
                 " sign and single letter in positions (±letter or letter±)"
             )
 
-        if not name.isalpha() or len(name) != 1:
-            raise ValueError(f"Invalid axis character {name!r}; must be a single letter")
-
         if name not in self.vocabulary:
             raise ValueError(
                 f"Unknown axis {name!r}."

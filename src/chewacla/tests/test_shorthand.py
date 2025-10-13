@@ -64,6 +64,15 @@ def test_unit_vector_parametrized(inp, expect_ctx, expected_vec):
         ("1+", None, pytest.raises(ValueError)),
         ("+1", None, pytest.raises(ValueError)),
         ("++x", None, pytest.raises(ValueError)),
+        pytest.param(
+            "b+",
+            None,
+            pytest.raises(
+                ValueError,
+                match=re.escape("Unknown axis 'b'. Allowed: ['x', 'y', 'z']"),
+            ),
+            id="unknown-axis-b"
+        ),
     ],
 )
 def test_vector_symbols_various(ds_default, symbol, expected, ctx):
