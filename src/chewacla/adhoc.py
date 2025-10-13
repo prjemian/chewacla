@@ -661,7 +661,11 @@ class Chewacla:
         return [{}]  # TODO:
 
     def inverse(self, reals: Dict[str, float]) -> Dict[str, float]:
-        # """Given real-axis dict (angles), return pseudos (hkl)."""
+        """Given real-axis dict (angles), return pseudos (hkl)."""
+        # k = 2 * np.pi / self.wavelength
+        # k_i = self.incident_beam * k
+        # TODO: k_f = ?  # current detector position
+        # R = self._sample_rotation_matrix(reals)
         return {}  # TODO:
 
     def make_reflection(

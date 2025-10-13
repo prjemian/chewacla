@@ -13,6 +13,11 @@ from chewacla.adhoc import expand_direction_map
 from chewacla.shorthand import DirectionShorthand
 from chewacla.utils import rodrigues_rotation
 
+CUBIC_5A_LATTICE = 5, 5, 5, 90, 90, 90
+DOLOMITE_LATTICE = 4.8012, 4.8012, 16.002, 90, 90, 120
+EUPTIN4_EH1_VER_LATTICE = 4.542, 16.955, 7.389, 90, 90, 90
+SILICON_LATTICE = 5.4310196, 5.4310196, 5.4310196, 90, 90, 90
+
 APS_FOURC_GEOMETRY = dict(
     # E4CV
     incident_beam="z+",  # APS coordinate system
@@ -523,7 +528,7 @@ def test_Chewacla_init_and_properties():
         # TODO: K6C_GEOMETRY
         pytest.param(
             APS_FOURC_GEOMETRY,
-            (5.43, 5.43, 5.43, 90, 90, 90),  # silicon
+            SILICON_LATTICE,
             dict(
                 pseudos=dict(h=4, k=0, l=0),
                 reals=dict(omega=14.4, chi=0, phi=0, ttheta=28.8),
