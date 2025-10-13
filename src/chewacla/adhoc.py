@@ -6,8 +6,12 @@ diffractometer and supporting types used for small, interactive workflows.
 
 Key classes
 -----------
-- :class:`~chewacla.adhoc.Chewacla`: *ad hoc* diffractometer.
-- :class:`~chewacla.adhoc.AHReflection`: orienting reflection: (h,k,l) & angles (& optional wavelength).
+
+.. autosummary::
+
+    ~AHLattice
+    ~AHReflection
+    ~Chewacla
 
 Example
 -------
@@ -16,10 +20,10 @@ Construct a simple *Chewacla* diffractometer and add a reflection:
 .. code-block:: python
     :linenos:
 
-    from chewacla.adhoc import Chewacla, AHReflection
+    from chewacla.adhoc import Chewacla, AHLattice, AHReflection
 
     c = Chewacla({"s": "y+"}, {"d": "y+"})
-    c.lattice = 1, 1, 1, 90, 90, 90
+    c.lattice = AHLattice(1)
     r = AHReflection("one", {"h": 1, "k": 0, "l": 0}, {"s": 14.4, "d": 28.8})
 
 Utilities
@@ -152,8 +156,8 @@ def expand_direction_map(
     return out
 
 
-class _AHLattice:
-    """Internal container for lattice parameters and B-matrix computation."""
+class AHLattice:
+    """Lattice parameters and B-matrix computation."""
 
     a: float  # angstrom
     r"""Crystal unit cell length along $\hat x$ axis."""
@@ -173,27 +177,32 @@ class _AHLattice:
     digits: int | None = None
     """Display precision (number of digits), default is full precision."""
 
+    tol = 1e-12
+    """Specifies acceptable precision."""
+
     def __init__(
         self,
         a: numbers.Real,
-        b: numbers.Real,
-        c: numbers.Real,
-        alpha: numbers.Real,
-        beta: numbers.Real,
-        gamma: numbers.Real,
+        b: Optional[numbers.Real] = None,
+        c: Optional[numbers.Real] = None,
+        alpha: Optional[numbers.Real] = 90.0,
+        beta: Optional[numbers.Real] = None,
+        gamma: Optional[numbers.Real] = None,
     ) -> None:
         self._B = None  # initial default is unset
 
         # convert and validate lengths
         # use property setters (which validate and invalidate _B)
         self.a = a
-        self.b = b
-        self.c = c
+        # treat 0.0 as an explicit value; only use 'a' when b/c is None
+        self.b = a if b is None else b
+        self.c = a if c is None else c
 
         # convert and validate angles (degrees)
         self.alpha = alpha
-        self.beta = beta
-        self.gamma = gamma
+        # treat 0.0 as explicit; only use alpha when beta/gamma is None
+        self.beta = alpha if beta is None else beta
+        self.gamma = alpha if gamma is None else gamma
 
     # --- lattice parameter properties ---------------------------------
     @property
@@ -254,7 +263,9 @@ class _AHLattice:
     @_validate_unit_cell_parameter("gamma", _validate_unit_cell_angle)
     def gamma(self, value: numbers.Real) -> None:
         # validation and setting handled by decorator
-        pass
+        sgamma = np.sin(self.gamma)
+        if abs(sgamma) < self.tol:
+            raise ValueError("Lattice gamma angle is too close to 0 or 180 degrees.")
 
     @property
     def B(self) -> np.ndarray:
@@ -538,13 +549,13 @@ class Chewacla:
     .. code-block:: python
         :linenos:
 
-        from chewacla.adhoc import Chewacla, AHReflection
+        from chewacla.adhoc import Chewacla, AHReflection, AHLattice
 
         # Define sample and detector stages using shorthand directions
         c = Chewacla({"s": "y+"}, {"d": "y+"})
 
-        # Set lattice parameters (a, b, c, alpha, beta, gamma)
-        c.lattice = (1, 1, 1, 90, 90, 90)
+        # Set lattice parameters for a cubic crystal.
+        c.lattice = AHLattice(1)
 
         # Create and add an orienting reflection (name, pseudos, reals)
         r = AHReflection("one", {"h": 1, "k": 0, "l": 0}, {"s": 14.4, "d": 28.8})
@@ -556,7 +567,7 @@ class Chewacla:
     """names and unit vectors for sample stage rotations"""
     _detector_stage: DirectionMap
     """names and unit vectors for detector stage rotations"""
-    _lattice: _AHLattice
+    _lattice: AHLattice
     """crystal lattice parameters (angstroms and degrees)"""
     _wavelength: float
     """Wavelength of incident beam (angstroms)"""
@@ -745,14 +756,21 @@ class Chewacla:
         self._incident_beam = unit_vector(value)
 
     @property
-    def lattice(self) -> _AHLattice:
+    def lattice(self) -> AHLattice:
         """Return the Lattice object."""
         return self._lattice
 
     @lattice.setter
     def lattice(self, lattice_constants) -> None:
-        """Set the crystal lattice parameters."""
-        self._lattice = _AHLattice(*lattice_constants)
+        """Set the crystal lattice parameters.
+
+        Accept either an AHLattice instance or an iterable of lattice constants
+        (a, b, c, alpha, beta, gamma).
+        """
+        if isinstance(lattice_constants, AHLattice):
+            self._lattice = lattice_constants
+            return
+        self._lattice = AHLattice(*lattice_constants)
 
     @property
     def modes(self) -> list[str]:

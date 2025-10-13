@@ -6,14 +6,13 @@ import numpy as np
 SI_A0 = 5.431020511
 SI_A0_UNCERTAINTY = 0.000000089
 
-TWO_PI = 2 * np.pi
-
 # lattice constants: a, b, c, alpha, beta, gamma
-CUBIC_5A_LATTICE = 5, 5, 5, 90, 90, 90
+# Pass as positional tuple, minimum number of args required
+CUBIC_5A_LATTICE = (5,)
 DOLOMITE_LATTICE = 4.8012, 4.8012, 16.002, 90, 90, 120
-EUPTIN4_EH1_VER_LATTICE = 4.542, 16.955, 7.389, 90, 90, 90
-SILICON_LATTICE = SI_A0, SI_A0, SI_A0, 90, 90, 90
-VIBRANIUM_LATTICE = TWO_PI, TWO_PI, TWO_PI, 90, 90, 90
+EUPTIN4_EH1_VER_LATTICE = 4.542, 16.955, 7.389
+SILICON_LATTICE = (SI_A0,)
+VIBRANIUM_LATTICE = (2 * np.pi,)
 
 APS_FOURC_GEOMETRY = dict(
     # E4CV

@@ -6,9 +6,9 @@ from contextlib import nullcontext as does_not_raise
 import numpy as np
 import pytest
 
+from chewacla.adhoc import AHLattice
 from chewacla.adhoc import AHReflection
 from chewacla.adhoc import Chewacla
-from chewacla.adhoc import _AHLattice
 from chewacla.adhoc import expand_direction_map
 from chewacla.shorthand import DirectionShorthand
 from chewacla.tests.common import APS_FOURC_GEOMETRY
@@ -71,7 +71,7 @@ def test_expand_direction_map(ds, stage_map, expected_output, context):
                 assert np.array_equal(result[key], expected_output[key])
 
 
-# ------------ _AHLattice --------------------
+# ------------ AHLattice --------------------
 
 
 @pytest.mark.parametrize(
@@ -199,9 +199,9 @@ def test_expand_direction_map(ds, stage_map, expected_output, context):
         ),
     ],
 )
-def test_ahlattice(a, b, c, alpha, beta, gamma, expected_B, eps, context):
+def test_AHLattice(a, b, c, alpha, beta, gamma, expected_B, eps, context):
     with context:
-        lattice = _AHLattice(a, b, c, alpha, beta, gamma)
+        lattice = AHLattice(a, b, c, alpha, beta, gamma)
         if expected_B is not None:
             B = lattice.B
             assert B.shape == (3, 3)  # Check shape
@@ -247,8 +247,8 @@ def test_ahlattice(a, b, c, alpha, beta, gamma, expected_B, eps, context):
         ),
     ],
 )
-def test_ahlattice_to_dict(a, b, c, alpha, beta, gamma, expected_dict):
-    lattice = _AHLattice(a, b, c, alpha, beta, gamma)
+def test_AHLattice_to_dict(a, b, c, alpha, beta, gamma, expected_dict):
+    lattice = AHLattice(a, b, c, alpha, beta, gamma)
     assert lattice.to_dict() == expected_dict
 
 
@@ -262,13 +262,13 @@ def test_ahlattice_to_dict(a, b, c, alpha, beta, gamma, expected_dict):
             90.0,
             90.0,
             90.0,
-            "_AHLattice(a=5.0, b=5.0, c=5.0, alpha=90.0, beta=90.0, gamma=90.0)",
+            "AHLattice(a=5.0, b=5.0, c=5.0, alpha=90.0, beta=90.0, gamma=90.0)",
             id="repr_cubic_5",
         ),
     ],
 )
-def test_ahlattice_repr(a, b, c, alpha, beta, gamma, expected_repr):
-    lattice = _AHLattice(a, b, c, alpha, beta, gamma)
+def test_AHLattice_repr(a, b, c, alpha, beta, gamma, expected_repr):
+    lattice = AHLattice(a, b, c, alpha, beta, gamma)
     assert repr(lattice) == expected_repr
 
 
@@ -459,8 +459,8 @@ def test_Chewacla_init_and_properties():
     assert np.array_equal(c.incident_beam, arr)
 
     # lattice setter
-    c.lattice = (2, 3, 4, 90, 90, 90)
-    assert isinstance(c.lattice, _AHLattice)
+    c.lattice = AHLattice(2, 3, 4)
+    assert isinstance(c.lattice, AHLattice)
     assert c.lattice.a == 2.0
 
 
@@ -527,7 +527,7 @@ def test_Chewacla_init_and_properties():
 def test_Chewacla_calc_UB(api, lattice, obs1, obs2, expected, eps, context):
     with context:
         c = Chewacla(**api)
-        c.lattice = lattice
+        c.lattice = AHLattice(*lattice)
         r1 = c.make_reflection("r1", **obs1)
         r2 = c.make_reflection("r2", **obs2)
         c.calc_UB(r1, r2)
